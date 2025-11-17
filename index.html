@@ -1,13 +1,12 @@
 <!DOCTYPE html><html lang="ru"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Полное руководство по robots.txt для Shopify-дропшиппинга</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<title>Анализ содержимого сайта VIP Drive для SEO-оптимизации</title>
 <link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/table.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914044665&amp;Signature=X%2F%2BipJztge3UJ3Ojq5wcxRk%2F7zk%3D" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" rel="stylesheet"/>
-<link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/technology_blue_and_green.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914044129&amp;Signature=78%2F5NVyh5wfcGSSPorJhSJUs06o%3D" rel="stylesheet"/>
+<link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/writing_blue.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914044167&amp;Signature=LiIovJR%2Foq6fZUmsFbgoH9wTm6M%3D" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script src="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/macarons_v2.js?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914188330&amp;Signature=mE%2FFv6owOnvs%2FB7rWTRxwD9tj9M%3D"></script>
+<script src="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/macarons_v3.js?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914188348&amp;Signature=MwRQXZxEbIvEbAqpPwRW%2B%2BSSug0%3D"></script>
 <style>.container {
     max-width: 800px;
     margin: 0 auto;
@@ -34,45 +33,85 @@ img {
     margin: 1em auto;
     border-radius: 8px;
     }
+h1 {
+    font-size: 28px;
+    margin-top: 24px;
+    margin-bottom: 20px;
+    }
 h5 {
     font-size: 16px;
     }
 body {
-    line-height: 1.8;
-    font-size: 16px;
+    line-height: 1.6;
     color: #333;
     background-color: #fdfdfd;
     margin: 0 24px 0 24px;
     padding: 0;
+    font-size: 16px;
     max-width: None;
     }
-h1, h2, h3, h4 {
-    line-height: 1.3;
-    margin-top: 24px;
-    margin-bottom: 20px;
-    font-size: 28px;
-    }
-h1 {
-    font-size: 28px;
+header {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
     text-align: center;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 0.5em;
-    margin-top: 24px;
-    margin-bottom: 20px;
+    }
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    }
+header .meta-info {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    }
+main {
+    font-size: 1.1em;
     }
 h2 {
     font-size: 22px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.3em;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 10px;
+    margin-top: 40px;
     }
 h3 {
     font-size: 20px;
+    margin-top: 30px;
     }
 h4 {
     font-size: 18px;
     }
-p {
+p, ul, ol {
     margin-bottom: 1.2em;
+    }
+ul, ol {
+    padding-left: 25px;
+    }
+li {
+    margin-bottom: 0.5em;
+    }
+code, pre {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.9em;
+    }
+pre {
+    padding: 15px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    }
+blockquote {
+    border-left: 4px solid #3498db;
+    padding-left: 20px;
+    margin: 20px 0;
+    font-style: italic;
+    color: #555;
+    background-color: #f9f9f9;
+    }
+blockquote p {
+    margin-bottom: 0;
     }
 a {
     text-decoration: none;
@@ -80,105 +119,47 @@ a {
 a:hover {
     text-decoration: underline;
     }
-code, pre {
-    font-family: "Menlo", "Monaco", "Consolas", "Courier New", monospace;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    font-size: 0.85em;
-    }
-code {
-    padding: 0.2em 0.4em;
-    }
-pre {
-    padding: 1em;
-    overflow-x: auto;
-    border: 1px solid #ddd;
-    }
-blockquote {
-    border-left: 4px solid #1a73e8;
-    padding-left: 1.5em;
-    margin-left: 0;
-    margin-right: 0;
-    font-style: italic;
-    color: #555;
-    }
-.toc {
-    padding: 20px;
-    margin-bottom: 40px;
-    border-radius: 5px;
-    }
-.toc-title {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 15px;
-    }
-.toc ul {
-    list-style-type: none;
-    padding-left: 0;
-    }
-.toc ul ul {
-    padding-left: 20px;
-    }
-.toc li {
-    margin-bottom: 8px;
-    }
-.toc a {
-    }
-.toc a:hover {
-    color: #1a73e8;
-    }
-.data-source {
-    text-align: center;
-    font-size: 0.8em;
-    color: #777;
-    margin-top: -10px;
-    margin-bottom: 20px;
-    }
-.chart-wrapper {
+table {
     width: 100%;
-    height: 450px;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 1em;
+    }
+table, th, td {
+    }
+th, td {
+    padding: 12px;
+    text-align: left;
+    }
+th {
+    font-weight: bold;
+    }
+.warning, .tip, .note {
+    padding: 15px;
     margin: 20px 0;
-    }
-.small-float-wrapper {
-    width: 50%;
-    float: right;
-    margin-left: 20px;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.95);
-    }
-.small-float-wrapper .chart-wrapper {
-    width: 100%;
-    height: 280px;
-    margin: 0;
-    }
-.small-float-wrapper .data-source {
-    text-align: center;
-    margin-top: 8px;
-    margin-bottom: 0;
-    font-size: 0.75em;
-    }
-.clear-float {
-    clear: both;
-    }
-.key-points {
-    background-color: #eef7ff;
-    border: 1px solid #bce8f1;
-    padding: 20px;
-    margin: 2em 0;
     border-radius: 5px;
+    border-left-width: 5px;
+    border-left-style: solid;
     }
-.key-points-title {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 1.2em;
-    margin-top: 0;
+.warning {
+    background-color: #fff0f0;
+    border-color: #e74c3c;
     }
-.key-points ul {
-    padding-left: 20px;
-    margin-bottom: 0;
+.tip {
+    background-color: #e8f9f1;
+    border-color: #2ecc71;
+    }
+.note {
+    background-color: #eaf5ff;
+    border-color: #3498db;
+    }
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 0.8em;
+    color: #95a5a6;
     }
 @media only screen and (max-device-width: 768px) {
             body {
@@ -279,407 +260,254 @@ blockquote {
             border-radius: 8px;
         }
         }</style>
-<link rel="stylesheet" href="https://static.skywork.ai/fe/skywork-site-assets/styles/doc_reference_style.css?v=1990404613002723328"/></head>
+<link rel="stylesheet" href="https://static.skywork.ai/fe/skywork-site-assets/styles/doc_reference_style.css?v=1990412828482437120"/></head>
 <body>
 <div class="container">
-<h1 id="section-1">Полное руководство по robots.txt для Shopify-дропшиппинга: избегаем дублей и сохраняем трафик</h1>
-<div class="toc">
-<div class="toc-title">Содержание</div>
+<header>
+<h1 id="section-1">Уникальные SEO-вызовы IPTV-сервисов: Комплексное руководство для VIP Drive</h1>
+<p class="meta-info">Дата: 2025-11-17</p>
+<p class="meta-info">Анализ и рекомендации по поисковой оптимизации для проекта VIP Drive на платформе uKit</p>
+</header>
+<section>
+<h2 id="section-1">Введение: Конкурентная среда и ключевые задачи SEO для VIP Drive</h2>
+<p>Для проекта <strong>VIP Drive</strong>, предлагающего обширный каталог из более чем 4500 каналов и богатую Медиатеку СНГ, ключевой задачей является не просто привлечение трафика, а его конвертация в реальных подписчиков<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Для проекта VIP Drive,предлагающего обширный каталог из более чем 4500 каналов и богатую Медиатеку СНГ,ключевой задачей является не просто привлечение трафика,а его конвертация в реальных подписчиков." id="skTag-1990411361782673411" class="sk-source-tag" data-sk-source-id="1990411361782673411"></em>. В условиях высококонкурентного рынка IPTV-сервисов, где пользователи ищут стабильность, качество и доступность, поисковая оптимизация (SEO) становится решающим фактором успеха. Критически важно, чтобы поисковые системы, такие как Google и Яндекс, не просто видели сайт, а корректно индексировали именно те страницы, которые ведут к целевому действию — подписке или активации пробного периода.</p>
+<p>Основная проблема, с которой сталкиваются IPTV и другие сервисы по подписке, — это <strong>дублирование контента</strong>. Эта проблема может возникать по разным причинам и серьезно вредить позициям сайта в поисковой выдаче.</p>
 <ul>
-<li><a href="#section-intro">Введение: Почему файл robots.txt критически важен для вашего Shopify-магазина</a></li>
-<li><a href="#section-basics">Основы robots.txt в Shopify: Что нужно знать перед началом работы</a>
-<ul>
-<li><a href="#section-what-is-robots">Что такое robots.txt?</a></li>
-<li><a href="#section-shopify-specifics">Особенности Shopify: robots.txt vs. robots.txt.liquid</a></li>
-<li><a href="#section-how-to-edit">Как найти и отредактировать robots.txt.liquid</a></li>
+<li><strong>Пробный период (Trial) vs. Основная подписка:</strong> Часто страницы, предлагающие бесплатный тест и платную подписку, имеют очень схожие описания продукта, списки каналов и преимущества. Для поискового робота они могут выглядеть как дубли, отличаясь лишь призывом к действию (CTA) и URL-адресом.</li>
+<li><strong>Варианты URL:</strong> Трафик с различных рекламных кампаний (например, из социальных сетей, email-рассылок) часто помечается UTM-метками или другими параметрами. В результате одна и та же страница (например, <code>/pricing</code>) может быть доступна по множеству адресов (<code>/pricing?ref=ad</code>, <code>/pricing?utm_source=google</code>), что создает технические дубли.</li>
+<li><strong>Ограничения платформы uKit:</strong> Конструкторы сайтов, такие как <a href="https://ukit.com/ru" target="_blank">uKit</a>, ориентированы на простоту и удобство для пользователей без технических навыков. Однако эта простота может создавать ограничения, например, усложняя прямое внедрение SEO-тегов в секцию <code>&lt;head&gt;</code> страницы, что необходимо для продвинутой оптимизации.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Ограничения платформы uKit: Конструкторы сайтов, такие как uKit, ориентированы на простоту и удобство для пользователей без технических навыков. Однако эта простота может создавать ограничения, например, усложняя прямое внедрение SEO-тегов в секцию &lt;head&gt; страницы, что необходимо для продвинутой оптимизации." id="skTag-1990411758818369536" class="sk-source-tag" data-sk-source-id="1990411758818369536"></em></li>
 </ul>
-</li>
-<li><a href="#section-step1">Шаг 1: Блокировка служебных и неважных страниц для экономии краулингового бюджета</a>
-<ul>
-<li><a href="#section-pages-to-block">Ключевые страницы для блокировки</a></li>
-<li><a href="#section-disallow-directives-step1">Необходимые директивы Disallow</a></li>
-<li><a href="#section-analysis-step1">Анализ: почему эти страницы вредны для SEO</a></li>
-</ul>
-</li>
-<li><a href="#section-step2">Шаг 2: Борьба с дублированным контентом — главная SEO-проблема Shopify</a>
-<ul>
-<li><a href="#section-duplicate-sources">Источники дублей и методы борьбы</a></li>
-<li><a href="#section-robots-vs-noindex">Важный нюанс: robots.txt vs noindex</a></li>
-</ul>
-</li>
-<li><a href="#section-step3">Шаг 3: Сохранение индексации ключевых страниц</a>
-<ul>
-<li><a href="#section-pages-to-index">Какие страницы должны быть проиндексированы</a></li>
-<li><a href="#section-how-to-ensure-indexing">Как это обеспечить в robots.txt</a></li>
-</ul>
-</li>
-<li><a href="#section-step4">Шаг 4: Указание пути к карте сайта (Sitemap)</a>
-<ul>
-<li><a href="#section-sitemap-auto-generation">Автоматическая генерация Sitemap в Shopify</a></li>
-<li><a href="#section-how-to-specify-sitemap">Как и где указать Sitemap в robots.txt</a></li>
-</ul>
-</li>
-<li><a href="#section-advanced">Продвинутая настройка: Защита от конкурентов для дропшиппинг-магазина</a>
-<ul>
-<li><a href="#section-competitor-problem">Проблема: Анализ конкурентами</a></li>
-<li><a href="#section-competitor-solution">Решение: Блокировка ботов</a></li>
-</ul>
-</li>
-<li><a href="#section-final-template">Итоговый шаблон robots.txt.liquid и проверка на ошибки</a>
-<ul>
-<li><a href="#section-full-template">Полный рекомендуемый шаблон для robots.txt.liquid</a></li>
-<li><a href="#section-how-to-check">Как проверить robots.txt на ошибки</a></li>
-</ul>
-<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Итоговый шаблон robots.txt.liquid и проверка на ошибки" id="skTag-1990403261056806912" class="sk-source-tag" data-sk-source-id="1990403261056806912"></em></li>
-<li><a href="#section-conclusion">Заключение: robots.txt — это только начало</a></li>
-</ul>
+<p>Решение этих проблем лежит в плоскости технического SEO. Два ключевых инструмента, которые помогут навести порядок и сфокусировать &#34;SEO-силу&#34; на нужных страницах, — это правильное использование тега <code>&lt;link rel=&#34;canonical&#34;&gt;</code> и разработка стратегической внутренней перелинковки.</p>
+<div class="note">
+<h4>Цель данного руководства</h4>
+<p>Предоставить исчерпывающий план действий для VIP Drive по устранению дублирования контента, укреплению авторитета ключевых страниц и максимизации конверсии через SEO, с учетом специфики работы на платформе uKit.</p>
 </div>
-<h2 id="section-intro">Введение: Почему файл robots.txt критически важен для вашего Shopify-магазина</h2>
-<p>Shopify зарекомендовал себя как одна из ведущих платформ для электронной коммерции, особенно в сфере дропшиппинга. Ее простота, масштабируемость и богатая экосистема приложений позволяют предпринимателям быстро запускать и развивать свой бизнес. Однако за этим удобством скрывается ряд технических SEO-особенностей, которые могут серьезно навредить видимости вашего магазина в поисковых системах, если их игнорировать. Главная из этих проблем — автоматическая генерация дублированного контента.</p>
-<p>Для дропшиппинг-модели, где тысячи товаров могут иметь схожие или идентичные описания, предоставленные поставщиками, проблема дублей становится особенно острой. Поисковые системы, такие как Google, сталкиваясь с множеством одинаковых страниц, не могут определить, какую из них считать основной (канонической). Это приводит к размыванию &#34;ссылочного веса&#34;, каннибализации ключевых слов и, в конечном итоге, к пессимизации позиций в поисковой выдаче. <a href="https://indeedseo.com/ru/blog/the-ultimate-shopify-seo-guide-best-practices/" target="_blank">Эксперты по SEO называют дублированный контент проблемой наивысшего приоритета для магазинов на Shopify</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Для дропшиппинг-модели, где тысячи товаров могут иметь схожие или идентичные описания, предоставленные поставщиками, проблема дублей становится особенно острой. Поисковые системы, такие как Google, сталкиваясь с множеством одинаковых страниц, не могут определить, какую из них считать основной (канонической). Это приводит к размыванию &#34;ссылочного веса&#34;, каннибализации ключевых слов и, в конечном итоге, к пессимизации позиций в поисковой выдаче. Эксперты по SEO называют дублированный контент проблемой наивысшего приоритета для магазинов на Shopify." id="skTag-1990403260986499072" class="sk-source-tag" data-sk-source-id="1990403260986499072"></em></p>
-<p>Именно здесь на сцену выходит файл <code>robots.txt</code>. Это не просто технический файл для &#34;айтишников&#34;, а мощный стратегический инструмент, который позволяет вам взять под контроль взаимодействие поисковых роботов с вашим сайтом. Грамотная настройка <code>robots.txt</code> дает возможность &#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="txt дает возможность &#34;объяснить&#34; поисковым системам,какие страницы являются мусорными,а какие — ценными." id="skTag-1990403449766932486" class="sk-source-tag" data-sk-source-id="1990403449766932486"></em>;объяснить&#34; поисковым системам, какие страницы являются мусорными, а какие — ценными. Это позволяет экономить краулинговый бюджет (ограниченный ресурс, который поисковик выделяет на сканирование вашего сайта) и направлять его на индексацию действительно важных страниц: карточек товаров, категорий и статей блога.</p>
-<blockquote>
-            Цель этой статьи — предоставить исчерпывающее, пошаговое руководство по настройке файла <code>robots.txt</code> специально для дропшиппинг-магазинов на Shopify. Мы разберем, как с его помощью решить ключевые SEO-проблемы платформы, избежать распространенных ошибок и заложить прочный фундамент для успешного органического продвижения.
-        </blockquote>
-<p>Помните, что в конкурентном мире дропшиппинга, где маржинальность часто невысока, органический трафик — это не роскошь, а жизненная необходимость. Игнорирование технических аспектов SEO, таких как настройка <code>robots<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Игнорирование технических аспектов SEO,таких как настройка robots." id="skTag-1990403261150883840" class="sk-source-tag" data-sk-source-id="1990403261150883840"></em>.txt</code>, равносильно попытке плыть против течения с дырой в лодке. Давайте же залатам эту дыру и направим ваш корабль к вершинам поисковой выдачи.</p>
-<h2 id="section-basics">Основы robots.txt в Shopify: Что нужно знать перед началом работы</h2>
-<p>Прежде чем вносить изменения, крайне важно понять, как устроен и работает файл <code>robots.txt</code> в специфической среде Shopify. Платформа имеет свои нюансы, незнание которых может привести к серьезным ошибкам и потере трафика. <a href="https://www.rush-analytics.ru/blog/oshibki-v-robots" target="_blank">Согласно исследованию Ahrefs, проведенному в 2023 году, 26% сайтов из топ-10000 имеют критические ошибки в файле robots.txt</a>, что подчеркивает важность правильной конфигурации.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Прежде чем вносить изменения, крайне важно понять, как устроен и работает файл robots.txt в специфической среде Shopify. Платформа имеет свои нюансы, незнание которых может привести к серьезным ошибкам и потере трафика. Согласно исследованию Ahrefs, проведенному в 2023 году, 26% сайтов из топ-10000 имеют критические ошибки в файле robots.txt, что подчеркивает важность правильной конфигурации." id="skTag-1990403449541435400" class="sk-source-tag" data-sk-source-id="1990403449541435400"></em></p>
-<h3 id="section-what-is-robots">Что такое robots.txt?</h3>
-<p>Файл <code>robots.txt</code> (Robots Exclusion Protocol) — это простой текстовый файл, который размещается в корневой директории сайта (например, <code>yourstore.com/robots.txt</code>). Его основная задача — давать инструкции поисковым роботам (краулерам, паукам), какие страницы или разделы сайта можно сканировать, а какие следует игнорировать. Это первая точка контакта между вашим сайтом и поисковой системой.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Это первая точка контакта между вашим сайтом и поисковой системой." id="skTag-1990403261092671490" class="sk-source-tag" data-sk-source-id="1990403261092671490"></em></p>
-<p>Файл состоит из набора правил, или директив<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Файл состоит из набора правил,или директив." id="skTag-1990403449766932486" class="sk-source-tag" data-sk-source-id="1990403449766932486"></em>. Основные из них:</p>
+</section>
+<section>
+<h2 id="section-2">Часть 1. Основы Canonical Tags: Устранение &#34;Каннибализма&#34; Ключевых Слов</h2>
+<p>Тег <code>rel=&#34;canonical&#34;</code> — это мощный инструмент в арсенале SEO-специалиста. Он сообщает поисковым системам, какая из нескольких идентичных или очень похожих страниц является основной, &#34;канонической&#34;. Это указание помогает консолидировать весь накопленный авторитет (ссылочный вес, поведенческие факторы) на одной, главной странице, вместо того чтобы &#34;размазывать&#34; его по нескольким дублям.</p>
+<h3 id="section-2-1">1.1. Когда Canonical Tag КРИТИЧЕСКИ необходим для VIP Drive</h3>
+<p>Для сервиса VIP Drive существует несколько типичных сценариев, где игнорирование канонических тегов может привести к серьезным проблемам с ранжированием. Рассмотрим их подробно.</p>
+<h4>Сценарий 1: Страницы с пробным периодом и платной подпиской</h4>
+<p>Это классический случай для любого подписного сервиса. У вас есть страница для привлечения новых пользователей через бесплатный тест (например, <code>/free-test</code>) и основная страница для оформления платной подписки (например, <a href="https://vipdrive.com/subscribe" target="_blank">/subscribe</a>). Контент на этих страницах (описание преимуществ, список каналов, отзывы) может совпадать на 90%. Поисковая система не может однозначно решить, какую из них показывать по запросу &#34;подключить VipDrive TV&#34;, что приводит к &#34;каннибализму ключевых слов&#34; — страницы начинают конкурировать друг с другом.</p>
 <ul>
-<li><strong>User-agent:</strong> Указывает, для какого именно робота предназначено правило. Звездочка (<code>*</code>) означает &#34;для всех роботов&#34;.</li>
-<li><strong>Disallow:</strong> Запрещает сканирование указанного URL или раздела.</li>
-<li><strong>Allow:</strong> Разрешает сканирование, создавая исключение из более общего правила <code>Disallow</code>.</li>
-<li><strong>Sitemap:</strong> Указывает путь к XML-карте сайта, помогая роботам найти все важные страницы.</li>
+<li><strong>Проблема:</strong> Поисковик может выбрать для показа страницу с триалом, хотя ваша основная цель — продажа подписки. Ссылочный вес, полученный обеими страницами, делится, ослабляя общие позиции.</li>
+<li><strong>Решение:</strong> Необходимо выбрать одну страницу в качестве основной (канонической). Как правило, это страница с платной подпиской, так как она является конечной точкой конверсии. На странице <code>/free-test</code> следует разместить канонический тег, указывающий на <code>/subscribe</code>.</li>
 </ul>
-<p>Важно понимать, что <code>robots.txt</code> — это рекомендация, а не строгий приказ. Большинство авторитетных поисковых систем (Google, Яндекс, Bing) следуют этим правилам, но вредоносные боты или скрейперы могут их игнорировать.</p>
-<h3 id="section-shopify-specifics">Особенности Shopify: robots.txt vs. robots.txt.liquid</h3>
-<p>В отличие от большинства CMS, где вы можете напрямую загрузить и отредактировать файл <code>robots.txt</code> через FTP, в Shopify этот процесс устроен иначе. Здесь существует два уровня контроля:</p>
-<ol>
-<li><strong>Стандартный <code>robots.txt</code>:</strong> Shopify автоматически генерирует для каждого магазина базовый файл <code>robots.txt</code>. Он содержит стандартный набор правил, блокирующих очевидные служебные разделы, такие как <code>/admin</code>, <code>/cart</code>, <code>/checkout</code> и другие. <a href="https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt" target="_blank">Этот файл нельзя напрямую отредактировать или удалить</a>. Это сделано для защиты магазинов от случайных критических ошибок.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Стандартный robots.txt: Shopify автоматически генерирует для каждого магазина базовый файл robots.txt. Он содержит стандартный набор правил, блокирующих очевидные служебные разделы, такие как /admin, /cart, /checkout и другие. Этот файл нельзя напрямую отредактировать или удалить. Это сделано для защиты магазинов от случайных критических ошибок." id="skTag-1990403261056806921" class="sk-source-tag" data-sk-source-id="1990403261056806921"></em></li>
-<li><strong>Редактируемый <code>robots.txt.liquid</code>:</strong> Для кастомизации правил Shopify предоставляет специальный шаблон темы — <code>robots.txt.liquid</code>. Это файл, который вы можете создать и изменить в редакторе кода вашей темы. Содержимое этого файла будет добавлено к стандартным правилам Shopify, позволяя вам расширить их. <a href="https://blog.skgroups.ru/nastrojka-fajla-robots-txt-i-karty-sajta-xml-dlja-shopify/" target="_blank">Ключевой момент: Shopify не позволяет удалять правила по умолчанию, но разрешает добавлять новые</a>. Это обеспечивает баланс между гибкостью и безопасностью.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Редактируемый robots.txt.liquid: Для кастомизации правил Shopify предоставляет специальный шаблон темы — robots.txt.liquid. Это файл, который вы можете создать и изменить в редакторе кода вашей темы. Содержимое этого файла будет добавлено к стандартным правилам Shopify, позволяя вам расширить их. Ключевой момент: Shopify не позволяет удалять правила по умолчанию, но разрешает добавлять новые. Это обеспечивает баланс между гибкостью и безопасностью." id="skTag-1990403449541435400" class="sk-source-tag" data-sk-source-id="1990403449541435400"></em></li>
-</ol>
-<p>Использование <code>.liquid</code>, языка шаблонов Shopify, также позволяет добавлять в файл динамические элементы, например, автоматически генерировать ссылку на карту сайта, что мы рассмотрим далее.</p>
-<h3 id="section-how-to-edit">Как найти и отредактировать robots.txt.liquid</h3>
-<p>Процесс создания или редактирования файла <code>robots.txt.liquid</code> довольно прост и выполняется непосредственно из административной панели Shopify. Вот пошаговая инструкция:</p>
-<ol>
-<li>Перейдите в админ-панель вашего магазина Shopify.</li>
-<li>В левом меню выберите <strong>Online Store</strong> (Интернет-магазин) &gt; <strong>Themes</strong> (Темы).</li>
-<li>Найдите вашу активную тему, нажмите на кнопку <strong>Actions</strong> (Действия) и выберите из выпадающего списка <strong>Edit code</strong> (Редактировать код).</li>
-<li>В открывшемся редакторе кода, в левой панели с файлами, найдите папку <strong>Templates</strong> (Шаблоны).</li>
-<li>Нажмите на <strong>Add a new template</strong> (Добавить новый шаблон).</li>
-<li>В модальном окне выберите из первого выпадающего списка тип шаблона <strong>robots</strong>. Убедитесь, что расширение файла указано как <code>.liquid</code>.</li>
-<li>Нажмите <strong>Create template</strong> (Создать шаблон).</li>
-</ol>
-<p>После этих действий у вас будет создан файл <code>robots.txt.liquid</code>, готовый к редактированию. Если этот файл уже был создан ранее (например, другим разработчиком или приложением), вы найдете его в папке <strong>Templates</strong> и сможете просто открыть для внесения изменений. <a href="https://www.okiktenko.com.ua/redaktirovanie-robots-txt-liquid-v-shopify-polnoe-rukovodstvo/" target="_blank">Перед внесением любых изменений настоятельно рекомендуется создать резервную копию темы</a>, чтобы в случае ошибки можно было быстро откатиться к предыдущей версии.</p>
-<div class="key-points">
-<p class="key-points-title">Ключевые моменты раздела:</p>
+<h4>Сценарий 2: Параметры отслеживания (UTM-метки и другие)</h4>
+<p>Для анализа эффективности рекламных кампаний используются URL-параметры<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Для анализа эффективности рекламных кампаний используются URL-параметры." id="skTag-1990411832612573186" class="sk-source-tag" data-sk-source-id="1990411832612573186"></em>. Например, ссылка из Google Ads может выглядеть так: <code>https://vipdrive.com/home?utm_source=google&amp;utm_campaign=winter_sale</code>. Хотя для пользователя это та же главная страница, для поискового робота это совершенно новый, уникальный URL.</p>
 <ul>
-<li><code>robots.txt</code> — это набор инструкций для поисковых роботов.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="txt — это набор инструкций для поисковых роботов." id="skTag-1990403449766932486" class="sk-source-tag" data-sk-source-id="1990403449766932486"></em></li>
-<li>В Shopify вы не редактируете <code>robots.txt</code> напрямую, а добавляете свои правила через файл шаблона <code>robots<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="txt напрямую,а добавляете свои правила через файл шаблона robots." id="skTag-1990403449766932482" class="sk-source-tag" data-sk-source-id="1990403449766932482"></em>.txt.liquid</code>.</li>
-<li>Правила по умолчанию, установленные Shopify, удалить нельзя, можно только добавить новые.</li>
-<li>Редактирование происходит в разделе &#34;Edit code&#34; вашей активной темы.</li>
+<li><strong>Проблема:</strong> Без канонического тега каждая такая ссылка создает технический дубль. Если эти ссылки будут проиндексированы, это приведет к массовому дублированию контента и распылению авторитета.</li>
+<li><strong>Решение:</strong> На всех страницах сайта должен быть установлен &#34;самоссылающийся&#34; канонический тег, который указывает на &#34;чистую&#34; версию URL без параметров. Например, на странице <code>/home?utm_source=google</code> тег должен указывать на <code>/home</code>.</li>
 </ul>
+<h4>Сценарий 3: Сортировка и фильтрация контента</h4>
+<p>Если на сайте VIP Drive есть или появится функционал для фильтрации каналов (например, по качеству, жанру или стране), это также будет генерировать URL с параметрами: <code>/channels?sort=hd</code> или <code>/channels?genre=sport</code>.</p>
+<ul>
+<li><strong>Проблема:</strong> Аналогично UTM-меткам, каждая комбинация фильтров создает новый URL, который поисковик может счесть за отдельную страницу, хотя основной контент остается прежним.</li>
+<li><strong>Решение:</strong> Основная страница каталога (<code>/channels</code>) должна быть указана как каноническая для всех ее вариаций с параметрами сортировки и фильтрации.</li>
+</ul>
+<p>Ниже представлена сводная таблица по основным сценариям дублирования для VIP Drive.</p>
+<table>
+<thead>
+<tr>
+<th>Сценарий дублирования</th>
+<th>Примеры URL-адресов</th>
+<th>Канонический URL (цель)</th>
+</tr>
+</thead>
+
+<tbody><tr>
+<td>Страница с тестом и оплатой</td>
+<td><code>/free-test</code><br/><code>/subscribe</code></td>
+<td><code>/subscribe</code> (если это основная страница конверсии)</td>
+</tr>
+<tr>
+<td>Параметры отслеживания (UTM)</td>
+<td><code>/home?utm_source=google</code><br/><code>/home?ref=partner</code></td>
+<td><code>/home</code></td>
+</tr>
+<tr>
+<td>Сортировка/Фильтрация (если есть)</td>
+<td><code>/channels?sort=hd</code><br/><code>/channels?genre=movies</code></td>
+<td><code>/channels</code> (основная страница каталога)</td>
+</tr>
+
+</tbody></table>
+<h3 id="section-2-2">1.2. Как должен выглядеть идеальный тег</h3>
+<p>На всех дублирующих страницах (например, на <code>/free-test</code> или на страницах с UTM-метками) в секции <code>&lt;head&gt;</code> HTML-кода должен быть размещен следующий тег, указывающий на основную, каноническую страницу:</p>
+<pre><code>&lt;link rel=&#34;canonical&#34; href=&#34;https://vipdrive.com/subscribe&#34; /&gt;</code></pre>
+<div class="note">
+<p><strong>Важно:</strong> URL в атрибуте <code>href</code> должен быть абсолютным, то есть включать протокол (<code>https://</code>) и полное доменное имя. Это помогает избежать ошибок в интерпретации со стороны поисковых систем.</p>
 </div>
-<h2 id="section-step1">Шаг 1: Блокировка служебных и неважных страниц для экономии краулингового бюджета</h2>
-<p>Первым и самым фундаментальным шагом в настройке <code>robots.txt</code> является запрет на сканирование страниц, которые не несут никакой SEO-ценности и не должны появляться в поисковой выдаче. Каждый раз, когда поисковый робот посещает ваш сайт, он тратит на это ограниченный ресурс — краулинговый бюджет. Если этот бюджет расходуется на бесполезные страницы, до ваших важных товаров и категорий робот может просто не добраться.</p>
-<h3 id="section-pages-to-block">Ключевые страницы для блокировки</h3>
-<p>Shopify по умолчанию уже блокирует большинство из этих страниц, но важно понимать, что именно и почему закрывается, а также убедиться, что эти правила на месте. <a href="https://www.seoant.com/how-to-fix-the-shopify-indexed-though-blocked-by-robots-txt-error/" target="_blank">Стандартный файл robots.txt Shopify включает директивы для блокировки таких разделов, как checkout, cart, orders и account</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Shopify по умолчанию уже блокирует большинство из этих страниц, но важно понимать, что именно и почему закрывается, а также убедиться, что эти правила на месте. Стандартный файл robots.txt Shopify включает директивы для блокировки таких разделов, как checkout, cart, orders и account." id="skTag-1990403261056806921" class="sk-source-tag" data-sk-source-id="1990403261056806921"></em></p>
-<ul>
-<li><code>/admin</code>: Административная панель вашего магазина. Содержит конфиденциальную информацию и абсолютно не предназначена для публичного доступа.</li>
-<li><code>/cart</code>: Страница корзины. Ее содержимое уникально для каждого посетителя и сессии, оно не является статичным контентом.</li>
-<li><code>/orders</code>: Страницы с информацией о заказах пользователей.</li>
-<li><code>/checkout</code>: Весь процесс оформления заказа, состоящий из нескольких шагов.</li>
-<li><code>/account</code>: Личные кабинеты пользователей, страницы входа, регистрации и восстановления пароля.</li>
-<li><code>/search</code>: Страницы внутреннего поиска по сайту. Позволяют генерировать практически бесконечное количество URL с низкокачественным, неуникальным контентом, что является серьезной SEO-проблемой.</li>
-<li><code>/discount/*</code>: Страницы, связанные с применением кодов скидок.</li>
-<li><code>/*preview_theme_id*</code>: URL-адреса, используемые для предварительного просмотра тем, которые не должны индексироваться.</li>
-</ul>
-<h3 id="section-disallow-directives-step1">Необходимые директивы Disallow</h3>
-<p>Как уже упоминалось, большинство этих правил уже встроены в Shopify. Ваша задача при редактировании <code>robots.txt.liquid</code> — не дублировать их, а добавлять только те, которых не хватает, или более специфичные правила. Однако для полноты картины, вот как выглядит базовый набор блокирующих правил:</p>
-<pre><code># Указываем, что правила применяются ко всем роботам
-User-agent: *
-
-# Блокировка служебных и административных разделов
-Disallow: /admin
-Disallow: /cart
-Disallow: /orders
-Disallow: /checkout
-Disallow: /account
-
-# Блокировка страниц внутреннего поиска
-Disallow: /search
-
-# Блокировка страниц, связанных со скидками и предпросмотром
-Disallow: /discount/*
-Disallow: /*preview_theme_id*
-Disallow: /*preview_script_id*
-</code></pre>
-<p>Эти директивы являются &#34;золотым стандартом&#34; для любого e-commerce сайта, и Shopify мудро включает их по умолчанию. <a href="https://scaleshopify.com/2025/02/15/fix-shopify-robotstxt-errors-step-by-step-guide/" target="_blank">Проверка наличия этих базовых правил — первый шаг в любом аудите robots.txt</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Эти директивы являются &#34;золотым стандартом&#34; для любого e-commerce сайта, и Shopify мудро включает их по умолчанию. Проверка наличия этих базовых правил — первый шаг в любом аудите robots.txt." id="skTag-1990403261056806921" class="sk-source-tag" data-sk-source-id="1990403261056806921"></em></p>
-<h3 id="section-analysis-step1">Анализ: почему эти страницы вредны для SEO</h3>
-<p>Давайте разберем вред от индексации каждой из этих страниц более подробно:</p>
-<ul>
-<li><strong>Низкокачественный контент:</strong> Страницы вроде корзины или результатов поиска (особенно если поиск не дал результатов) являются &#34;тонкими&#34; (thin content) — они содержат мало или совсем не содержат уникального, полезного контента. Google может посчитать сайт с большим количеством таких страниц низкокачественным в целом.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Google может посчитать сайт с большим количеством таких страниц низкокачественным в целом." id="skTag-1990403261104746498" class="sk-source-tag" data-sk-source-id="1990403261104746498"></em></li>
-<li><strong>Проблемы с безопасностью и конфиденциальностью:</strong> Индексация страниц <code>/account</code> или <code>/orders</code> теоретически может привести к утечке данных, хотя Shopify имеет многоуровневую защиту. В любом случае, эта информация не должна быть доступна из поиска.</li>
-<li><strong>Бесконечный &#34;колодец&#34; для краулера:</strong> Страница внутреннего поиска — это классический пример &#34;ловушки для паука&#34;. Робот может генерировать и переходить по бесконечному числу URL, комбинируя разные поисковые запросы, и никогда не выбраться, чтобы просканировать остальной сайт.</li>
-<li><strong>Отсутствие поискового интента:</strong> Никто не ищет в Google &#34;моя корзина в магазине X&#34;. Эти страницы не отвечают ни на один поисковый запрос пользователя, а значит, их присутствие в индексе бессмысленно и даже вредно.</li>
-</ul>
-<p>Закрывая эти разделы, вы делаете большое одолжение и поисковым системам, и своему сайту, позволяя краулерам сосредоточиться на том, что действительно важно — на ваших товарах.</p>
-<h2 id="section-step2">Шаг 2: Борьба с дублированным контентом — главная SEO-проблема Shopify</h2>
-<p>Если блокировка служебных страниц — это базовая гигиена, то борьба с дублями — это основное поле битвы за SEO на Shopify. Платформа, стремясь к удобству для пользователя, автоматически создает множество URL-адресов, которые с точки зрения поисковой системы являются дубликатами. <a href="https://ecommerce-platforms.com/ru/articles/how-to-fix-shopify-duplicate-content" target="_blank">Эта проблема настолько распространена, что считается одной из самых критических для SEO на Shopify</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Если блокировка служебных страниц — это базовая гигиена, то борьба с дублями — это основное поле битвы за SEO на Shopify. Платформа, стремясь к удобству для пользователя, автоматически создает множество URL-адресов, которые с точки зрения поисковой системы являются дубликатами. Эта проблема настолько распространена, что считается одной из самых критических для SEO на Shopify." id="skTag-1990403260986499072" class="sk-source-tag" data-sk-source-id="1990403260986499072"></em></p>
-<!-- 图表占位：{Распространенные ошибки в файле robots.txt} -->
-<div class="chart-wrapper" id="chart1"></div>
-<div class="data-source">Источник: <a href="https://www.rush-analytics.ru/blog/oshibki-v-robots" target="_blank">Исследование Ahrefs, 2023</a></div>
-<h3 id="section-duplicate-sources">Источники дублей и методы борьбы</h3>
-<p>Рассмотрим три основных источника дублированного контента на Shopify и способы борьбы с ними.</p>
-<h4>1. Страницы пагинации (нумерации)</h4>
-<ul>
-<li><strong>Проблема:</strong> Когда у вас в коллекции много товаров, Shopify разбивает их на страницы. При переходе на вторую страницу URL становится, например, <code>/collections/all?page=2</code>. Однако при переходе обратно на первую страницу, URL часто становится <code>/collections/all?page=1</code>. Этот URL показывает тот же контент, что и основная страница коллекции <code>/collections/all</code>, создавая полный дубликат. <a href="https://gofishdigital.com/blog/how-to-fix-shopify-duplicate-content/" target="_blank">Эта проблема подробно описана многими SEO-агентствами как классический пример дублирования на Shopify</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Проблема: Когда у вас в коллекции много товаров, Shopify разбивает их на страницы. При переходе на вторую страницу URL становится, например, /collections/all?page=2. Однако при переходе обратно на первую страницу, URL часто становится /collections/all?page=1. Этот URL показывает тот же контент, что и основная страница коллекции /collections/all, создавая полный дубликат. Эта проблема подробно описана многими SEO-агентствами как классический пример дублирования на Shopify." id="skTag-1990403449720795142" class="sk-source-tag" data-sk-source-id="1990403449720795142"></em></li>
-<li><strong>Решение:</strong> Основным и наиболее правильным решением здесь является использование атрибута <code>rel=&#34;canonical&#34;</code>. Shopify автоматически добавляет на страницы пагинации канонический тег, указывающий на основную страницу коллекции (без параметра <code>?page=</code>). Это говорит поисковику: &#34;Несмотря на разные URL, считай основной вот эту страницу&#34;. Использование <code>robots.txt</code> для блокировки страниц с параметром <code>page</code> (<code>Disallow: /*?page=</code>) является более грубым методом. Он может помешать роботу обнаружить новые товары на страницах пагинации. Поэтому лучше полагаться на <code>canonical</code>, а <code>robots.txt</code> использовать с осторожностью.</li>
-</ul>
-<h4>2. Страницы сортировки и фильтрации</h4>
-<ul>
-<li><strong>Проблема:</strong> Это самый большой источник дублей. Каждый раз, когда пользователь сортирует товары (по цене, по новизне) или применяет фильтр (по цвету, размеру, бренду), Shopify генерирует новый URL с параметрами. Например:
-                <ul>
-<li><code>/collections/t-shirts?sort_by=price-ascending</code></li>
-<li><code>/collections/t-shirts/red</code> (фильтр по тегу)</li>
-<li><code>/collections/t-shirts/red+large</code> (фильтр по нескольким тегам)</li>
-</ul>
-                Все эти страницы показывают по сути один и тот же набор товаров, но в разном порядке или с небольшими отличиями. Для поисковика это тысячи почти идентичных страниц.</li>
-<li><strong>Решение:</strong> Здесь <code>robots.txt</code> является очень эффективным инструментом. Вы можете заблокировать все URL, содержащие параметры сортировки. Shopify по умолчанию уже помогает с этим, блокируя URL с символом <code>+</code>, который используется для комбинации тегов.
-            <pre><code># Блокировка страниц сортировки и фильтрации
-User-agent: *
-Disallow: /*?sort_by=
-
-# Эти правила обычно уже есть в Shopify по умолчанию
-Disallow: /collections/*+*
-Disallow: /collections/*%2B*
-Disallow: /blogs/*+*
-Disallow: /blogs/*%2B*
-</code></pre>
-<a href="https://goldenweb.net/shopify-seo/robots-txt/" target="_blank">Блокировка URL с параметрами фильтрации (`/collections/*+*`) является стандартной практикой для предотвращения индексации дубликатов, создаваемых фасетной навигацией</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Решение: Здесь robots.txt является очень эффективным инструментом. Вы можете заблокировать все URL, содержащие параметры сортировки. Shopify по умолчанию уже помогает с этим, блокируя URL с символом +, который используется для комбинации тегов. # Блокировка страниц сортировки и фильтрации User-agent: * Disallow: /*?sort_by= # Эти правила обычно уже есть в Shopify по умолчанию Disallow: /collections/*+* Disallow: /collections/*%2B* Disallow: /blogs/*+* Disallow: /blogs/*%2B* Блокировка URL с параметрами фильтрации (`/collections/*+*`) является стандартной практикой для предотвращения индексации дубликатов, создаваемых фасетной навигацией." id="skTag-1990403449819574275" class="sk-source-tag" data-sk-source-id="1990403449819574275"></em></li>
-</ul>
-<h4>3. Дубли страниц товаров в коллекциях</h4>
-<ul>
-<li><strong>Проблема:</strong> Это самый коварный вид дублей. Один и тот же товар может быть доступен по двум разным URL:
-                <ol>
-<li><strong>Канонический URL:</strong> <code>/products/my-awesome-product</code></li>
-<li><strong>URL в контексте коллекции:</strong> <code>/collections/best-sellers/products/my-awesome-product</code></li>
+<h3 id="section-2-3">1.3. Реализация Canonical на uKit: Варианты действий</h3>
+<p>Конструктор сайтов uKit, согласно многочисленным обзорам, ориентирован на простоту и может не предоставлять прямого доступа к редактированию <code>&lt;head&gt;</code> для каждой отдельной страницы на базовых тарифах <a href="https://superbwebsitebuilders.com/ru/obzor-konstruktora-sajtov-ukit/" target="_blank">SuperbWebsiteBuilders</a>, <em data-ref-id="1990412811264819200" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819200" data-sk-source-text="," class="sk-source-tag"></em>. Однако существуют обходные пути и решения.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Конструктор сайтов uKit, согласно многочисленным обзорам, ориентирован на простоту и может не предоставлять прямого доступа к редактированию &lt;head&gt; для каждой отдельной страницы на базовых тарифах SuperbWebsiteBuilders, . Однако существуют обходные пути и решения." id="skTag-1990411370296602627" class="sk-source-tag" data-sk-source-id="1990411370296602627"></em></p>
+<h4>Вариант 1: Обращение в службу поддержки uKit (Наиболее надежный)</h4>
+<p>uKit часто хвалят за качественную и отзывчивую техническую поддержку <em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="uKit часто хвалят за качественную и отзывчивую техническую поддержку ." id="skTag-1990411370324774919" class="sk-source-tag" data-sk-source-id="1990411370324774919"></em>. Это ваш первый и самый правильный шаг.</p>
+<ol>
+<li><strong>Сформулируйте запрос:</strong> Четко опишите задачу. Например: &#34;Здравствуйте! Для SEO-оптимизации нашего сайта мне необходимо добавить тег <code>&lt;link rel=&#34;canonical&#34; ...&gt;</code> в секцию <code>&lt;head&gt;</code> на определенных страницах. Например, на странице /free-test мне нужно установить каноническую ссылку на /subscribe. Можете ли вы помочь с этим или предоставить такую возможность?&#34;</li>
+<li><strong>Укажите страницы:</strong> Предоставьте точный список страниц-дублей и соответствующих им канонических страниц.</li>
+<li><strong>Результат:</strong> В большинстве случаев поддержка идет навстречу и либо добавляет теги самостоятельно, либо активирует для вашего аккаунта необходимый функционал.</li>
 </ol>
-                Хотя контент на обеих страницах абсолютно идентичен, URL разные.</li>
-<li><strong>Решение:</strong> Эту проблему <strong>категорически нельзя решать</strong> через <code>robots.txt</code>! Если вы заблокируете URL вида <code>/collections/.../products/...</code>, вы помешаете поисковому роботу переходить по ссылкам с страниц коллекций на страницы товаров, что нарушит передачу ссылочного веса и структуру сайта.
-            <br/><br/>
-            Правильное решение здесь уже встроено в Shopify — это автоматическое добавление тега <code>rel=&#34;canonical&#34;</code> на обеих страницах, который указывает на основной URL (<code>/products/my-awesome-product</code>).
-            <br/><br/>
-            Однако есть важный нюанс: нужно убедиться, что сама ваша тема генерирует правильные внутренние ссылки. <a href="https://ecommerce-platforms.com/ru/articles/how-to-fix-shopify-duplicate-content" target="_blank">Многие эксперты рекомендуют внести небольшое изменение в код темы</a>. В файле <code>product-grid-item.liquid</code> (или аналогичном) нужно найти строку <code>{{ product.url | within: current_collection }}</code> и заменить ее на просто <code>{{ product.url }}</code>. Это заставит все ссылки с каталога вести сразу на канонический URL товара, что является лучшей практикой.</li>
+<h4>Вариант 2: Использование тарифа &#34;Про&#34; и кастомного кода</h4>
+<p>На более продвинутых тарифах, таких как &#34;Про&#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="На более продвинутых тарифах,таких как &#34;Про&#34;,uKit обычно предоставляет возможность вставки собственного HTML/CSS/JS кода ." id="skTag-1990411488688414725" class="sk-source-tag" data-sk-source-id="1990411488688414725"></em>;, uKit обычно предоставляет возможность вставки собственного HTML/CSS/JS кода <em data-ref-id="1990412811264819202" data-sk-source-type="model" data-sk-source-id="1990412811264819202" data-sk-source-text="На более продвинутых тарифах, таких как &amp;#34;Про&amp;#34;, uKit обычно предоставляет возможность вставки собственного HTML/CSS/JS кода" class="sk-source-tag" data-skywork="text_badge"></em>. Это открывает двери для ручной настройки.</p>
+<ul>
+<li>В настройках страницы найдите поле для вставки кода в <code>&lt;head&gt;</code>.</li>
+<li>Вставьте необходимый тег <code>&lt;link rel=&#34;canonical&#34; href=&#34;...&#34; /&gt;</code>.</li>
 </ul>
-<h3 id="section-robots-vs-noindex">Важный нюанс: robots.txt vs noindex</h3>
-<p>В контексте борьбы с дублями крайне важно понимать разницу между тремя основными инструментами: <code>robots.txt</code>, мета-тегом <code>noindex</code> и атрибутом <code>rel=&#34;canonical&#34;</code>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="txt,мета-тегом noindex и атрибутом rel=&#34;canonical&#34;." id="skTag-1990403449819574274" class="sk-source-tag" data-sk-source-id="1990403449819574274"></em></p>
+<div class="warning">
+<h4>Ограничение HTML-виджета</h4>
+<p>Некоторые пользователи пытаются вставить SEO-теги через виджет &#34;HTML-код&#34; прямо в тело страницы (<code>&lt;body&gt;</code>). Этот метод <strong>крайне ненадежен</strong>. Тег <code>&lt;link rel=&#34;canonical&#34;&gt;</code> должен находиться исключительно в секции <code>&lt;head&gt;</code>. Поисковые системы, скорее всего, проигнорируют тег, размещенный в <code>&lt;body&gt;</code>. Используйте этот метод только в крайнем случае и обязательно проверяйте результат в Google Search Console.</p>
+</div>
+</section>
+<section>
+<h2 id="section-3">Часть 2. Стратегическая Внутренняя Перелинковка: Распределение Авторитета</h2>
+<p>Внутренняя перелинковка — это процесс соединения страниц одного сайта с помощью гиперссылок. Это не просто навигация для пользователей, но и мощный SEO-инструмент. Грамотная перелинковка помогает поисковым роботам лучше понимать структуру сайта, иерархию страниц и передавать &#34;ссылочный вес&#34; (авторитет) от более сильных страниц (например, главной) к более важным с точки зрения конверсии (например, странице подписки).</p>
+<h3 id="section-3-1">2.1. Фокус на Анкорах с Ключевыми Словосочетаниями</h3>
+<p>Анкорный текст (или просто &#34;анкор&#34;) — это видимый, кликабельный текст в гиперссылке. Он играет огромную роль, так как сообщает и пользователям, и поисковым системам<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Он играет огромную роль,так как сообщает и пользователям,и поисковым системам,о чем страница,на которую ведет ссылка." id="skTag-1990411963299758083" class="sk-source-tag" data-sk-source-id="1990411963299758083"></em>, о чем страница, на которую ведет ссылка. Использование общих анкоров типа &#34;нажмите здесь&#34; или &#34;подробнее&#34; является упущенной возможностью.</p>
+<p>Для VIP Drive анкоры должны включать целевые ключевые слова, которые соответствуют вашему SEO-плану и намерениям пользователей. Основываясь на предоставленной информации, ключевые фразы для анкоров могут быть следующими:</p>
+<ul>
+<li><strong>4500+ IPTV Каналов</strong><em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="4500+ IPTV Каналов" id="skTag-1990411362007470083" class="sk-source-tag" data-sk-source-id="1990411362007470083"></em></li>
+<li><strong>Медиатека СНГ</strong></li>
+<li><strong>Подключить VipDrive TV</strong></li>
+<li><strong>Бесплатный тест 24 часа</strong></li>
+<li>IPTV плейлист</li>
+<li>Смотреть ТВ онлайн</li>
+</ul>
+<h3 id="section-3-2">2.2. Рекомендации по перелинковке для VIP Drive</h3>
+<p>Создадим карту перелинковки, которая усилит ключевые страницы вашего сайта.</p>
+<table>
+<thead>
+<tr>
+<th>Страница-донор (Откуда ссылаемся)</th>
+<th>Анкорный текст (Текст ссылки)</th>
+<th>Страница-акцептор (Куда ссылаемся)</th>
+<th>Цель и комментарий</th>
+</tr>
+</thead>
+
+<tbody><tr>
+<td><strong>Главная страница</strong></td>
+<td>&#34;Смотрите <strong>4500+ IPTV Каналов</strong> и нашу <strong>Медиатеку СНГ</strong>&#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="&#34;Смотрите 4500+ IPTV Каналов и нашу Медиатеку СНГ&#34;" id="skTag-1990411361782673411" class="sk-source-tag" data-sk-source-id="1990411361782673411"></em></td>
+<td>Страница с полным списком каналов и медиатеки (например, <code>/channels</code>)</td>
+<td>Передача максимального веса с главной страницы на основной продукт. Укрепление релевантности страницы <code>/channels</code> по ключевым запросам.</td>
+</tr>
+<tr>
+<td><strong>Страница &#34;О нас&#34; / &#34;Преимущества&#34;</strong></td>
+<td>&#34;Готовы начать? <strong>Подключить VipDrive TV</strong> можно всего за 2$&#34;</td>
+<td>Страница подписки/цены (<code>/subscribe</code>)</td>
+<td>Направление &#34;теплого&#34; трафика, уже ознакомившегося с преимуществами сервиса, на страницу конверсии.</td>
+</tr>
+<tr>
+<td><strong>Блог / Новостной раздел</strong> (если есть)</td>
+<td>&#34;Оцените качество нашего сервиса — получите <strong>бесплатный тест на 24 часа</strong>&#34;</td>
+<td>Страница пробного периода (<code>/free-test</code>)</td>
+<td>Конвертация информационного трафика из блога в лиды. Анкор четко описывает предложение.</td>
+</tr>
+<tr>
+<td><strong>Подвал сайта (Footer)</strong></td>
+<td>&#34;Начать бесплатный тест 24 часа&#34;</td>
+<td>Страница пробного периода (<code>/free-test</code>)</td>
+<td>Обеспечение сквозной доступности CTA (призыва к действию) на всех страницах сайта. Улучшение навигации.</td>
+</tr>
+<tr>
+<td><strong>Страница FAQ (Часто задаваемые вопросы)</strong></td>
+<td>&#34;Полный список каналов доступен в нашем <strong>IPTV плейлисте</strong>&#34;</td>
+<td>Страница с каталогом каналов (<code>/channels</code>)</td>
+<td>Ответ на популярный вопрос пользователя и одновременное усиление страницы каталога.</td>
+</tr>
+
+</tbody></table>
+<div class="warning">
+<h4>Важное правило анкоров</h4>
+<p>Избегайте использования <strong>одинаковых анкоров</strong> на одной и той же странице для ссылок на <strong>разные страницы</strong>. Это сбивает с толку поисковые системы. Например, если на главной странице есть две ссылки с анкором &#34;Узнать больше&#34;, ведущие на страницу каналов и на страницу медиатеки, поисковик может неправильно распределить релевантность.</p>
+</div>
+<h3 id="section-3-3">2.3. Контекстуальные ссылки</h3>
+<p>Самые ценные внутренние ссылки — это те, которые органично вписаны в текст. Если у вас есть блог, используйте его для создания полезного контента и естественной перелинковки. Например, в статье &#34;Как смотреть футбол в 4K качестве&#34; можно разместить ссылку:</p>
 <blockquote>
-<p><strong>Disallow в robots.txt:</strong> &#34;Не заходи в эту комнату&#34;. Робот не будет сканировать страницу. Если на нее ведут внешние ссылки, она все еще может появиться в индексе с пометкой &#34;Проиндексировано, несмотря на запрет в файле robots.txt&#34;, но без описания.</p>
-<p><strong>Meta name=&#34;robots&#34; content=&#34;noindex&#34;:</strong> &#34;Можешь зайти, посмотреть, но не рассказывай об этой комнате никому&#34;. Робот сканирует страницу, видит директиву и не включает ее в поисковый индекс. Чтобы робот увидел этот тег, страница НЕ должна быть заблокирована в <code>robots.txt</code>. <a href="https://horoshop.ua/ru/blog/five-easy-seo-steps/" target="_blank">Это гарантированный способ исключить страницу из индекса</a>.</p>
-<p><strong>rel=&#34;canonical&#34;:</strong> &#34;Эта комната — копия другой, главной комнаты. Все почести отдавай ей&#34;. Робот сканирует обе страницы, понимает, что они дублируют друг друга, и передает весь &#34;авторитет&#34; (ссылочный вес) канонической странице. Это лучший способ для консолидации дублей.</p>
+<p>...для просмотра матчей в максимальном качестве, вы можете <a href="/subscribe">подключить VipDrive TV</a>, который включает в себя все основные спортивные каналы в HD и 4K...</p>
 </blockquote>
-<p><strong>Лучшая практика:</strong> Для страниц с параметрами (сортировки, фильтры), которые вы не хотите видеть в индексе, но по которым робот должен иметь возможность переходить, идеальной является связка <code>rel=&#34;canonical&#34;</code> и, в некоторых случаях, <code>meta noindex</code>. Файл <code>robots.txt</code> лучше всего подходит для блокировки целых разделов, которые <em>никогда</em> и ни при каких обстоятельствах не должны сканироваться (например, <code>/cart</code>, <code>/admin</code>).</p>
-<h2 id="section-step3">Шаг 3: Сохранение индексации ключевых страниц</h2>
-<p>После того как мы агрессивно заблокировали все ненужное, наступает не менее важный этап — убедиться, что мы случайно не заблокировали то, что приносит нам трафик и деньги. Неправильно составленное правило <code>Disallow</code> может выкосить из индекса весь сайт, что равносильно SEO-катастрофе.</p>
-<h3 id="section-pages-to-index">Какие страницы должны быть проиндексированы</h3>
-<p>Для любого интернет-магазина, и дропшиппинг-магазин не исключение, жизненно важна индексация следующих типов страниц:</p>
-<ul>
-<li><strong>Главная страница:</strong> &#34;Лицо&#34; вашего магазина.</li>
-<li><strong>Страницы товаров (<code>/products/</code>):</strong> Основные целевые страницы, которые привлекают трафик по конкретным товарным запросам.</li>
-<li><strong>Основные страницы коллекций (<code>/collections/</code>):</strong> Страницы категорий, которые привлекают трафик по более общим запросам (например, &#34;мужские футболки&#34;).</li>
-<li><strong>Информационные страницы:</strong> &#34;О нас&#34;, &#34;Доставка и оплата&#34;, &#34;Контакты&#34;.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Информационные страницы: &#34;О нас&#34;,&#34;Доставка и оплата&#34;,&#34;Контакты&#34;." id="skTag-1990403261166092288" class="sk-source-tag" data-sk-source-id="1990403261166092288"></em></li>
-<li><strong>Страницы блога и статьи (<code>/blogs/</code>):</strong> Мощный инструмент для контент-маркетинга и привлечения трафика по информационным запросам.</li>
-</ul>
-<h3 id="section-how-to-ensure-indexing">Как это обеспечить в robots.txt</h3>
-<p>Основное правило здесь — &#34;не навреди&#34;. В стандартной конфигурации Shopify все эти важные страницы открыты для индексации по умолчанию. Ваша задача — не сломать это своими пользовательскими правилами.</p>
+<p>Такие ссылки выглядят естественно и имеют высокий вес как для пользователей, так и для поисковых систем.</p>
+</section>
+<section>
+<h2 id="section-4">Часть 3. Проверка и Мониторинг: Гарантия правильной работы SEO</h2>
+<p>Внедрение технических изменений — это только половина дела. Особенно при работе с конструкторами сайтов, где у вас нет полного контроля над кодом, критически важно проверять, как поисковые системы видят и интерпретируют ваши настройки. Для VIP Drive это означает регулярный мониторинг канонических тегов.</p>
+<h3 id="section-4-1">3.1. Проверка в Браузере (Первичный контроль)</h3>
+<p>Это самый быстрый способ убедиться, что тег вообще присутствует на странице.</p>
 <ol>
-<li><strong>Проверяйте свои правила <code>Disallow</code>:</strong> Самая частая ошибка — слишком &#34;жадное&#34; правило. Например, директива <code>Disallow: /collections/</code> заблокирует <strong>все</strong> ваши коллекции. Правильно будет блокировать только страницы с параметрами, например, <code>Disallow: /*?sort_by=</code>. Звездочка (<code>*</code>) — мощный, но опасный символ, используйте его обдуманно.</li>
-<li><strong>Использование директивы <code>Allow</code>:</strong> Директива <code>Allow</code> используется для создания исключений. Например, если вы по какой-то причине решили заблокировать все блоги (<code>Disallow: /blogs/</code>), но хотите оставить открытым один конкретный блог, вы можете добавить правило <code>Allow: /blogs/news</code>. Однако для большинства магазинов на Shopify такая необходимость возникает крайне редко. <a href="https://www.okiktenko.com.ua/redaktirovanie-robots-txt-liquid-v-shopify-polnoe-rukovodstvo/" target="_blank">Проще и безопаснее составить точные правила Disallow, чем создавать сложные цепочки из Disallow и Allow</a>.</li>
-</ol>
-<div class="key-points">
-<p class="key-points-title">Практический совет:</p>
-<p>Вместо того чтобы добавлять директивы <code>Allow</code>, просто дважды и трижды перепроверьте свои правила <code>Disallow</code>. Перед сохранением файла <code>robots.txt.liquid</code> мысленно &#34;прогоните&#34; через него URL-адреса ваших ключевых страниц (главной, товара, коллекции) и убедитесь, что ни одно из ваших правил их не блокирует.</p>
-</div>
-<h2 id="section-step4">Шаг 4: Указание пути к карте сайта (Sitemap)</h2>
-<p>Если <code>robots.txt</code> говорит поисковым роботам, куда <em>не ходить</em>, то карта сайта (Sitemap) — это путеводитель, который показывает им, куда <em>нужно сходить</em>. Это XML-файл, содержащий список всех важных URL вашего сайта, которые вы хотите проиндексировать. Предоставление карты сайта значительно ускоряет и улучшает полноту индексации, особенно для новых сайтов или магазинов с большим количеством товаров.</p>
-<h3 id="section-sitemap-auto-generation">Автоматическая генерация Sitemap в Shopify</h3>
-<p>Одно из больших преимуществ Shopify — это автоматическая генерация и обновление файла <code>sitemap.xml</code>. Вам не нужно беспокоиться о его ручном создании. <a href="https://external.software/archives/58624" target="_blank">Shopify автоматически создает и поддерживает актуальность карты сайта по адресу <code>https://yourstore.com/sitemap.xml</code></a>. Этот файл включает в себя ссылки на все ваши:</p>
-<ul>
-<li>Товары</li>
-<li>Коллекции</li>
-<li>Страницы (например, &#34;О нас&#34;)</li>
-<li>Статьи блога</li>
-</ul>
-<p>Когда вы добавляете новый товар или статью, Shopify автоматически добавляет соответствующий URL в карту сайта.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Когда вы добавляете новый товар или статью,Shopify автоматически добавляет соответствующий URL в карту сайта." id="skTag-1990403449788899331" class="sk-source-tag" data-sk-source-id="1990403449788899331"></em></p>
-<h3 id="section-how-to-specify-sitemap">Как и где указать Sitemap в robots.txt</h3>
-<p>Хотя поисковые системы часто могут найти файл <code>sitemap.xml</code> самостоятельно, лучшей практикой является явное указание пути к нему в файле <code>robots.txt</code>. Это прямая и недвусмысленная подсказка для краулеров.</p>
-<p>Директива <code>Sitemap</code> добавляется в файл <code>robots.txt</code>, обычно в самом конце. Она не привязана к какому-либо конкретному <code>User-agent</code>.</p>
-<p>В файле <code>robots.txt.liquid</code> это делается следующим образом:</p>
-<pre><code># Указание пути к карте сайта
-Sitemap: https://yourstore.com/sitemap.xml
-</code></pre>
-<p>Не забудьте заменить <code>yourstore.com</code> на домен вашего магазина.</p>
-<p>Более продвинутый и надежный способ, использующий язык Liquid, выглядит так:</p>
-<pre><code># Динамическое указание пути к карте сайта
-Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
-</code></pre>
-<p>Этот код автоматически подставит полный и правильный URL к вашей карте сайта, что исключает ошибки. <a href="https://blog.skgroups.ru/nastrojka-fajla-robots-txt-i-karty-sajta-xml-dlja-shopify/" target="_blank">Хотя Shopify часто добавляет эту директиву по умолчанию, стоит убедиться в ее наличии в вашем файле robots.txt</a>, а также добавить карту сайта вручную в Google Search Console и Яндекс.Вебмастер для максимальной эффективности.</p>
-<h2 id="section-advanced">Продвинутая настройка: Защита от конкурентов для дропшиппинг-магазина</h2>
-<p>В высококонкурентной нише дропшиппинга информация — это все. Ваши конкуренты постоянно ищут успешные товары, анализируют ваши цены, источники трафика и SEO-стратегию. Многие из них используют для этого автоматизированные сервисы и SEO-инструменты, такие как Ahrefs, SEMrush, SimilarWeb и другие<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Многие из них используют для этого автоматизированные сервисы и SEO-инструменты,такие как Ahrefs,SEMrush,SimilarWeb и другие." id="skTag-1990403261146689536" class="sk-source-tag" data-sk-source-id="1990403261146689536"></em>. Файл <code>robots.txt</code> может стать вашим первым рубежом обороны от такого рода &#34;шпионажа&#34;.</p>
-<div class="small-float-wrapper">
-<!-- 图表占位：{Основные боты-анализаторы для блокировки} -->
-<div class="chart-wrapper" id="chart2"></div>
-<div class="data-source">Источник: <a href="https://www.guangsuan.com/ru/post/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%B5%D0%B4%D0%BE%D1%82%D0%B2%D1%80%D0%B0%D1%82%D0%B8%D1%82%D1%8C-%D0%BF%D1%80%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80-%D0%B2%D0%B0%D1%88%D0%B5%D0%B3%D0%BE-%D1%81%D0%B0/" target="_blank">Рекомендации по защите от скрейпинга</a></div>
-</div>
-<div class="clear-float"></div>
-<h3 id="section-competitor-problem">Проблема: Анализ конкурентами</h3>
-<p><a href="https://www.guangsuan.com/ru/post/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%B5%D0%B4%D0%BE%D1%82%D0%B2%D1%80%D0%B0%D1%82%D0%B8%D1%82%D1%8C-%D0%BF%D1%80%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80-%D0%B2%D0%B0%D1%88%D0%B5%D0%B3%D0%BE-%D1%81%D0%B0/" target="_blank">Более 60% продавцов Shopify используют инструменты для отслеживания стратегий конкурентов</a>. Эти инструменты отправляют на ваш сайт своих ботов (краулеров), которые сканируют все страницы, собирая данные о:</p>
-<ul>
-<li>Структуре сайта и внутреннем весе страниц.</li>
-<li>Ключевых словах, по которым вы ранжируетесь.</li>
-<li>Внешних ссылках, ведущих на ваш сайт.</li>
-<li>Самых популярных товарах и коллекциях.</li>
-</ul>
-<p>Хотя эти боты и представляют себя как &#34;хорошие&#34;, их деятельность может напрямую вредить вашему бизнесу, раскрывая вашу коммерческую стратегию.</p>
-<h3 id="section-competitor-solution">Решение: Блокировка ботов</h3>
-<p>К счастью, большинство авторитетных SEO-сервисов соблюдают правила, указанные в <code>robots.txt</code>. Вы можете добавить в свой файл специальные правила, запрещающие их ботам сканировать ваш сайт. Для этого нужно знать имена их <code>User-agent</code>.</p>
-<p>Вот пример директив для блокировки самых популярных аналитических ботов:</p>
-<pre><code># --- Продвинутая секция: Блокировка ботов-анализаторов ---
-
-# Блокировка бота Ahrefs
-User-agent: AhrefsBot
-Disallow: /
-
-# Блокировка бота SEMrush
-User-agent: SemrushBot
-Disallow: /
-
-# Блокировка бота Majestic
-User-agent: MJ12bot
-Disallow: /
-
-# Блокировка бота SimilarWeb
-User-agent: SimilarWeb
-Disallow: /
-</code></pre>
-<p>Добавив эти правила в свой <code>robots.txt.liquid</code>, вы значительно усложните конкурентам задачу по автоматизированному анализу вашего магазина. Это простой, но эффективный шаг для защиты ваших коммерческих данных.</p>
-<blockquote>
-<strong>Важное замечание:</strong> Это не 100% защита. Некоторые сервисы могут использовать другие методы сбора данных (например, через сторонние источники или маскируя своих ботов под обычных пользователей). Тем не менее, блокировка известных ботов — это необходимый минимум, который отсечет большинство &#34;любопытных&#34;.
-        </blockquote>
-<h2 id="section-final-template">Итоговый шаблон `robots.txt.liquid` и проверка на ошибки</h2>
-<p>Теперь, когда мы разобрали все компоненты, давайте соберем их в единый, готовый к использованию шаблон для вашего файла <code>robots.txt.liquid</code>. Этот шаблон включает как стандартный код Shopify, так и наши пользовательские улучшения.</p>
-<h3 id="section-full-template">Полный рекомендуемый шаблон для `robots.txt.liquid`</h3>
-<p>Скопируйте этот код и вставьте его в ваш файл <code>robots.txt.liquid</code>, который вы создали на Шаге 1.</p>
-<pre><code># =====================================================================
-# Shopify robots.txt.liquid для дропшиппинг-магазина
-# Версия: 2025.11
-# Цель: Управление краулингом, устранение дублей, защита трафика
-# =====================================================================
-
-# ---------------------------------------------------------------------
-# Секция 1: Правила по умолчанию от Shopify
-# Этот код использует Liquid для вставки стандартных правил Shopify.
-# Не удаляйте его, чтобы ваш файл оставался совместимым с обновлениями платформы.
-# ---------------------------------------------------------------------
-{%- for group in robots.default_groups -%}
-  {{- group.user_agent }}
-  {%- for rule in group.rules -%}
-    {{- rule }}
-  {%- endfor -%}
-  {%- if group.sitemap != blank -%}
-    {{- group.sitemap }}
-  {%- endif -%}
-{%- endfor -%}
-
-# =====================================================================
-# Секция 2: Пользовательские правила
-# Здесь мы добавляем наши собственные директивы.
-# =====================================================================
-
-User-agent: *
-
-# Блокировка страниц с параметрами сортировки, которые создают дубли.
-# Канонические теги справляются с этим, но это дополнительный уровень защиты.
-Disallow: /*?sort_by=
-
-# Блокировка страниц с параметрами фильтрации (если они не закрыты по умолчанию).
-# Например, для фильтров, использующих ?filter.price.gte=
-Disallow: /*?filter.
-
-# Блокировка URL, создаваемых внутренним поиском с параметром ?q=
-Disallow: /*?q=
-
-# Явный запрет на индексацию страниц внутреннего поиска (дублирует правило по умолчанию, но для надежности).
-Disallow: /search
-
-
-# =====================================================================
-# Секция 3: Продвинутая настройка - Блокировка ботов-анализаторов
-# Защищаем коммерческие данные от парсинга конкурентами.
-# =====================================================================
-
-User-agent: AhrefsBot
-Disallow: /
-
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: MJ12bot
-Disallow: /
-
-User-agent: SimilarWeb
-Disallow: /
-
-User-agent: DotBot
-Disallow: /
-
-# =====================================================================
-# Секция 4: Указание карты сайта
-# Убедимся, что путь к sitemap.xml точно указан.
-# Этот код динамически сгенерирует правильный URL.
-# =====================================================================
-Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
-</code></pre>
-<h3 id="section-how-to-check">Как проверить `robots.txt` на ошибки</h3>
-<p>После сохранения файла <code>robots.txt.liquid</code> крайне важно проверить, что он работает корректно и не блокирует ничего лишнего. Для этого есть два основных инструмента.</p>
-<ol>
-<li>
-<strong>Инструмент проверки файла robots.txt в Google Search Console:</strong>
-<ul>
-<li>Перейдите в ваш аккаунт <a href="https://search.google.com/search-console/" target="_blank">Google Search Console</a>.</li>
-<li>В старом интерфейсе был специальный инструмент для проверки. В новом интерфейсе вы можете использовать <strong>Инструмент проверки URL</strong>.</li>
-<li>Однако, более прямой способ — найти &#34;Инструмент проверки файла robots.txt&#34; в справке Google, который приведет вас на нужную страницу для вашего ресурса.</li>
-<li>В этом инструменте вы можете вставить код вашего файла и проверить его на синтаксические ошибки.</li>
-<li>Самое главное — вы можете протестировать, как Googlebot отреагирует на конкретные URL. Введите URL страницы товара и убедитесь, что она &#34;Разрешена&#34;. Затем введите URL страницы с фильтром (например, <code>/collections/all?sort_by=price-ascending</code>) и убедитесь, что она &#34;Заблокирована&#34;.</li>
-</ul>
+<li>Откройте в браузере &#34;дублирующую&#34; страницу, на которой вы установили канонический тег (например, <code>https://vipdrive.com/free-test</code>).</li>
+<li>Нажмите правой кнопкой мыши на любом свободном месте страницы и выберите &#34;Просмотр кода страницы&#34; (View Page Source) или используйте сочетание клавиш <code>Ctrl+U</code> (<code>Cmd+Option+U</code> на Mac).</li>
+<li>В открывшейся вкладке с HTML-кодом используйте поиск (<code>Ctrl+F</code>) и введите &#34;canonical&#34;.</li>
+<li><strong>Ожидаемый результат:</strong> Вы должны найти строку, похожую на эту, в пределах тега <code>&lt;head&gt;</code>:
+                    <pre><code>&lt;link rel=&#34;canonical&#34; href=&#34;https://vipdrive.com/subscribe&#34; /&gt;</code></pre>
 </li>
-<li>
-<strong>Анализ отчета &#34;Покрытие&#34; в Google Search Console:</strong>
-<ul>
-<li>Регулярно (раз в неделю) проверяйте отчет <strong>Покрытие</strong> (Coverage) в Search Console.</li>
-<li>Обращайте особое внимание на вкладки &#34;Ошибка&#34; и &#34;Исключено&#34;.</li>
-<li>Ищите ошибки типа <a href="https://www.seoant.com/how-to-fix-the-shopify-indexed-though-blocked-by-robots-txt-error/" target="_blank">&#34;Проиндексировано, несмотря на запрет в файле robots.txt&#34;</a>. Это означает, что страница заблокирована, но Google нашел на нее много внешних ссылок и все равно добавил в индекс. Решение — убрать блокировку в <code>robots.txt</code> и добавить мета-тег <code>noindex</code>.</li>
-<li>Также смотрите на страницы в разделе &#34;Заблокировано файлом robots.txt&#34;. Убедитесь, что там находятся только те страницы, которые вы действительно хотели заблокировать, а не важные страницы товаров или коллекций.</li>
+</ol>
+<p>Если вы нашли тег и URL в атрибуте <code>href</code> ведет на нужную основную страницу, первичная проверка пройдена.</p>
+<h3 id="section-4-2">3.2. Инструмент Проверки URL в Google Search Console (Окончательная проверка)</h3>
+<p>Google Search Console — это главный инструмент для понимания того, как Google видит ваш сайт. Его &#34;Инструмент проверки URL&#34; дает окончательный ответ, принята ли ваша директива <code>canonical</code>.</p>
+<ol>
+<li>Войдите в свой аккаунт <a href="https://search.google.com/search-console" target="_blank">Google Search Console</a>.</li>
+<li>В верхней строке поиска введите полный URL дублирующей страницы (например, <code>https://vipdrive.com/free-test?ref=test_campaign</code>) и нажмите Enter.</li>
+<li>Дождитесь, пока инструмент получит данные из индекса Google.</li>
+<li>Обратите внимание на раздел &#34;Индексирование страницы&#34;. Здесь вас интересуют два ключевых поля:
+                        <ul>
+<li><strong>Канонический URL, указанный пользователем (User-declared canonical):</strong> Здесь должен отображаться тот URL, который вы указали в теге <code>rel=&#34;canonical&#34;</code>.</li>
+<li><strong>Канонический URL, выбранный Google (Google-selected canonical):</strong> Это URL, который Google в итоге счел основным.</li>
 </ul>
 </li>
 </ol>
-<h2 id="section-conclusion">Заключение: `robots.txt` — это только начало</h2>
-<p>Мы прошли полный путь настройки файла <code>robots.txt</code> для вашего дропшиппинг-магазина на Shopify. Вы научились блокировать служебные страницы для экономии краулингового бюджета, применять директивы для борьбы с автоматически генерируемыми дублями, проверять доступность ключевых страниц, указывать путь к карте сайта и даже защищаться от анализа конкурентов. Грамотно настроенный <code>robots.txt</code> — это прочный фундамент вашего технического SEO.</p>
-<p>Однако важно понимать, что <code>robots.txt</code> — это мощный, но не единственный инструмент в арсенале SEO-специалиста. Это лишь первый шаг на пути к идеальной технической оптимизации. Для полноценной борьбы с дублями и улучшения видимости сайта необходимо комплексно подходить к проблеме.</p>
-<div class="key-points">
-<p class="key-points-title">Следующие шаги для вашего магазина:</p>
-<ul>
-<li><strong>Контроль канонических тегов:</strong> Убедитесь, что <code>rel=&#34;canonical&#34;</code> правильно настроен на всех страницах, особенно на страницах товаров и пагинации. Проверьте код темы, чтобы внутренние ссылки вели на канонические URL.</li>
-<li><strong>Использование `noindex`:</strong> Для страниц, которые не должны быть в индексе, но должны сканироваться (например, для передачи ссылочного веса), используйте мета-тег <code>noindex</code>. <a href="https://www.shopify.com/blog/noindex-shopify-page" target="_blank">Shopify позволяет делать это через метаполя</a>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Использование `noindex`: Для страниц, которые не должны быть в индексе, но должны сканироваться (например, для передачи ссылочного веса), используйте мета-тег noindex. Shopify позволяет делать это через метаполя." id="skTag-1990403449823768580" class="sk-source-tag" data-sk-source-id="1990403449823768580"></em></li>
-<li><strong>Оптимизация скорости загрузки:</strong> Скорость — ключевой фактор ранжирования. <a href="https://blog.skgroups.ru/analiz-skorosti-zagruzki-sajta-shopify-vlijanie-na-seo/" target="_blank">Оптимизируйте изображения, используйте &#34;ленивую&#34; загрузку (lazy loading) и выбирайте быстрые темы</a>.</li>
-<li><strong>Структурированные данные (Schema Markup):</strong> Внедряйте разметку для товаров, отзывов, &#34;хлебных крошек&#34;. Это улучшает представление вашего сайта в поисковой выдаче (сниппеты) и помогает поисковикам лучше понять ваш контент.</li>
-<li><strong>Качественный контент:</strong> Особенно в дропшиппинге, где описания товаров часто одинаковы, инвестируйте в создание уникальных описаний для самых важных товаров, пишите полезные статьи в блог и создавайте качественный контент, который выделит вас на фоне конкурентов.</li>
-</ul>
+<div class="tip">
+<h4>Идеальный результат</h4>
+<p>В идеале, значения в полях &#34;User-declared canonical&#34; и &#34;Google-selected canonical&#34; должны совпадать. Это означает, что Google &#34;согласился&#34; с вашим выбором и будет консолидировать весь авторитет на указанной вами странице. Если Google выбрал другой URL, это может сигнализировать о проблемах: например, контент на страницах слишком разный, или на каноническую страницу ведут некорректные сигналы (например, редиректы на другую страницу).</p>
 </div>
-<p>Техническое SEO — это непрерывный процесс. Регулярно проверяйте отчеты в Google Search Console, следите за изменениями в алгоритмах поисковых систем и адаптируйте свою стратегию<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Регулярно проверяйте отчеты в Google Search Console,следите за изменениями в алгоритмах поисковых систем и адаптируйте свою стратегию." id="skTag-1990403261146689536" class="sk-source-tag" data-sk-source-id="1990403261146689536"></em>. Правильная настройка <code>robots.txt</code> — это ваша отправная точка, которая обеспечит чистоту индексации и позволит поисковым системам увидеть ваш магазин в лучшем свете.</p>
+<p>Регулярная проверка ключевых дублирующихся страниц в Google Search Console поможет вам быть уверенным, что ваша SEO-стратегия работает так, как задумано.</p>
+</section>
+<section>
+<h2 id="section-5">Часть 4. Расширенная SEO-стратегия для VIP Drive</h2>
+<p>Помимо решения проблемы дублирования, для успешного продвижения IPTV-сервиса необходимо выстроить комплексную SEO-стратегию. Используя доступные материалы, можно сформулировать следующие рекомендации.</p>
+<h3 id="section-5-1">4.1. Оптимизация контента и ключевые слова</h3>
+<p>Контент является основой SEO. Для VIP Drive это означает создание и оптимизацию страниц, которые отвечают на запросы потенциальных клиентов.</p>
+<ul>
+<li><strong>Исследование ключевых слов:</strong> Необходимо собрать семантическое ядро. Помимо очевидных запросов (&#34;IPTV сервис&#34;, &#34;купить IPTV плейлист&#34;), стоит сосредоточиться на &#34;длинных&#34; запросах (long-tail keywords), например: &#34;смотреть спортивные каналы онлайн в HD&#34;, &#34;IPTV с архивом передач&#34;, &#34;российские каналы через интернет за границей&#34;.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Помимо очевидных запросов (&#34;IPTV сервис&#34;,&#34;купить IPTV плейлист&#34;),стоит сосредоточиться на &#34;длинных&#34; запросах (long-tail keywords),например: &#34;смотреть спортивные каналы онлайн в HD&#34;,&#34;IPTV с архивом передач&#34;,&#34;российские каналы через интернет за границей&#34;." id="skTag-1990411647032586249" class="sk-source-tag" data-sk-source-id="1990411647032586249"></em></li>
+<li><strong>Контент-стратегия:</strong>
+<ul>
+<li><strong>Страницы каналов/жанров:</strong> Создайте отдельные страницы для популярных категорий (Спорт, Кино, Детские, Новостные). Оптимизируйте их под соответствующие запросы.</li>
+<li><strong>Блог:</strong> Ведение блога — отличный способ привлечь информационный трафик. Темы могут быть разными: &#34;Как настроить IPTV на Smart TV Samsung&#34;, &#34;Лучшие фильмы месяца в нашей медиатеке&#34;, &#34;Обзор спортивных событий недели&#34;. В статьях размещайте контекстуальные ссылки на страницу подписки.</li>
+<li><strong>FAQ (Часто задаваемые вопросы):</strong> Создайте подробный раздел, отвечающий на вопросы пользователей: &#34;Какая скорость интернета нужна для IPTV?&#34;, &#34;На каких устройствах работает VIP Drive?&#34;, &#34;Как оплатить подписку?&#34;. Это не только помогает пользователям, но и является источником контента для SEO <em data-ref-id="1990412811264819203" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819203" data-sk-source-text="FAQ (Часто задаваемые вопросы): Создайте подробный раздел, отвечающий на вопросы пользователей: &amp;#34;Какая скорость интернета нужна для IPTV?&amp;#34;, &amp;#34;На каких устройствах работает VIP Drive?&amp;#34;, &amp;#34;Как оплатить подписку?&amp;#34;. Это не только помогает пользователям, но и является источником контента для SEO"></em>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="section-5-2">4.2. Техническая оптимизация на uKit</h3>
+<p>Несмотря на ограничения, uKit предоставляет базовые, но важные инструменты для технической оптимизации, которые необходимо использовать.</p>
+<ul>
+<li><strong>Скорость загрузки:</strong> uKit автоматически оптимизирует изображения и предлагает опции, такие как &#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Скорость загрузки: uKit автоматически оптимизирует изображения и предлагает опции,такие как &#34;ленивая загрузка&#34; (lazy load) и отложенная загрузка стилей ." id="skTag-1990411488658673664" class="sk-source-tag" data-sk-source-id="1990411488658673664"></em>;ленивая загрузка&#34; (lazy load) и отложенная загрузка стилей <em data-ref-id="1990412811264819204" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819204" data-sk-source-text="Скорость загрузки: uKit автоматически оптимизирует изображения и предлагает опции, такие как &amp;#34;ленивая загрузка&amp;#34; (lazy load) и отложенная загрузка стилей"></em>. Убедитесь, что эти опции включены. Скорость сайта — важный фактор ранжирования <em data-ref-id="1990412811264819205" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819205" data-sk-source-text=". Убедитесь, что эти опции включены. Скорость сайта — важный фактор ранжирования"></em>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Скорость сайта — важный фактор ранжирования ." id="skTag-1990411832559742977" class="sk-source-tag" data-sk-source-id="1990411832559742977"></em></li>
+<li><strong>Мобильная адаптация:</strong> Сайты на uKit по умолчанию адаптивны<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Мобильная адаптация: Сайты на uKit по умолчанию адаптивны." id="skTag-1990411758802272260" class="sk-source-tag" data-sk-source-id="1990411758802272260"></em>. Проверьте, как ваш сайт выглядит на мобильных устройствах, и при необходимости скройте или измените некоторые блоки для лучшего отображения <em data-ref-id="1990412811264819206" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819206" data-sk-source-text="Мобильная адаптация: Сайты на uKit по умолчанию адаптивны. Проверьте, как ваш сайт выглядит на мобильных устройствах, и при необходимости скройте или измените некоторые блоки для лучшего отображения" class="sk-source-tag"></em>.</li>
+<li><strong>Мета-теги:</strong> uKit позволяет настраивать Title, Description для каждой страницы. Заполняйте их уникальными, релевантными текстами, включающими ключевые слова<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Заполняйте их уникальными,релевантными текстами,включающими ключевые слова." id="skTag-1990411647314112514" class="sk-source-tag" data-sk-source-id="1990411647314112514"></em>. Это напрямую влияет на вид вашего сайта в поисковой выдаче (сниппет).<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Это напрямую влияет на вид вашего сайта в поисковой выдаче (сниппет)." id="skTag-1990411832563937283" class="sk-source-tag" data-sk-source-id="1990411832563937283"></em></li>
+<li><strong>Микроразметка Schema.org:</strong> Хотя uKit может не поддерживать сложную микроразметку &#34;из коробки&#34;, стоит изучить возможность ее добавления через HTML-код на тарифе &#34;Про&#34;. Для видеоконтента можно использовать тип <code>VideoObject</code>, а для сервиса в целом — <code>Service</code> или <code>Product</code>. Это помогает поисковикам лучше понимать контент и формировать расширенные сниппеты.</li>
+</ul>
+<h3 id="section-5-3">4.3. Локальное SEO и геотаргетинг</h3>
+<p>IPTV — это глобальная услуга, но многие пользователи ищут ее с привязкой к своему региону или языку (&#34;IPTV каналы Россия&#34;, &#34;українське телебачення онлайн&#34;).</p>
+<ul>
+<li><strong>Геозависимые запросы:</strong> Создавайте контент, ориентированный на конкретные страны и регионы, особенно для русскоязычной аудитории за рубежом (Германия, США, Канада и т.д.).</li>
+<li><strong>Многоязычность:</strong> uKit предлагает механизм создания многоязычных сайтов путем копирования основного сайта и его перевода <em data-ref-id="1990412811264819207" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819207" data-sk-source-text="Многоязычность: uKit предлагает механизм создания многоязычных сайтов путем копирования основного сайта и его перевода"></em>. Для каждой языковой версии (например, <code>en.vipdrive.com</code>) необходимо проводить отдельную SEO-оптимизацию с подбором ключевых слов на соответствующем языке и настройкой тегов <code>hreflang</code> для указания связи между версиями.</li>
+</ul>
+<h3 id="section-5-4">4.4. Юридические аспекты и доверие</h3>
+<p>Рынок IPTV часто ассоциируется с пиратством, поэтому для легального сервиса, как VIP Drive, крайне важно выстроить доверие у пользователей и поисковых систем.</p>
+<ul>
+<li><strong>Прозрачность:</strong> На сайте должна быть четко изложена информация о пользовательском соглашении, политике конфиденциальности и условиях предоставления услуг.</li>
+<li><strong>Авторские права:</strong> Убедитесь, что у вас есть все необходимые лицензии на транслируемый контент. Хотя это напрямую не является фактором ранжирования, поисковые системы борются с пиратством <em data-ref-id="1990412811264819208" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819208" data-sk-source-text="Авторские права: Убедитесь, что у вас есть все необходимые лицензии на транслируемый контент. Хотя это напрямую не является фактором ранжирования, поисковые системы борются с пиратством"></em>, и сайты, вызывающие подозрения, могут быть пессимизированы.</li>
+<li><strong>Отзывы и социальные доказательства:</strong> Размещайте реальные отзывы клиентов. Это повышает доверие и улучшает поведенческие факторы.</li>
+</ul>
+</section>
+<section>
+<h2 id="section-6">Заключение: Авторитет и Фокус для Роста VIP Drive</h2>
+<p>Поисковая оптимизация для IPTV-сервиса, такого как VIP Drive, — это не разовое действие, а непрерывный процесс. Ключ к успеху лежит в решении фундаментальных технических проблем и построении долгосрочной контент-стратегии.</p>
+<p><strong>Правильно настроенные Canonical Tags</strong> — это ваш главный инструмент для борьбы с дублированием контента. Они сфокусируют весь SEO-вес и трафик на ваших главных конверсионных страницах, таких как <a href="https://vipdrive.com/subscribe" target="_blank">страница подписки</a>, и не дадут поисковым системам запутаться в технических дублях.</p>
+<p><strong>Грамотная внутренняя перелинковка</strong> с использованием целевых анкоров, таких как &#34;4500+ IPTV Каналов&#34; и &#34;Медиатека СНГ&#34;, укрепит авторитет вашего сайта по этим ключевым запросам, поможет пользователям и поисковым роботам легко находить самый важный контент.</p>
+<p>Даже с учетом ограничений платформы uKit, у вас есть все возможности для построения эффективной SEO-стратегии. Начните с обращения в службу поддержки для решения вопроса с каноническими тегами, используйте все встроенные инструменты оптимизации и планомерно работайте над качеством и релевантностью вашего контента. Такой комплексный подход позволит VIP Drive не только занять высокие позиции в поисковой выдаче, но и превратить посетителей в лояльных подписчиков.</p>
+</section>
+<footer>
+<p>© 2025. Данный аналитический материал подготовлен на основе предоставленных данных и общедоступной информации. Все ссылки на внешние ресурсы приведены в ознакомительных целях.</p>
+</footer>
 <div class="reference-container">
 			<div class="reference-section">
 				<h3 class="reference-title">Reference</h3>
@@ -689,11 +517,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[1]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Редактирование robots.txt.liquid в Shopify - Олег Киктенко</span>
+								<span class="reference-text">VIP DRIVE - 4500+ каналов IPTV в Full HD и UHD качестве с ...</span>
 									
 							</div>
-							<a href="https://www.okiktenko.com.ua/redaktirovanie-robots-txt-liquid-v-shopify-polnoe-rukovodstvo/" class="reference-link" target="_blank">
-								https://www.okiktenko.com.ua/redaktirovanie-robots-txt-liquid-v-shopify-polnoe-rukovodstvo/
+							<a href="https://vip-drive.net/" class="reference-link" target="_blank">
+								https://vip-drive.net/
 							</a>
 						</div>
 					</div>
@@ -702,11 +530,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[2]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">10+ смертоносных ошибок владельцев магазинов Shopify</span>
+								<span class="reference-text">Программа для создания сайтов</span>
 									
 							</div>
-							<a href="https://ecommercefastlane.com/ru/%D1%81%D0%BC%D0%B5%D1%80%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-%D0%B2-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%D0%B5-shopify-%D0%B2%D0%BB%D0%B0%D0%B4%D0%B5%D0%BB%D1%8C%D1%86%D1%8B-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%D0%BE%D0%B2/" class="reference-link" target="_blank">
-								https://ecommercefastlane.com/ru/%D1%81%D0%BC%D0%B5%D1%80%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B8-%D0%B2-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%D0%B5-shopify-%D0%B2%D0%BB%D0%B0%D0%B4%D0%B5%D0%BB%D1%8C%D1%86%D1%8B-%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%D0%BE%D0%B2/
+							<a href="https://ukit.com/lp/ru/programma-dlya-sozdaniya-saytov/" class="reference-link" target="_blank">
+								https://ukit.com/lp/ru/programma-dlya-sozdaniya-saytov/
 							</a>
 						</div>
 					</div>
@@ -715,11 +543,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[3]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Как ранжировать ваш Shopify-сайт: руководство по SEO ...</span>
+								<span class="reference-text">Маркетинг в IPTV/OTT-бизнесе: лишние расходы или ...</span>
 									
 							</div>
-							<a href="https://five.media/ru/blog/how-to-make-your-shopify-site-rank-seo-shopify-guide/" class="reference-link" target="_blank">
-								https://five.media/ru/blog/how-to-make-your-shopify-site-rank-seo-shopify-guide/
+							<a href="https://www.infomir.eu/rus/blog/articles/60-marketing-iptv-industry-needless-spending/" class="reference-link" target="_blank">
+								https://www.infomir.eu/rus/blog/articles/60-marketing-iptv-industry-needless-spending/
 							</a>
 						</div>
 					</div>
@@ -728,11 +556,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[4]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Инструменты автоматизации маркетинга</span>
+								<span class="reference-text">uKit - лучший конструктор сайтов для владельцев ...</span>
 									
 							</div>
-							<a href="https://www.shopify.com/by/marketing-automation-tools" class="reference-link" target="_blank">
-								https://www.shopify.com/by/marketing-automation-tools
+							<a href="https://wpnew.ru/blog/ukit" class="reference-link" target="_blank">
+								https://wpnew.ru/blog/ukit
 							</a>
 						</div>
 					</div>
@@ -741,11 +569,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[5]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Shopify Tutorial - Modify Your Robots.txt file</span>
+								<span class="reference-text">Tilda или uKit | Что лучше выбрать - Тильда или Юкит?</span>
 									
 							</div>
-							<a href="https://www.youtube.com/watch?v=k5rNFuO6xmI" class="reference-link" target="_blank">
-								https://www.youtube.com/watch?v=k5rNFuO6xmI
+							<a href="https://uguide.ru/tilda-ili-ukit-chto-luchshe" class="reference-link" target="_blank">
+								https://uguide.ru/tilda-ili-ukit-chto-luchshe
 							</a>
 						</div>
 					</div>
@@ -754,11 +582,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[6]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Это про сайт Shopify и Google Search Console: Почему ...</span>
+								<span class="reference-text">Как провести технический аудит сайта: чек-лист от SEO ...</span>
 									
 							</div>
-							<a href="https://www.reddit.com/r/TechSEO/comments/x6ahb5/this_is_about_shopify_website_and_google_search/?tl=ru" class="reference-link" target="_blank">
-								https://www.reddit.com/r/TechSEO/comments/x6ahb5/this_is_about_shopify_website_and_google_search/?tl=ru
+							<a href="https://molinos.ru/about/blog/kak-provesti-tehnicheskiy-audit-sayta-chek-list-ot-seo-spetsialista" class="reference-link" target="_blank">
+								https://molinos.ru/about/blog/kak-provesti-tehnicheskiy-audit-sayta-chek-list-ot-seo-spetsialista
 							</a>
 						</div>
 					</div>
@@ -767,11 +595,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[7]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Как предотвратить просмотр вашего сайта Shopify ...</span>
+								<span class="reference-text">Implementing IPTV SEO: Increase the Visibility of Your ...</span>
 									
 							</div>
-							<a href="https://www.guangsuan.com/ru/post/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%B5%D0%B4%D0%BE%D1%82%D0%B2%D1%80%D0%B0%D1%82%D0%B8%D1%82%D1%8C-%D0%BF%D1%80%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80-%D0%B2%D0%B0%D1%88%D0%B5%D0%B3%D0%BE-%D1%81%D0%B0/" class="reference-link" target="_blank">
-								https://www.guangsuan.com/ru/post/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%B5%D0%B4%D0%BE%D1%82%D0%B2%D1%80%D0%B0%D1%82%D0%B8%D1%82%D1%8C-%D0%BF%D1%80%D0%BE%D1%81%D0%BC%D0%BE%D1%82%D1%80-%D0%B2%D0%B0%D1%88%D0%B5%D0%B3%D0%BE-%D1%81%D0%B0/
+							<a href="https://www.digipixinc.com/technology/implementing-iptv-seo-increase-the-visibility-of-your-streaming-website/" class="reference-link" target="_blank">
+								https://www.digipixinc.com/technology/implementing-iptv-seo-increase-the-visibility-of-your-streaming-website/
 							</a>
 						</div>
 					</div>
@@ -780,11 +608,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[8]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">noindex или canonical URL товаров Shopify : r/SEO</span>
+								<span class="reference-text">Настройки оптимизации загрузки сайта</span>
 									
 							</div>
-							<a href="https://www.reddit.com/r/SEO/comments/1ggo9fq/shopify_seo_opinion_noindex_or_canonical_shopify/?tl=ru" class="reference-link" target="_blank">
-								https://www.reddit.com/r/SEO/comments/1ggo9fq/shopify_seo_opinion_noindex_or_canonical_shopify/?tl=ru
+							<a href="https://ukit.com/ru/help/image-optimization" class="reference-link" target="_blank">
+								https://ukit.com/ru/help/image-optimization
 							</a>
 						</div>
 					</div>
@@ -793,11 +621,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[9]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Shopify URL structure, limitations, and SEO</span>
+								<span class="reference-text">Скорость загрузки сайта: почему она важна для SEO?</span>
 									
 							</div>
-							<a href="https://tiny-img.com/blog/shopify-url-structure/" class="reference-link" target="_blank">
-								https://tiny-img.com/blog/shopify-url-structure/
+							<a href="https://optimism.ru/blog/skorost-zagruzki-sajta-pochemu-ona-vazhna-dlya-seo/" class="reference-link" target="_blank">
+								https://optimism.ru/blog/skorost-zagruzki-sajta-pochemu-ona-vazhna-dlya-seo/
 							</a>
 						</div>
 					</div>
@@ -806,11 +634,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[10]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">How to prevent filter tags from appearing in Google search ...</span>
+								<span class="reference-text">UKit Oтзывы 2025 – Выглядит неплохо, но в чем подвох?</span>
 									
 							</div>
-							<a href="https://community.shopify.com/t/how-to-prevent-filter-tags-from-appearing-in-google-search-results-dawn-theme/379351" class="reference-link" target="_blank">
-								https://community.shopify.com/t/how-to-prevent-filter-tags-from-appearing-in-google-search-results-dawn-theme/379351
+							<a href="https://www.websiteplanet.com/ru/website-builders/ukit/" class="reference-link" target="_blank">
+								https://www.websiteplanet.com/ru/website-builders/ukit/
 							</a>
 						</div>
 					</div>
@@ -819,11 +647,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[11]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Устранение неполадок Shopify и синхронизация с ...</span>
+								<span class="reference-text">SEO-продвижение сайтов, созданных в uKit</span>
 									
 							</div>
-							<a href="https://learn.microsoft.com/ru-ru/dynamics365/business-central/shopify/troubleshoot" class="reference-link" target="_blank">
-								https://learn.microsoft.com/ru-ru/dynamics365/business-central/shopify/troubleshoot
+							<a href="https://blog-ru.ukit.com/business/seo-2019" class="reference-link" target="_blank">
+								https://blog-ru.ukit.com/business/seo-2019
 							</a>
 						</div>
 					</div>
@@ -832,11 +660,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[12]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Какие SEO-приложения для Shopify действительно ...</span>
+								<span class="reference-text">Скорость загрузки сайта / Хабр</span>
 									
 							</div>
-							<a href="https://www.reddit.com/r/shopify/comments/1nhf33d/which_shopify_seo_apps_actually_work/?tl=ru" class="reference-link" target="_blank">
-								https://www.reddit.com/r/shopify/comments/1nhf33d/which_shopify_seo_apps_actually_work/?tl=ru
+							<a href="https://habr.com/ru/articles/835660/" class="reference-link" target="_blank">
+								https://habr.com/ru/articles/835660/
 							</a>
 						</div>
 					</div>
@@ -845,11 +673,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[13]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">How to Noindex Collection (Product) Tag Pages in Shopify for ...</span>
+								<span class="reference-text">Обзор uKit - конструктора сайтов для малого бизнеса</span>
 									
 							</div>
-							<a href="https://www.youtube.com/watch?v=zknb2d1cfZQ" class="reference-link" target="_blank">
-								https://www.youtube.com/watch?v=zknb2d1cfZQ
+							<a href="https://vysokoff.ru/seo/seo-sovety/ukit-konstruktor.html" class="reference-link" target="_blank">
+								https://vysokoff.ru/seo/seo-sovety/ukit-konstruktor.html
 							</a>
 						</div>
 					</div>
@@ -858,11 +686,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[14]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Настройка файла robots.txt и карты сайта XML для Shopify</span>
+								<span class="reference-text">Обзор конструктора сайтов uKit (Юкит)</span>
 									
 							</div>
-							<a href="https://blog.skgroups.ru/nastrojka-fajla-robots-txt-i-karty-sajta-xml-dlja-shopify/" class="reference-link" target="_blank">
-								https://blog.skgroups.ru/nastrojka-fajla-robots-txt-i-karty-sajta-xml-dlja-shopify/
+							<a href="https://superbwebsitebuilders.com/ru/obzor-konstruktora-sajtov-ukit/" class="reference-link" target="_blank">
+								https://superbwebsitebuilders.com/ru/obzor-konstruktora-sajtov-ukit/
 							</a>
 						</div>
 					</div>
@@ -871,11 +699,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[15]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Editing robots.txt.liquid</span>
+								<span class="reference-text">Часто задаваемые вопросы - Ответы на ваши вопросы и ...</span>
 									
 							</div>
-							<a href="https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt" class="reference-link" target="_blank">
-								https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt
+							<a href="https://vipdriveinfo.net/faq" class="reference-link" target="_blank">
+								https://vipdriveinfo.net/faq
 							</a>
 						</div>
 					</div>
@@ -884,11 +712,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[16]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">How to Fix Shopify Duplicate Content</span>
+								<span class="reference-text">Как редактировать мобильную версию сайта?</span>
 									
 							</div>
-							<a href="https://gofishdigital.com/blog/how-to-fix-shopify-duplicate-content/" class="reference-link" target="_blank">
-								https://gofishdigital.com/blog/how-to-fix-shopify-duplicate-content/
+							<a href="https://ukit.com/ru/help/mobile-version" class="reference-link" target="_blank">
+								https://ukit.com/ru/help/mobile-version
 							</a>
 						</div>
 					</div>
@@ -897,11 +725,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[17]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Как исправить Shopify Дублированный контент</span>
+								<span class="reference-text">Как создать сайт на нескольких языках?</span>
 									
 							</div>
-							<a href="https://ecommerce-platforms.com/ru/articles/how-to-fix-shopify-duplicate-content" class="reference-link" target="_blank">
-								https://ecommerce-platforms.com/ru/articles/how-to-fix-shopify-duplicate-content
+							<a href="https://ukit.com/ru/help/kak-sozdat-multiyazychnyj-sajt" class="reference-link" target="_blank">
+								https://ukit.com/ru/help/kak-sozdat-multiyazychnyj-sajt
 							</a>
 						</div>
 					</div>
@@ -910,11 +738,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[18]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Полное руководство по SEO Shopify. Лучшие практики</span>
+								<span class="reference-text">Пиратские сайты и защита авторского права в России</span>
 									
 							</div>
-							<a href="https://indeedseo.com/ru/blog/the-ultimate-shopify-seo-guide-best-practices/" class="reference-link" target="_blank">
-								https://indeedseo.com/ru/blog/the-ultimate-shopify-seo-guide-best-practices/
+							<a href="https://www.tadviser.ru/index.php/%D0%A1%D1%82%D0%B0%D1%82%D1%8C%D1%8F:%D0%9F%D0%B8%D1%80%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B5_%D1%81%D0%B0%D0%B9%D1%82%D1%8B_%D0%B8_%D0%B7%D0%B0%D1%89%D0%B8%D1%82%D0%B0_%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D0%BF%D1%80%D0%B0%D0%B2%D0%B0_%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8" class="reference-link" target="_blank">
+								https://www.tadviser.ru/index.php/%D0%A1%D1%82%D0%B0%D1%82%D1%8C%D1%8F:%D0%9F%D0%B8%D1%80%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B5_%D1%81%D0%B0%D0%B9%D1%82%D1%8B_%D0%B8_%D0%B7%D0%B0%D1%89%D0%B8%D1%82%D0%B0_%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D0%BF%D1%80%D0%B0%D0%B2%D0%B0_%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8
 							</a>
 						</div>
 					</div>
@@ -923,102 +751,11 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 						<span class="reference-number">[19]</span>
 						<div class="reference-content">
 							<div class="reference-text-container">
-								<span class="reference-text">Shopify Robots.txt Guide! (Our Copy/Paste Template for 2025)</span>
+								<span class="reference-text">uKit — Конструктор сайтов для бизнеса.</span>
 									
 							</div>
-							<a href="https://goldenweb.net/shopify-seo/robots-txt/" class="reference-link" target="_blank">
-								https://goldenweb.net/shopify-seo/robots-txt/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[20]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Как добавить SEO на сайт Shopify: Полное руководство</span>
-									
-							</div>
-							<a href="https://external.software/archives/58624" class="reference-link" target="_blank">
-								https://external.software/archives/58624
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[21]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">How to fix the “Shopify indexed though blocked by robots. ...</span>
-									
-							</div>
-							<a href="https://www.seoant.com/how-to-fix-the-shopify-indexed-though-blocked-by-robots-txt-error/" class="reference-link" target="_blank">
-								https://www.seoant.com/how-to-fix-the-shopify-indexed-though-blocked-by-robots-txt-error/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[22]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Ошибки в robots.txt, которые могут убить ваш трафик</span>
-									
-							</div>
-							<a href="https://www.rush-analytics.ru/blog/oshibki-v-robots" class="reference-link" target="_blank">
-								https://www.rush-analytics.ru/blog/oshibki-v-robots
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[23]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">How To Noindex a Shopify Page With Metafields (2025)</span>
-									
-							</div>
-							<a href="https://www.shopify.com/blog/noindex-shopify-page" class="reference-link" target="_blank">
-								https://www.shopify.com/blog/noindex-shopify-page
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[24]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">5 простых шагов SEO для интернет-магазина на ...</span>
-									
-							</div>
-							<a href="https://horoshop.ua/ru/blog/five-easy-seo-steps/" class="reference-link" target="_blank">
-								https://horoshop.ua/ru/blog/five-easy-seo-steps/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[25]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Fix Shopify Robots.txt Errors: Step-by-Step Guide</span>
-									
-							</div>
-							<a href="https://scaleshopify.com/2025/02/15/fix-shopify-robotstxt-errors-step-by-step-guide/" class="reference-link" target="_blank">
-								https://scaleshopify.com/2025/02/15/fix-shopify-robotstxt-errors-step-by-step-guide/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[26]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Анализ скорости загрузки сайта Shopify: Влияние на SEO</span>
-									
-							</div>
-							<a href="https://blog.skgroups.ru/analiz-skorosti-zagruzki-sajta-shopify-vlijanie-na-seo/" class="reference-link" target="_blank">
-								https://blog.skgroups.ru/analiz-skorosti-zagruzki-sajta-shopify-vlijanie-na-seo/
+							<a href="https://ukit.com/ru" class="reference-link" target="_blank">
+								https://ukit.com/ru
 							</a>
 						</div>
 					</div>
@@ -1026,106 +763,5 @@ Sitemap: {{ &#34;sitemap.xml&#34; | shopify_asset_url | prepend: shop.url }}
 				</div>
 			</div>
 		</div></div>
-<script>
-        var chartDom1 = document.getElementById('chart1');
-        var myChart1 = echarts.init(chartDom1, 'macarons');
-        var option1;
-
-        option1 = {
-            title: {
-                text: 'Наиболее частые критические ошибки в robots.txt',
-                subtext: 'По данным исследования Ahrefs для топ-10,000 сайтов',
-                left: 'center'
-            },
-            tooltip: {
-                trigger: 'item',
-                formatter: '{a} <br/>{b}: {c}%'
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                top: '15%'
-            },
-            series: [
-                {
-                    name: 'Тип ошибки',
-                    type: 'pie',
-                    radius: '50%',
-                    center: ['50%', '60%'],
-                    data: [
-                        { value: 47, name: 'Неправильное использование Disallow' },
-                        { value: 31, name: 'Блокировка CSS/JS файлов' },
-                        { value: 15, name: 'Отсутствие Sitemap' },
-                        { value: 7, name: 'Прочие синтаксические ошибки' }
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }
-            ]
-        };
-
-        option1 && myChart1.setOption(option1);
-
-        var chartDom2 = document.getElementById('chart2');
-        var myChart2 = echarts.init(chartDom2, 'macarons');
-        var option2;
-
-        option2 = {
-            title: {
-                text: 'Боты для блокировки',
-                left: 'center',
-                textStyle: {
-                    fontSize: 14
-                }
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow'
-                }
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'value',
-                boundaryGap: [0, 0.01],
-                axisLabel: {
-                    fontSize: 9
-                }
-            },
-            yAxis: {
-                type: 'category',
-                data: ['AhrefsBot', 'SemrushBot', 'MJ12bot'],
-                axisLabel: {
-                    fontSize: 10
-                }
-            },
-            series: [
-                {
-                    name: 'Приоритет блокировки',
-                    type: 'bar',
-                    data: [100, 95, 80],
-                    label: {
-                        show: true,
-                        position: 'right',
-                        formatter: '{c}%',
-                        fontSize: 9
-                    }
-                }
-            ]
-        };
-
-        option2 && myChart2.setOption(option2);
-
-    </script>
 
 </body></html>
