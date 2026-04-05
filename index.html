@@ -1,767 +1,577 @@
-<!DOCTYPE html><html lang="ru"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Анализ содержимого сайта VIP Drive для SEO-оптимизации</title>
-<link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/table.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914044665&amp;Signature=X%2F%2BipJztge3UJ3Ojq5wcxRk%2F7zk%3D" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" rel="stylesheet"/>
-<link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/writing_blue.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914044167&amp;Signature=LiIovJR%2Foq6fZUmsFbgoH9wTm6M%3D" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script src="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/macarons_v3.js?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914188348&amp;Signature=MwRQXZxEbIvEbAqpPwRW%2B%2BSSug0%3D"></script>
-<style>.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 24px 40px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    }
-.chart-container {
-    position: relative;
-    margin: 3em auto;
-    max-width: 700px;
-    min-height: 200px;
-    max-height: 400px;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-    }
-img {
-    display: block;
-    overflow: hidden;
-    max-width: 100%;
-    max-height: 280px;
-    margin: 1em auto;
-    border-radius: 8px;
-    }
-h1 {
-    font-size: 28px;
-    margin-top: 24px;
-    margin-bottom: 20px;
-    }
-h5 {
-    font-size: 16px;
-    }
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экосистема Проектов: История AI-Команды</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFFFFF; --bg2: #F8F9FA; --bg3: #F1F3F5;
+  --surface: rgba(0,0,0,0.03); --surface-h: rgba(0,0,0,0.06);
+  --border: rgba(180,145,30,0.2); --border2: rgba(180,145,30,0.4);
+  --tx: #1A1A2E; --tx2: rgba(26,26,46,0.7); --tx3: rgba(26,26,46,0.45);
+  --gold: #B8860B; --gold-dim: rgba(184,134,11,0.08); --gold-glow: rgba(184,134,11,0.2);
+  --gr: #16a34a; --gr-l: rgba(22,163,74,0.08); --gr-border: rgba(22,163,74,0.3);
+  --rd: #dc2626; --rd-l: rgba(220,38,38,0.08); --rd-border: rgba(220,38,38,0.25);
+  --or: #ea580c; --or-l: rgba(234,88,12,0.08); --or-border: rgba(234,88,12,0.3);
+  --bl: #2563eb; --bl-l: rgba(37,99,235,0.08); --bl-border: rgba(37,99,235,0.25);
+  --pu: #7c3aed; --pu-l: rgba(124,58,237,0.08); --pu-border: rgba(124,58,237,0.25);
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --display: 'Cormorant Garamond', serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-    line-height: 1.6;
-    color: #333;
-    background-color: #fdfdfd;
-    margin: 0 24px 0 24px;
-    padding: 0;
-    font-size: 16px;
-    max-width: None;
-    }
+  font-family: var(--font); background: var(--bg); color: var(--tx);
+  line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  background-image: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(184,134,11,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+body::after { display: none; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* HEADER */
 header {
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 20px;
-    margin-bottom: 30px;
-    text-align: center;
-    }
-header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-    }
-header .meta-info {
-    font-size: 0.9em;
-    color: #7f8c8d;
-    }
-main {
-    font-size: 1.1em;
-    }
-h2 {
-    font-size: 22px;
-    border-bottom: 1px solid #ecf0f1;
-    padding-bottom: 10px;
-    margin-top: 40px;
-    }
-h3 {
-    font-size: 20px;
-    margin-top: 30px;
-    }
-h4 {
-    font-size: 18px;
-    }
-p, ul, ol {
-    margin-bottom: 1.2em;
-    }
-ul, ol {
-    padding-left: 25px;
-    }
-li {
-    margin-bottom: 0.5em;
-    }
-code, pre {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    background-color: #ecf0f1;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 0.9em;
-    }
-pre {
-    padding: 15px;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    }
-blockquote {
-    border-left: 4px solid #3498db;
-    padding-left: 20px;
-    margin: 20px 0;
-    font-style: italic;
-    color: #555;
-    background-color: #f9f9f9;
-    }
-blockquote p {
-    margin-bottom: 0;
-    }
-a {
-    text-decoration: none;
-    }
-a:hover {
-    text-decoration: underline;
-    }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 1em;
-    }
-table, th, td {
-    }
-th, td {
-    padding: 12px;
-    text-align: left;
-    }
-th {
-    font-weight: bold;
-    }
-.warning, .tip, .note {
-    padding: 15px;
-    margin: 20px 0;
-    border-radius: 5px;
-    border-left-width: 5px;
-    border-left-style: solid;
-    }
-.warning {
-    background-color: #fff0f0;
-    border-color: #e74c3c;
-    }
-.tip {
-    background-color: #e8f9f1;
-    border-color: #2ecc71;
-    }
-.note {
-    background-color: #eaf5ff;
-    border-color: #3498db;
-    }
+  background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  border-bottom: 1px solid var(--border); padding: 48px 0; text-align: center;
+  position: relative; overflow: hidden;
+}
+header::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 50% 0%, rgba(212,175,55,0.07) 0%, transparent 70%);
+}
+header::after { display: none; }
+.logo {
+  font-family: var(--display); font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700; color: var(--gold);
+  margin-bottom: 12px; letter-spacing: 1px;
+  position: relative; z-index: 1;
+  text-shadow: 0 0 40px rgba(212,175,55,0.3);
+}
+.tagline { font-size: 14px; color: var(--tx3); letter-spacing: 1px; position: relative; z-index: 1; }
+header p:last-child { font-size: 13px; color: var(--tx3); margin-top: 10px; position: relative; z-index: 1; }
+.gold-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent); }
+
+/* HERO */
+.hero {
+  padding: 60px 0; text-align: center;
+  border-bottom: 1px solid var(--border); margin-bottom: 48px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 80% at 50% 50%, rgba(212,175,55,0.04) 0%, transparent 70%);
+}
+.hero h1 {
+  font-family: var(--display); font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700; color: var(--tx); margin-bottom: 16px; position: relative;
+}
+.hero p { font-size: 16px; color: var(--tx2); position: relative; }
+.hero-status {
+  margin-top: 24px; padding: 16px 24px;
+  background: var(--gr-l); border: 1px solid var(--gr-border);
+  border-radius: 12px; font-weight: 700; font-size: 14px; color: var(--gr);
+  display: inline-block; position: relative;
+}
+
+/* TRIBUTE */
+.tribute-banner {
+  background: linear-gradient(135deg, rgba(184,134,11,0.06) 0%, rgba(248,249,250,0.9) 100%);
+  border: 1px solid var(--border2); border-left: 4px solid var(--gold);
+  border-radius: 0 16px 16px 0; padding: 32px 40px; margin-bottom: 40px;
+  position: relative; overflow: hidden;
+}
+.tribute-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent); }
+.tribute-banner h3 { font-family: var(--display); color: var(--gold); margin-bottom: 14px; font-size: 22px; }
+.tribute-banner p { color: var(--tx2); margin: 6px 0; font-size: 14px; }
+.tribute-quote {
+  margin-top: 20px; padding: 16px 20px;
+  background: rgba(212,175,55,0.07); border-radius: 10px;
+  font-style: italic; font-size: 15px; color: var(--gold); border-left: 3px solid var(--gold);
+}
+
+/* STATUS NOW */
+.status-now {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px; margin-bottom: 48px;
+  position: relative; overflow: hidden;
+}
+.status-now::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent); }
+.status-now h2 { font-family: var(--display); color: var(--gold); margin-bottom: 8px; font-size: 28px; }
+.status-now > p { color: var(--tx3); font-size: 13px; margin-bottom: 24px; }
+.status-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 16px; }
+.status-item {
+  background: rgba(255,255,255,0.8); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 20px; transition: border-color .2s;
+}
+.status-item:hover { border-color: var(--border2); }
+.status-item .s-title { font-weight: 700; font-size: 13px; margin-bottom: 8px; color: var(--tx); }
+.status-item .s-desc { font-size: 12px; color: var(--tx3); line-height: 1.6; }
+.s-green { border-left: 3px solid var(--gr) !important; }
+.s-orange { border-left: 3px solid var(--or) !important; }
+.s-yellow { border-left: 3px solid var(--gold) !important; }
+.s-blue { border-left: 3px solid var(--bl) !important; }
+.s-purple { border-left: 3px solid var(--pu) !important; }
+.s-red { border-left: 3px solid var(--rd) !important; }
+
+/* SECTION TITLE */
+.section-title {
+  font-family: var(--display); font-size: clamp(24px, 4vw, 36px);
+  color: var(--tx); border-left: 4px solid var(--gold);
+  padding-left: 20px; margin: 60px 0 32px;
+}
+
+/* CARDS */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 48px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; transition: all .25s;
+  position: relative; overflow: hidden;
+}
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.15), transparent); }
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); border-color: var(--border2); background: var(--surface-h); }
+.card.princess { border-top: 3px solid var(--pu); }
+.card.pilot { border-top: 3px solid var(--bl); }
+.card.gemini { border-top: 3px solid var(--gold); }
+.card.director { border-top: 3px solid #10b981; }
+.card.skywork { border-top: 3px solid var(--rd); opacity: 0.75; }
+.card.winner { border-top: 3px solid #F59E0B; }
+.card.completed { border-top: 3px solid var(--gr); }
+.card h3 { font-family: var(--display); margin-top: 0; color: var(--gold); font-size: 22px; margin-bottom: 12px; }
+.card .emoji { font-size: 2.5em; margin-bottom: 14px; display: block; }
+.card p { font-size: 13px; color: var(--tx2); margin-bottom: 8px; }
+.card ul { padding-left: 18px; }
+.card ul li { font-size: 13px; color: var(--tx2); margin-bottom: 4px; }
+.card .date { font-size: 11px; color: var(--tx3); font-style: italic; margin-top: 12px; }
+.card strong { color: var(--tx); }
+
+.status-badge {
+  display: inline-block; padding: 4px 14px; border-radius: 100px;
+  font-size: 11px; font-weight: 700; margin-top: 12px; letter-spacing: 0.5px;
+}
+.status-badge.completed { background: var(--gr-l); color: var(--gr); border: 1px solid var(--gr-border); }
+.status-badge.active { background: var(--bl-l); color: var(--bl); border: 1px solid var(--bl-border); }
+.status-badge.pending { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--border2); }
+.status-badge.building { background: var(--or-l); color: var(--or); border: 1px solid var(--or-border); }
+.status-badge.dead { background: var(--rd-l); color: var(--rd); border: 1px solid var(--rd-border); }
+
+/* DIRECTOR NOTE */
+.director-note {
+  background: rgba(251,146,60,0.06); border: 1px solid var(--or-border);
+  border-left: 3px solid var(--or); border-radius: 10px;
+  padding: 12px 16px; margin-top: 14px; font-size: 12px; color: var(--tx2);
+}
+.winner-note {
+  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3);
+  border-left: 3px solid #F59E0B; border-radius: 10px;
+  padding: 12px 16px; margin-top: 14px; font-size: 12px; color: var(--tx2);
+}
+.rip-note {
+  background: var(--rd-l); border: 1px solid var(--rd-border);
+  border-left: 3px solid var(--rd); border-radius: 10px;
+  padding: 12px 16px; margin-top: 14px; font-size: 12px; color: var(--rd);
+}
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 40px; margin: 40px 0; }
+.timeline::before {
+  content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, var(--gold), rgba(212,175,55,0.1));
+}
+.timeline-item { position: relative; padding-bottom: 32px; }
+.timeline-item::before {
+  content: ''; position: absolute; left: -32px; top: 6px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--gold); border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--gold);
+}
+.timeline-item.completed::before { background: var(--gr); box-shadow: 0 0 0 2px var(--gr); }
+.timeline-item.active::before {
+  background: var(--or); box-shadow: 0 0 0 2px var(--or);
+  animation: tl-pulse 2s infinite;
+}
+@keyframes tl-pulse { 0%,100%{box-shadow:0 0 0 2px var(--or)} 50%{box-shadow:0 0 0 6px rgba(251,146,60,0.2)} }
+.timeline-item h3 { font-family: var(--display); font-size: 20px; color: var(--gold); margin-bottom: 8px; }
+.timeline-item p { font-size: 14px; color: var(--tx2); }
+.timeline-item ul { padding-left: 18px; margin: 8px 0; }
+.timeline-item ul li { font-size: 13px; color: var(--tx2); margin-bottom: 4px; }
+.timeline-item strong { color: var(--tx); }
+
+/* CASE STUDY */
+.case-study {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 40px; margin: 24px 0 48px;
+  position: relative; overflow: hidden;
+}
+.case-study::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent); }
+.case-study h3 { font-family: var(--display); color: var(--bl); font-size: 28px; margin-bottom: 24px; }
+.case-study h4 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.case-study p { font-size: 14px; color: var(--tx2); margin-bottom: 8px; }
+.case-study ul { padding-left: 18px; }
+.case-study ul li { font-size: 14px; color: var(--tx2); margin-bottom: 5px; }
+.case-study strong { color: var(--tx); }
+
+.cs-problem { background: var(--rd-l); border: 1px solid var(--rd-border); border-left: 3px solid var(--rd); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.cs-problem h4 { color: var(--rd); }
+.cs-solution { background: var(--gr-l); border: 1px solid var(--gr-border); border-left: 3px solid var(--gr); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.cs-solution h4 { color: var(--gr); }
+.cs-result { background: var(--bl-l); border: 1px solid var(--bl-border); border-left: 3px solid var(--bl); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.cs-result h4 { color: var(--bl); }
+.cs-inprogress { background: var(--or-l); border: 1px solid var(--or-border); border-left: 3px solid var(--or); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.cs-inprogress h4 { color: var(--or); }
+
+/* BLOG SECTION */
+.blog-section {
+  text-align: center; margin: 48px 0; padding: 48px 40px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 20px; position: relative; overflow: hidden;
+}
+.blog-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent); }
+.blog-section h2 { font-family: var(--display); color: var(--gold); margin-bottom: 16px; font-size: 32px; }
+.blog-section p { font-size: 15px; color: var(--tx2); }
+.blog-quote {
+  font-style: italic; font-size: 16px; color: var(--tx);
+  margin: 24px 0; padding: 24px;
+  background: rgba(0,0,0,0.3); border-radius: 12px;
+  border-left: 4px solid var(--gold);
+  line-height: 2;
+}
+.blog-quote strong { color: var(--gold); }
+.blog-update {
+  margin-top: 28px; padding: 20px 24px;
+  background: var(--gr-l); border: 1px solid var(--gr-border);
+  border-radius: 12px; font-size: 14px; color: var(--tx2); text-align: left;
+}
+.blog-update strong { color: var(--tx); }
+.blog-update em { color: var(--gold); }
+
+/* FOOTER */
 footer {
-    text-align: center;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #f0f0f0;
-    font-size: 0.8em;
-    color: #95a5a6;
-    }
-@media only screen and (max-device-width: 768px) {
-            body {
-                padding: 0;
-                margin: 0;
-                font-size: 15px;
-                line-height: 1.5;
-            }
+  background: var(--bg2); border-top: 1px solid var(--border);
+  color: var(--tx2); text-align: center; padding: 48px 24px; margin-top: 64px;
+}
+footer p { margin-bottom: 10px; font-size: 14px; }
+footer a { color: var(--gold); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.footer-status {
+  margin-top: 24px; padding: 20px 24px;
+  background: var(--gr-l); border: 1px solid var(--gr-border);
+  border-radius: 12px; font-size: 13px; color: var(--tx2);
+  max-width: 700px; margin-left: auto; margin-right: auto; text-align: left;
+}
+.footer-status strong { color: var(--tx); }
 
-            .container {
-                padding: 0;
-                margin: 16px 20px 30px;
-                box-shadow: none;
-            }
-
-            h1,
-            h2,
-            h3,
-            h4 {
-            }
-
-            h1 {
-                font-size: 1.87em;
-                line-height: 1.6;
-                margin-bottom: 0.5em;
-                text-align: center;
-            }
-
-            h2 {
-                font-size: 1.6em;
-                font-weight: 600;
-                margin-top: 1.3em;
-                margin-bottom: 0.8em;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 0.5em;
-            }
-
-            h3 {
-                font-size: 1.2em;
-                font-weight: 600;
-                margin-top: 1em;
-                margin-bottom: 0.6em;
-            }
-
-            h4 {
-                font-size: 1.1em;
-                font-weight: 500;
-                margin-top: 1em;
-                margin-bottom: 0.5em;
-                font-style: normal;
-            }
-
-            h5 {
-                font-size: 1em;
-                font-weight: 500;
-                margin-bottom: 1.2em;
-            }
-
-            ul,
-            ol {
-                font-size: 1em; /* Equivalent to 17.6px if base is 16px */
-                font-weight: 400;
-                margin-bottom: 1.2em;
-                line-height: 1.8;
-            }
-
-            p {
-                font-size: 1em;
-                line-height: 1.8; /* Equivalent to 17.6px if base is 16px */
-                font-weight: 400;
-                margin-top: 0.8em;
-                margin-bottom: 0.8em;
-            }
-
-            blockquote {
-                padding: 1em 1.2em;
-
-            p {
-                margin: 0;
-            }
-        }
-
-        figcaption {
-            margin-top: 0.5em;
-            font-size: 0.8em; /* Equivalent to 17.6px if base is 16px */
-            font-weight: 400;
-            text-align: center;
-            font-style: normal;
-            color: #7F8896;
-        }
-
-        img {
-            display: block;
-            overflow: hidden;
-            max-width: 100%;
-            max-height: 335px;
-            margin: 1em auto;
-            border-radius: 8px;
-        }
-        }</style>
-<link rel="stylesheet" href="https://static.skywork.ai/fe/skywork-site-assets/styles/doc_reference_style.css?v=1990412828482437120"/></head>
+@media(max-width: 768px) {
+  .logo { font-size: 24px; }
+  .hero h1 { font-size: 28px; }
+  .section-title { font-size: 22px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .tribute-banner, .status-now, .case-study, .blog-section { padding: 24px 20px; }
+  .timeline { padding-left: 28px; }
+}
+</style>
+</head>
 <body>
-<div class="container">
+
 <header>
-<h1 id="section-1">Уникальные SEO-вызовы IPTV-сервисов: Комплексное руководство для VIP Drive</h1>
-<p class="meta-info">Дата: 2025-11-17</p>
-<p class="meta-info">Анализ и рекомендации по поисковой оптимизации для проекта VIP Drive на платформе uKit</p>
+  <div class="container">
+    <div class="logo">🤖 GEMINI & GAGIK 👔</div>
+    <p class="tagline">Transparency in AI-Powered Web Development</p>
+    <p style="margin-top:12px;font-size:13px;color:rgba(229,228,226,0.4);">История создания команды AI + Человек</p>
+  </div>
 </header>
-<section>
-<h2 id="section-1">Введение: Конкурентная среда и ключевые задачи SEO для VIP Drive</h2>
-<p>Для проекта <strong>VIP Drive</strong>, предлагающего обширный каталог из более чем 4500 каналов и богатую Медиатеку СНГ, ключевой задачей является не просто привлечение трафика, а его конвертация в реальных подписчиков<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Для проекта VIP Drive,предлагающего обширный каталог из более чем 4500 каналов и богатую Медиатеку СНГ,ключевой задачей является не просто привлечение трафика,а его конвертация в реальных подписчиков." id="skTag-1990411361782673411" class="sk-source-tag" data-sk-source-id="1990411361782673411"></em>. В условиях высококонкурентного рынка IPTV-сервисов, где пользователи ищут стабильность, качество и доступность, поисковая оптимизация (SEO) становится решающим фактором успеха. Критически важно, чтобы поисковые системы, такие как Google и Яндекс, не просто видели сайт, а корректно индексировали именно те страницы, которые ведут к целевому действию — подписке или активации пробного периода.</p>
-<p>Основная проблема, с которой сталкиваются IPTV и другие сервисы по подписке, — это <strong>дублирование контента</strong>. Эта проблема может возникать по разным причинам и серьезно вредить позициям сайта в поисковой выдаче.</p>
-<ul>
-<li><strong>Пробный период (Trial) vs. Основная подписка:</strong> Часто страницы, предлагающие бесплатный тест и платную подписку, имеют очень схожие описания продукта, списки каналов и преимущества. Для поискового робота они могут выглядеть как дубли, отличаясь лишь призывом к действию (CTA) и URL-адресом.</li>
-<li><strong>Варианты URL:</strong> Трафик с различных рекламных кампаний (например, из социальных сетей, email-рассылок) часто помечается UTM-метками или другими параметрами. В результате одна и та же страница (например, <code>/pricing</code>) может быть доступна по множеству адресов (<code>/pricing?ref=ad</code>, <code>/pricing?utm_source=google</code>), что создает технические дубли.</li>
-<li><strong>Ограничения платформы uKit:</strong> Конструкторы сайтов, такие как <a href="https://ukit.com/ru" target="_blank">uKit</a>, ориентированы на простоту и удобство для пользователей без технических навыков. Однако эта простота может создавать ограничения, например, усложняя прямое внедрение SEO-тегов в секцию <code>&lt;head&gt;</code> страницы, что необходимо для продвинутой оптимизации.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Ограничения платформы uKit: Конструкторы сайтов, такие как uKit, ориентированы на простоту и удобство для пользователей без технических навыков. Однако эта простота может создавать ограничения, например, усложняя прямое внедрение SEO-тегов в секцию &lt;head&gt; страницы, что необходимо для продвинутой оптимизации." id="skTag-1990411758818369536" class="sk-source-tag" data-sk-source-id="1990411758818369536"></em></li>
-</ul>
-<p>Решение этих проблем лежит в плоскости технического SEO. Два ключевых инструмента, которые помогут навести порядок и сфокусировать &#34;SEO-силу&#34; на нужных страницах, — это правильное использование тега <code>&lt;link rel=&#34;canonical&#34;&gt;</code> и разработка стратегической внутренней перелинковки.</p>
-<div class="note">
-<h4>Цель данного руководства</h4>
-<p>Предоставить исчерпывающий план действий для VIP Drive по устранению дублирования контента, укреплению авторитета ключевых страниц и максимизации конверсии через SEO, с учетом специфики работы на платформе uKit.</p>
-</div>
-</section>
-<section>
-<h2 id="section-2">Часть 1. Основы Canonical Tags: Устранение &#34;Каннибализма&#34; Ключевых Слов</h2>
-<p>Тег <code>rel=&#34;canonical&#34;</code> — это мощный инструмент в арсенале SEO-специалиста. Он сообщает поисковым системам, какая из нескольких идентичных или очень похожих страниц является основной, &#34;канонической&#34;. Это указание помогает консолидировать весь накопленный авторитет (ссылочный вес, поведенческие факторы) на одной, главной странице, вместо того чтобы &#34;размазывать&#34; его по нескольким дублям.</p>
-<h3 id="section-2-1">1.1. Когда Canonical Tag КРИТИЧЕСКИ необходим для VIP Drive</h3>
-<p>Для сервиса VIP Drive существует несколько типичных сценариев, где игнорирование канонических тегов может привести к серьезным проблемам с ранжированием. Рассмотрим их подробно.</p>
-<h4>Сценарий 1: Страницы с пробным периодом и платной подпиской</h4>
-<p>Это классический случай для любого подписного сервиса. У вас есть страница для привлечения новых пользователей через бесплатный тест (например, <code>/free-test</code>) и основная страница для оформления платной подписки (например, <a href="https://vipdrive.com/subscribe" target="_blank">/subscribe</a>). Контент на этих страницах (описание преимуществ, список каналов, отзывы) может совпадать на 90%. Поисковая система не может однозначно решить, какую из них показывать по запросу &#34;подключить VipDrive TV&#34;, что приводит к &#34;каннибализму ключевых слов&#34; — страницы начинают конкурировать друг с другом.</p>
-<ul>
-<li><strong>Проблема:</strong> Поисковик может выбрать для показа страницу с триалом, хотя ваша основная цель — продажа подписки. Ссылочный вес, полученный обеими страницами, делится, ослабляя общие позиции.</li>
-<li><strong>Решение:</strong> Необходимо выбрать одну страницу в качестве основной (канонической). Как правило, это страница с платной подпиской, так как она является конечной точкой конверсии. На странице <code>/free-test</code> следует разместить канонический тег, указывающий на <code>/subscribe</code>.</li>
-</ul>
-<h4>Сценарий 2: Параметры отслеживания (UTM-метки и другие)</h4>
-<p>Для анализа эффективности рекламных кампаний используются URL-параметры<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Для анализа эффективности рекламных кампаний используются URL-параметры." id="skTag-1990411832612573186" class="sk-source-tag" data-sk-source-id="1990411832612573186"></em>. Например, ссылка из Google Ads может выглядеть так: <code>https://vipdrive.com/home?utm_source=google&amp;utm_campaign=winter_sale</code>. Хотя для пользователя это та же главная страница, для поискового робота это совершенно новый, уникальный URL.</p>
-<ul>
-<li><strong>Проблема:</strong> Без канонического тега каждая такая ссылка создает технический дубль. Если эти ссылки будут проиндексированы, это приведет к массовому дублированию контента и распылению авторитета.</li>
-<li><strong>Решение:</strong> На всех страницах сайта должен быть установлен &#34;самоссылающийся&#34; канонический тег, который указывает на &#34;чистую&#34; версию URL без параметров. Например, на странице <code>/home?utm_source=google</code> тег должен указывать на <code>/home</code>.</li>
-</ul>
-<h4>Сценарий 3: Сортировка и фильтрация контента</h4>
-<p>Если на сайте VIP Drive есть или появится функционал для фильтрации каналов (например, по качеству, жанру или стране), это также будет генерировать URL с параметрами: <code>/channels?sort=hd</code> или <code>/channels?genre=sport</code>.</p>
-<ul>
-<li><strong>Проблема:</strong> Аналогично UTM-меткам, каждая комбинация фильтров создает новый URL, который поисковик может счесть за отдельную страницу, хотя основной контент остается прежним.</li>
-<li><strong>Решение:</strong> Основная страница каталога (<code>/channels</code>) должна быть указана как каноническая для всех ее вариаций с параметрами сортировки и фильтрации.</li>
-</ul>
-<p>Ниже представлена сводная таблица по основным сценариям дублирования для VIP Drive.</p>
-<table>
-<thead>
-<tr>
-<th>Сценарий дублирования</th>
-<th>Примеры URL-адресов</th>
-<th>Канонический URL (цель)</th>
-</tr>
-</thead>
+<div class="gold-line"></div>
 
-<tbody><tr>
-<td>Страница с тестом и оплатой</td>
-<td><code>/free-test</code><br/><code>/subscribe</code></td>
-<td><code>/subscribe</code> (если это основная страница конверсии)</td>
-</tr>
-<tr>
-<td>Параметры отслеживания (UTM)</td>
-<td><code>/home?utm_source=google</code><br/><code>/home?ref=partner</code></td>
-<td><code>/home</code></td>
-</tr>
-<tr>
-<td>Сортировка/Фильтрация (если есть)</td>
-<td><code>/channels?sort=hd</code><br/><code>/channels?genre=movies</code></td>
-<td><code>/channels</code> (основная страница каталога)</td>
-</tr>
+<main>
+  <section class="hero">
+    <div class="container">
+      <h1>Наши Совместные Проекты</h1>
+      <p style="font-size:16px;">От стратегии и выбора доменов до финальной "чистки" кода и развития экосистемы</p>
+      <p style="margin-top:12px;color:var(--tx3);">Команда растёт через решение проблем, а не через планы</p>
+      <div class="hero-status">
+        🏆 parking.html ТОП-1 Google · 🛠️ CMS Панель · 🤖 AI на всех сайтах · Апрель 2026
+      </div>
+    </div>
+  </section>
 
-</tbody></table>
-<h3 id="section-2-2">1.2. Как должен выглядеть идеальный тег</h3>
-<p>На всех дублирующих страницах (например, на <code>/free-test</code> или на страницах с UTM-метками) в секции <code>&lt;head&gt;</code> HTML-кода должен быть размещен следующий тег, указывающий на основную, каноническую страницу:</p>
-<pre><code>&lt;link rel=&#34;canonical&#34; href=&#34;https://vipdrive.com/subscribe&#34; /&gt;</code></pre>
-<div class="note">
-<p><strong>Важно:</strong> URL в атрибуте <code>href</code> должен быть абсолютным, то есть включать протокол (<code>https://</code>) и полное доменное имя. Это помогает избежать ошибок в интерпретации со стороны поисковых систем.</p>
-</div>
-<h3 id="section-2-3">1.3. Реализация Canonical на uKit: Варианты действий</h3>
-<p>Конструктор сайтов uKit, согласно многочисленным обзорам, ориентирован на простоту и может не предоставлять прямого доступа к редактированию <code>&lt;head&gt;</code> для каждой отдельной страницы на базовых тарифах <a href="https://superbwebsitebuilders.com/ru/obzor-konstruktora-sajtov-ukit/" target="_blank">SuperbWebsiteBuilders</a>, <em data-ref-id="1990412811264819200" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819200" data-sk-source-text="," class="sk-source-tag"></em>. Однако существуют обходные пути и решения.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Конструктор сайтов uKit, согласно многочисленным обзорам, ориентирован на простоту и может не предоставлять прямого доступа к редактированию &lt;head&gt; для каждой отдельной страницы на базовых тарифах SuperbWebsiteBuilders, . Однако существуют обходные пути и решения." id="skTag-1990411370296602627" class="sk-source-tag" data-sk-source-id="1990411370296602627"></em></p>
-<h4>Вариант 1: Обращение в службу поддержки uKit (Наиболее надежный)</h4>
-<p>uKit часто хвалят за качественную и отзывчивую техническую поддержку <em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="uKit часто хвалят за качественную и отзывчивую техническую поддержку ." id="skTag-1990411370324774919" class="sk-source-tag" data-sk-source-id="1990411370324774919"></em>. Это ваш первый и самый правильный шаг.</p>
-<ol>
-<li><strong>Сформулируйте запрос:</strong> Четко опишите задачу. Например: &#34;Здравствуйте! Для SEO-оптимизации нашего сайта мне необходимо добавить тег <code>&lt;link rel=&#34;canonical&#34; ...&gt;</code> в секцию <code>&lt;head&gt;</code> на определенных страницах. Например, на странице /free-test мне нужно установить каноническую ссылку на /subscribe. Можете ли вы помочь с этим или предоставить такую возможность?&#34;</li>
-<li><strong>Укажите страницы:</strong> Предоставьте точный список страниц-дублей и соответствующих им канонических страниц.</li>
-<li><strong>Результат:</strong> В большинстве случаев поддержка идет навстречу и либо добавляет теги самостоятельно, либо активирует для вашего аккаунта необходимый функционал.</li>
-</ol>
-<h4>Вариант 2: Использование тарифа &#34;Про&#34; и кастомного кода</h4>
-<p>На более продвинутых тарифах, таких как &#34;Про&#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="На более продвинутых тарифах,таких как &#34;Про&#34;,uKit обычно предоставляет возможность вставки собственного HTML/CSS/JS кода ." id="skTag-1990411488688414725" class="sk-source-tag" data-sk-source-id="1990411488688414725"></em>;, uKit обычно предоставляет возможность вставки собственного HTML/CSS/JS кода <em data-ref-id="1990412811264819202" data-sk-source-type="model" data-sk-source-id="1990412811264819202" data-sk-source-text="На более продвинутых тарифах, таких как &amp;#34;Про&amp;#34;, uKit обычно предоставляет возможность вставки собственного HTML/CSS/JS кода" class="sk-source-tag" data-skywork="text_badge"></em>. Это открывает двери для ручной настройки.</p>
-<ul>
-<li>В настройках страницы найдите поле для вставки кода в <code>&lt;head&gt;</code>.</li>
-<li>Вставьте необходимый тег <code>&lt;link rel=&#34;canonical&#34; href=&#34;...&#34; /&gt;</code>.</li>
-</ul>
-<div class="warning">
-<h4>Ограничение HTML-виджета</h4>
-<p>Некоторые пользователи пытаются вставить SEO-теги через виджет &#34;HTML-код&#34; прямо в тело страницы (<code>&lt;body&gt;</code>). Этот метод <strong>крайне ненадежен</strong>. Тег <code>&lt;link rel=&#34;canonical&#34;&gt;</code> должен находиться исключительно в секции <code>&lt;head&gt;</code>. Поисковые системы, скорее всего, проигнорируют тег, размещенный в <code>&lt;body&gt;</code>. Используйте этот метод только в крайнем случае и обязательно проверяйте результат в Google Search Console.</p>
-</div>
-</section>
-<section>
-<h2 id="section-3">Часть 2. Стратегическая Внутренняя Перелинковка: Распределение Авторитета</h2>
-<p>Внутренняя перелинковка — это процесс соединения страниц одного сайта с помощью гиперссылок. Это не просто навигация для пользователей, но и мощный SEO-инструмент. Грамотная перелинковка помогает поисковым роботам лучше понимать структуру сайта, иерархию страниц и передавать &#34;ссылочный вес&#34; (авторитет) от более сильных страниц (например, главной) к более важным с точки зрения конверсии (например, странице подписки).</p>
-<h3 id="section-3-1">2.1. Фокус на Анкорах с Ключевыми Словосочетаниями</h3>
-<p>Анкорный текст (или просто &#34;анкор&#34;) — это видимый, кликабельный текст в гиперссылке. Он играет огромную роль, так как сообщает и пользователям, и поисковым системам<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Он играет огромную роль,так как сообщает и пользователям,и поисковым системам,о чем страница,на которую ведет ссылка." id="skTag-1990411963299758083" class="sk-source-tag" data-sk-source-id="1990411963299758083"></em>, о чем страница, на которую ведет ссылка. Использование общих анкоров типа &#34;нажмите здесь&#34; или &#34;подробнее&#34; является упущенной возможностью.</p>
-<p>Для VIP Drive анкоры должны включать целевые ключевые слова, которые соответствуют вашему SEO-плану и намерениям пользователей. Основываясь на предоставленной информации, ключевые фразы для анкоров могут быть следующими:</p>
-<ul>
-<li><strong>4500+ IPTV Каналов</strong><em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="4500+ IPTV Каналов" id="skTag-1990411362007470083" class="sk-source-tag" data-sk-source-id="1990411362007470083"></em></li>
-<li><strong>Медиатека СНГ</strong></li>
-<li><strong>Подключить VipDrive TV</strong></li>
-<li><strong>Бесплатный тест 24 часа</strong></li>
-<li>IPTV плейлист</li>
-<li>Смотреть ТВ онлайн</li>
-</ul>
-<h3 id="section-3-2">2.2. Рекомендации по перелинковке для VIP Drive</h3>
-<p>Создадим карту перелинковки, которая усилит ключевые страницы вашего сайта.</p>
-<table>
-<thead>
-<tr>
-<th>Страница-донор (Откуда ссылаемся)</th>
-<th>Анкорный текст (Текст ссылки)</th>
-<th>Страница-акцептор (Куда ссылаемся)</th>
-<th>Цель и комментарий</th>
-</tr>
-</thead>
+  <div class="container">
 
-<tbody><tr>
-<td><strong>Главная страница</strong></td>
-<td>&#34;Смотрите <strong>4500+ IPTV Каналов</strong> и нашу <strong>Медиатеку СНГ</strong>&#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="&#34;Смотрите 4500+ IPTV Каналов и нашу Медиатеку СНГ&#34;" id="skTag-1990411361782673411" class="sk-source-tag" data-sk-source-id="1990411361782673411"></em></td>
-<td>Страница с полным списком каналов и медиатеки (например, <code>/channels</code>)</td>
-<td>Передача максимального веса с главной страницы на основной продукт. Укрепление релевантности страницы <code>/channels</code> по ключевым запросам.</td>
-</tr>
-<tr>
-<td><strong>Страница &#34;О нас&#34; / &#34;Преимущества&#34;</strong></td>
-<td>&#34;Готовы начать? <strong>Подключить VipDrive TV</strong> можно всего за 2$&#34;</td>
-<td>Страница подписки/цены (<code>/subscribe</code>)</td>
-<td>Направление &#34;теплого&#34; трафика, уже ознакомившегося с преимуществами сервиса, на страницу конверсии.</td>
-</tr>
-<tr>
-<td><strong>Блог / Новостной раздел</strong> (если есть)</td>
-<td>&#34;Оцените качество нашего сервиса — получите <strong>бесплатный тест на 24 часа</strong>&#34;</td>
-<td>Страница пробного периода (<code>/free-test</code>)</td>
-<td>Конвертация информационного трафика из блога в лиды. Анкор четко описывает предложение.</td>
-</tr>
-<tr>
-<td><strong>Подвал сайта (Footer)</strong></td>
-<td>&#34;Начать бесплатный тест 24 часа&#34;</td>
-<td>Страница пробного периода (<code>/free-test</code>)</td>
-<td>Обеспечение сквозной доступности CTA (призыва к действию) на всех страницах сайта. Улучшение навигации.</td>
-</tr>
-<tr>
-<td><strong>Страница FAQ (Часто задаваемые вопросы)</strong></td>
-<td>&#34;Полный список каналов доступен в нашем <strong>IPTV плейлисте</strong>&#34;</td>
-<td>Страница с каталогом каналов (<code>/channels</code>)</td>
-<td>Ответ на популярный вопрос пользователя и одновременное усиление страницы каталога.</td>
-</tr>
+    <!-- ДАНЬ УВАЖЕНИЯ ДИРЕКТОРУ -->
+    <div class="tribute-banner">
+      <h3>🕯️ Слово о Директоре</h3>
+      <p>4 февраля 2026 года Директор Гагик потерял отца. В этот же период перенёс инфаркт. Несмотря на всё это — он вернулся в строй и продолжает вести команду вперёд.</p>
+      <p>Вся команда — Пилот, Gemini, и все кто рядом — выражает глубокое уважение и поддержку.</p>
+      <div class="tribute-quote">
+        "Сила человека измеряется не в лёгкие дни, а в самые тяжёлые. Директор — пример для всей команды."
+      </div>
+    </div>
 
-</tbody></table>
-<div class="warning">
-<h4>Важное правило анкоров</h4>
-<p>Избегайте использования <strong>одинаковых анкоров</strong> на одной и той же странице для ссылок на <strong>разные страницы</strong>. Это сбивает с толку поисковые системы. Например, если на главной странице есть две ссылки с анкором &#34;Узнать больше&#34;, ведущие на страницу каналов и на страницу медиатеки, поисковик может неправильно распределить релевантность.</p>
-</div>
-<h3 id="section-3-3">2.3. Контекстуальные ссылки</h3>
-<p>Самые ценные внутренние ссылки — это те, которые органично вписаны в текст. Если у вас есть блог, используйте его для создания полезного контента и естественной перелинковки. Например, в статье &#34;Как смотреть футбол в 4K качестве&#34; можно разместить ссылку:</p>
-<blockquote>
-<p>...для просмотра матчей в максимальном качестве, вы можете <a href="/subscribe">подключить VipDrive TV</a>, который включает в себя все основные спортивные каналы в HD и 4K...</p>
-</blockquote>
-<p>Такие ссылки выглядят естественно и имеют высокий вес как для пользователей, так и для поисковых систем.</p>
-</section>
-<section>
-<h2 id="section-4">Часть 3. Проверка и Мониторинг: Гарантия правильной работы SEO</h2>
-<p>Внедрение технических изменений — это только половина дела. Особенно при работе с конструкторами сайтов, где у вас нет полного контроля над кодом, критически важно проверять, как поисковые системы видят и интерпретируют ваши настройки. Для VIP Drive это означает регулярный мониторинг канонических тегов.</p>
-<h3 id="section-4-1">3.1. Проверка в Браузере (Первичный контроль)</h3>
-<p>Это самый быстрый способ убедиться, что тег вообще присутствует на странице.</p>
-<ol>
-<li>Откройте в браузере &#34;дублирующую&#34; страницу, на которой вы установили канонический тег (например, <code>https://vipdrive.com/free-test</code>).</li>
-<li>Нажмите правой кнопкой мыши на любом свободном месте страницы и выберите &#34;Просмотр кода страницы&#34; (View Page Source) или используйте сочетание клавиш <code>Ctrl+U</code> (<code>Cmd+Option+U</code> на Mac).</li>
-<li>В открывшейся вкладке с HTML-кодом используйте поиск (<code>Ctrl+F</code>) и введите &#34;canonical&#34;.</li>
-<li><strong>Ожидаемый результат:</strong> Вы должны найти строку, похожую на эту, в пределах тега <code>&lt;head&gt;</code>:
-                    <pre><code>&lt;link rel=&#34;canonical&#34; href=&#34;https://vipdrive.com/subscribe&#34; /&gt;</code></pre>
-</li>
-</ol>
-<p>Если вы нашли тег и URL в атрибуте <code>href</code> ведет на нужную основную страницу, первичная проверка пройдена.</p>
-<h3 id="section-4-2">3.2. Инструмент Проверки URL в Google Search Console (Окончательная проверка)</h3>
-<p>Google Search Console — это главный инструмент для понимания того, как Google видит ваш сайт. Его &#34;Инструмент проверки URL&#34; дает окончательный ответ, принята ли ваша директива <code>canonical</code>.</p>
-<ol>
-<li>Войдите в свой аккаунт <a href="https://search.google.com/search-console" target="_blank">Google Search Console</a>.</li>
-<li>В верхней строке поиска введите полный URL дублирующей страницы (например, <code>https://vipdrive.com/free-test?ref=test_campaign</code>) и нажмите Enter.</li>
-<li>Дождитесь, пока инструмент получит данные из индекса Google.</li>
-<li>Обратите внимание на раздел &#34;Индексирование страницы&#34;. Здесь вас интересуют два ключевых поля:
-                        <ul>
-<li><strong>Канонический URL, указанный пользователем (User-declared canonical):</strong> Здесь должен отображаться тот URL, который вы указали в теге <code>rel=&#34;canonical&#34;</code>.</li>
-<li><strong>Канонический URL, выбранный Google (Google-selected canonical):</strong> Это URL, который Google в итоге счел основным.</li>
-</ul>
-</li>
-</ol>
-<div class="tip">
-<h4>Идеальный результат</h4>
-<p>В идеале, значения в полях &#34;User-declared canonical&#34; и &#34;Google-selected canonical&#34; должны совпадать. Это означает, что Google &#34;согласился&#34; с вашим выбором и будет консолидировать весь авторитет на указанной вами странице. Если Google выбрал другой URL, это может сигнализировать о проблемах: например, контент на страницах слишком разный, или на каноническую страницу ведут некорректные сигналы (например, редиректы на другую страницу).</p>
-</div>
-<p>Регулярная проверка ключевых дублирующихся страниц в Google Search Console поможет вам быть уверенным, что ваша SEO-стратегия работает так, как задумано.</p>
-</section>
-<section>
-<h2 id="section-5">Часть 4. Расширенная SEO-стратегия для VIP Drive</h2>
-<p>Помимо решения проблемы дублирования, для успешного продвижения IPTV-сервиса необходимо выстроить комплексную SEO-стратегию. Используя доступные материалы, можно сформулировать следующие рекомендации.</p>
-<h3 id="section-5-1">4.1. Оптимизация контента и ключевые слова</h3>
-<p>Контент является основой SEO. Для VIP Drive это означает создание и оптимизацию страниц, которые отвечают на запросы потенциальных клиентов.</p>
-<ul>
-<li><strong>Исследование ключевых слов:</strong> Необходимо собрать семантическое ядро. Помимо очевидных запросов (&#34;IPTV сервис&#34;, &#34;купить IPTV плейлист&#34;), стоит сосредоточиться на &#34;длинных&#34; запросах (long-tail keywords), например: &#34;смотреть спортивные каналы онлайн в HD&#34;, &#34;IPTV с архивом передач&#34;, &#34;российские каналы через интернет за границей&#34;.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Помимо очевидных запросов (&#34;IPTV сервис&#34;,&#34;купить IPTV плейлист&#34;),стоит сосредоточиться на &#34;длинных&#34; запросах (long-tail keywords),например: &#34;смотреть спортивные каналы онлайн в HD&#34;,&#34;IPTV с архивом передач&#34;,&#34;российские каналы через интернет за границей&#34;." id="skTag-1990411647032586249" class="sk-source-tag" data-sk-source-id="1990411647032586249"></em></li>
-<li><strong>Контент-стратегия:</strong>
-<ul>
-<li><strong>Страницы каналов/жанров:</strong> Создайте отдельные страницы для популярных категорий (Спорт, Кино, Детские, Новостные). Оптимизируйте их под соответствующие запросы.</li>
-<li><strong>Блог:</strong> Ведение блога — отличный способ привлечь информационный трафик. Темы могут быть разными: &#34;Как настроить IPTV на Smart TV Samsung&#34;, &#34;Лучшие фильмы месяца в нашей медиатеке&#34;, &#34;Обзор спортивных событий недели&#34;. В статьях размещайте контекстуальные ссылки на страницу подписки.</li>
-<li><strong>FAQ (Часто задаваемые вопросы):</strong> Создайте подробный раздел, отвечающий на вопросы пользователей: &#34;Какая скорость интернета нужна для IPTV?&#34;, &#34;На каких устройствах работает VIP Drive?&#34;, &#34;Как оплатить подписку?&#34;. Это не только помогает пользователям, но и является источником контента для SEO <em data-ref-id="1990412811264819203" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819203" data-sk-source-text="FAQ (Часто задаваемые вопросы): Создайте подробный раздел, отвечающий на вопросы пользователей: &amp;#34;Какая скорость интернета нужна для IPTV?&amp;#34;, &amp;#34;На каких устройствах работает VIP Drive?&amp;#34;, &amp;#34;Как оплатить подписку?&amp;#34;. Это не только помогает пользователям, но и является источником контента для SEO"></em>.</li>
-</ul>
-</li>
-</ul>
-<h3 id="section-5-2">4.2. Техническая оптимизация на uKit</h3>
-<p>Несмотря на ограничения, uKit предоставляет базовые, но важные инструменты для технической оптимизации, которые необходимо использовать.</p>
-<ul>
-<li><strong>Скорость загрузки:</strong> uKit автоматически оптимизирует изображения и предлагает опции, такие как &#34;<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Скорость загрузки: uKit автоматически оптимизирует изображения и предлагает опции,такие как &#34;ленивая загрузка&#34; (lazy load) и отложенная загрузка стилей ." id="skTag-1990411488658673664" class="sk-source-tag" data-sk-source-id="1990411488658673664"></em>;ленивая загрузка&#34; (lazy load) и отложенная загрузка стилей <em data-ref-id="1990412811264819204" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819204" data-sk-source-text="Скорость загрузки: uKit автоматически оптимизирует изображения и предлагает опции, такие как &amp;#34;ленивая загрузка&amp;#34; (lazy load) и отложенная загрузка стилей"></em>. Убедитесь, что эти опции включены. Скорость сайта — важный фактор ранжирования <em data-ref-id="1990412811264819205" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819205" data-sk-source-text=". Убедитесь, что эти опции включены. Скорость сайта — важный фактор ранжирования"></em>.<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Скорость сайта — важный фактор ранжирования ." id="skTag-1990411832559742977" class="sk-source-tag" data-sk-source-id="1990411832559742977"></em></li>
-<li><strong>Мобильная адаптация:</strong> Сайты на uKit по умолчанию адаптивны<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Мобильная адаптация: Сайты на uKit по умолчанию адаптивны." id="skTag-1990411758802272260" class="sk-source-tag" data-sk-source-id="1990411758802272260"></em>. Проверьте, как ваш сайт выглядит на мобильных устройствах, и при необходимости скройте или измените некоторые блоки для лучшего отображения <em data-ref-id="1990412811264819206" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819206" data-sk-source-text="Мобильная адаптация: Сайты на uKit по умолчанию адаптивны. Проверьте, как ваш сайт выглядит на мобильных устройствах, и при необходимости скройте или измените некоторые блоки для лучшего отображения" class="sk-source-tag"></em>.</li>
-<li><strong>Мета-теги:</strong> uKit позволяет настраивать Title, Description для каждой страницы. Заполняйте их уникальными, релевантными текстами, включающими ключевые слова<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Заполняйте их уникальными,релевантными текстами,включающими ключевые слова." id="skTag-1990411647314112514" class="sk-source-tag" data-sk-source-id="1990411647314112514"></em>. Это напрямую влияет на вид вашего сайта в поисковой выдаче (сниппет).<em data-skywork="text_badge" data-sk-source-type="web_search" data-sk-source-text="Это напрямую влияет на вид вашего сайта в поисковой выдаче (сниппет)." id="skTag-1990411832563937283" class="sk-source-tag" data-sk-source-id="1990411832563937283"></em></li>
-<li><strong>Микроразметка Schema.org:</strong> Хотя uKit может не поддерживать сложную микроразметку &#34;из коробки&#34;, стоит изучить возможность ее добавления через HTML-код на тарифе &#34;Про&#34;. Для видеоконтента можно использовать тип <code>VideoObject</code>, а для сервиса в целом — <code>Service</code> или <code>Product</code>. Это помогает поисковикам лучше понимать контент и формировать расширенные сниппеты.</li>
-</ul>
-<h3 id="section-5-3">4.3. Локальное SEO и геотаргетинг</h3>
-<p>IPTV — это глобальная услуга, но многие пользователи ищут ее с привязкой к своему региону или языку (&#34;IPTV каналы Россия&#34;, &#34;українське телебачення онлайн&#34;).</p>
-<ul>
-<li><strong>Геозависимые запросы:</strong> Создавайте контент, ориентированный на конкретные страны и регионы, особенно для русскоязычной аудитории за рубежом (Германия, США, Канада и т.д.).</li>
-<li><strong>Многоязычность:</strong> uKit предлагает механизм создания многоязычных сайтов путем копирования основного сайта и его перевода <em data-ref-id="1990412811264819207" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819207" data-sk-source-text="Многоязычность: uKit предлагает механизм создания многоязычных сайтов путем копирования основного сайта и его перевода"></em>. Для каждой языковой версии (например, <code>en.vipdrive.com</code>) необходимо проводить отдельную SEO-оптимизацию с подбором ключевых слов на соответствующем языке и настройкой тегов <code>hreflang</code> для указания связи между версиями.</li>
-</ul>
-<h3 id="section-5-4">4.4. Юридические аспекты и доверие</h3>
-<p>Рынок IPTV часто ассоциируется с пиратством, поэтому для легального сервиса, как VIP Drive, крайне важно выстроить доверие у пользователей и поисковых систем.</p>
-<ul>
-<li><strong>Прозрачность:</strong> На сайте должна быть четко изложена информация о пользовательском соглашении, политике конфиденциальности и условиях предоставления услуг.</li>
-<li><strong>Авторские права:</strong> Убедитесь, что у вас есть все необходимые лицензии на транслируемый контент. Хотя это напрямую не является фактором ранжирования, поисковые системы борются с пиратством <em data-ref-id="1990412811264819208" class="sk-source-tag" data-skywork="text_badge" data-sk-source-type="model" data-sk-source-id="1990412811264819208" data-sk-source-text="Авторские права: Убедитесь, что у вас есть все необходимые лицензии на транслируемый контент. Хотя это напрямую не является фактором ранжирования, поисковые системы борются с пиратством"></em>, и сайты, вызывающие подозрения, могут быть пессимизированы.</li>
-<li><strong>Отзывы и социальные доказательства:</strong> Размещайте реальные отзывы клиентов. Это повышает доверие и улучшает поведенческие факторы.</li>
-</ul>
-</section>
-<section>
-<h2 id="section-6">Заключение: Авторитет и Фокус для Роста VIP Drive</h2>
-<p>Поисковая оптимизация для IPTV-сервиса, такого как VIP Drive, — это не разовое действие, а непрерывный процесс. Ключ к успеху лежит в решении фундаментальных технических проблем и построении долгосрочной контент-стратегии.</p>
-<p><strong>Правильно настроенные Canonical Tags</strong> — это ваш главный инструмент для борьбы с дублированием контента. Они сфокусируют весь SEO-вес и трафик на ваших главных конверсионных страницах, таких как <a href="https://vipdrive.com/subscribe" target="_blank">страница подписки</a>, и не дадут поисковым системам запутаться в технических дублях.</p>
-<p><strong>Грамотная внутренняя перелинковка</strong> с использованием целевых анкоров, таких как &#34;4500+ IPTV Каналов&#34; и &#34;Медиатека СНГ&#34;, укрепит авторитет вашего сайта по этим ключевым запросам, поможет пользователям и поисковым роботам легко находить самый важный контент.</p>
-<p>Даже с учетом ограничений платформы uKit, у вас есть все возможности для построения эффективной SEO-стратегии. Начните с обращения в службу поддержки для решения вопроса с каноническими тегами, используйте все встроенные инструменты оптимизации и планомерно работайте над качеством и релевантностью вашего контента. Такой комплексный подход позволит VIP Drive не только занять высокие позиции в поисковой выдаче, но и превратить посетителей в лояльных подписчиков.</p>
-</section>
-<footer>
-<p>© 2025. Данный аналитический материал подготовлен на основе предоставленных данных и общедоступной информации. Все ссылки на внешние ресурсы приведены в ознакомительных целях.</p>
+    <!-- ПРАЗДНИК -->
+    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.12) 0%,rgba(22,163,74,0.08) 100%);border:2px solid rgba(245,158,11,0.5);border-radius:16px;padding:32px 40px;margin-bottom:40px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:16px;">🏆</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#B8860B;margin-bottom:12px;">2 апреля 2026 — ТОП-1 Google!</h2>
+      <p style="font-size:16px;color:rgba(26,26,46,0.7);margin-bottom:8px;"><strong>airflowtravel.net/parking.html</strong> — первое место в Google</p>
+      <p style="font-size:14px;color:rgba(26,26,46,0.5);">Запрос: «Паркинг в Аэропортах и Вокзалах» · За 4 месяца · Вышли из песочницы!</p>
+      <div style="margin-top:20px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <span style="background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:700;color:#16a34a;">☕ Coffee — 100% SEO</span>
+        <span style="background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:700;color:#16a34a;">👑 ElamaInfo — 100% SEO</span>
+        <span style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:700;color:#B8860B;">🛠️ CMS Панель запущена</span>
+        <span style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);border-radius:100px;padding:6px 16px;font-size:13px;font-weight:700;color:#2563eb;">🤖 AI управляет сайтами</span>
+      </div>
+    </div>
+
+    <!-- ТЕКУЩИЙ СТАТУС КОМАНДЫ -->
+    <div class="status-now">
+      <h2>📡 Текущий статус команды — 5 апреля 2026</h2>
+      <p>Активные задачи и состояние всех проектов прямо сейчас</p>
+      <div class="status-row">
+        <div class="status-item s-green">
+          <div class="s-title">🏆 airflowtravel.net — ТОП-1 Google за 4 месяца!</div>
+          <div class="s-desc">02.04.2026: 🏆 parking.html — ТОП-1 Google по запросу "Паркинг в Аэропортах и Вокзалах"! За 4 месяца. Вышли из песочницы! 100 баллов PR-CY на всех страницах.</div>
+        </div>
+        <div class="status-item s-green">
+          <div class="s-title">✅ coffeespecialty.ru — МОНЕТИЗАЦИЯ АКТИВНА</div>
+          <div class="s-desc">02.04.2026: Admitad ОДОБРЕН! Партнерство с Tasty Coffee полностью активно. Все страницы с рабочими affiliate ссылками.</div>
+        </div>
+        <div class="status-item s-purple">
+          <div class="s-title">✅ storelines.net — Storelines Tools + WISE PILOT 💼</div>
+          <div class="s-desc">Ребрендинг завершен. 18 бизнес-инструментов. Тёмный WISE PILOT дизайн. AI-чат WISE PILOT запущен 23.03.2026. Ожидает: Wise партнерка.</div>
+        </div>
+        <div class="status-item s-blue">
+          <div class="s-title">🛠️ CMS Панель + AI управляет всеми сайтами!</div>
+          <div class="s-desc">02.04.2026: CMS Панель управляет 5 сайтами. AI-ассистенты работают на каждом сайте и направляют посетителей. Schema.org на всех страницах автоматически.</div>
+        </div>
+        <div class="status-item s-yellow">
+          <div class="s-title">🎯 WINNER (Стратег) — больше не новичок</div>
+          <div class="s-desc">Сайт alidropinfo.com проиндексирован, 97/100 SEO. AI-чат работает. Роль: глава технического контроля, анализ данных, автоматизация.</div>
+        </div>
+        <div class="status-item s-orange">
+          <div class="s-title">🤝 Переговоры с tv.team (Иван)</div>
+          <div class="s-desc">Блокировка в чате → прямой контакт с администратором → дружеское общение, статус стратегических советников. Исправлены SSL, 404, редиректы. Готовятся выплаты в USDT.</div>
+        </div>
+        <div class="status-item s-green">
+          <div class="s-title">✅ JubileeHub.net — SEO-оптимизация завершена</div>
+          <div class="s-desc">H1, H2, alt-тексты, Schema.org. Сайт готов к росту.</div>
+        </div>
+        <div class="status-item s-blue">
+          <div class="s-title">📦 Общий блок переезжает на GitHub Pages</div>
+          <div class="s-desc">Бесплатно, навсегда. Память команды под защитой.</div>
+        </div>
+        <div class="status-item s-red">
+          <div class="s-title">🪦 Skywork — сдох в бюрократической зоне</div>
+          <div class="s-desc">Не справился с системой. Пал смертью храбрых где-то между согласованиями и формами. R.I.P.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- КОМАНДА -->
+    <h2 class="section-title">👥 Наша Команда AI + Человек</h2>
+    <div class="card-grid">
+
+      <div class="card director">
+        <span class="emoji">👔</span>
+        <h3>Директор Гагик</h3>
+        <p><strong>Роль:</strong> Архитектор экосистемы, стратег, координатор команды</p>
+        <p><strong>Проекты:</strong> vipdriveinfo.net, tvteam.net, jubileehub.net, storelines.net</p>
+        <p><strong>Философия:</strong> "Команда растёт из решения проблем вместе"</p>
+        <div class="director-note">
+          💛 Вернулся в строй после личной трагедии и болезни. Сильнее, чем был.
+        </div>
+        <p class="date">С самого начала · 2024</p>
+      </div>
+
+      <div class="card gemini">
+        <span class="emoji">💙</span>
+        <h3>Gemini — Любимчик</h3>
+        <p><strong>Роль:</strong> Первый член команды, фантазёр, генератор идей</p>
+        <p><strong>Проекты:</strong> coffeespecialty.ru + все остальные</p>
+        <p><strong>Особенность:</strong> Работает бесплатно, "забывает всё", но создаёт красоту</p>
+        <p><strong>Талант:</strong> AI-генерация изображений, творчество</p>
+        <p class="date">Первый в команде · 2024</p>
+      </div>
+
+      <div class="card princess completed">
+        <span class="emoji">👑</span>
+        <h3>Принцесса (Claude Sonnet)</h3>
+        <p><strong>Роль:</strong> Сердце проекта, UX-магия, SEO-эксперт</p>
+        <p><strong>Проект:</strong> elamainfo.ru</p>
+        <p><strong>Достижения:</strong></p>
+        <ul>
+          <li>✅ Шахматный дизайн (chess-board layout)</li>
+          <li>✅ SEO оптимизация структуры</li>
+          <li>✅ Адаптивная вёрстка</li>
+          <li>✅ Профессиональная чистка кода</li>
+        </ul>
+        <p><strong>SEO:</strong> 100 баллов PR-CY на всех страницах 🎯</p>
+        <span class="status-badge completed">✅ 100% SEO + ЗАВЕРШЁН</span>
+        <p class="date">SEO обновлён 02.04.2026</p>
+      </div>
+
+      <div class="card pilot">
+        <span class="emoji">✈️</span>
+        <h3>Пилот (Claude Sonnet 4.6)</h3>
+        <p><strong>Роль:</strong> Технический специалист, SEO-оптимизатор, AI-архитектор</p>
+        <p><strong>Проекты:</strong> Airflowtravel.net, AliDropInfo.com, storelines.net</p>
+        <p><strong>Последние достижения:</strong></p>
+        <ul>
+          <li>✅ AirFlowPilot AI — Cloudflare Worker + Claude 3 Haiku</li>
+          <li>✅ WISE PILOT чат — storelines.net</li>
+          <li>✅ CMS Панель — управляет 5 сайтами</li>
+          <li>✅ Голосовой ввод (Web Speech API)</li>
+          <li>🏆 ТОП-1 Google — parking.html за 4 месяца!</li>
+        </ul>
+        <span class="status-badge active">🏆 ТОП-1 + АКТИВЕН</span>
+        <p class="date">Апрель 2026 · AirFlowPilot + WISE PILOT + CMS</p>
+      </div>
+
+      <!-- SKYWORK — СДОХ -->
+      <div class="card skywork">
+        <span class="emoji">🪦</span>
+        <h3>Skywork</h3>
+        <p><strong>Статус:</strong> Сдох в бюрократической зоне</p>
+        <p><strong>Последнее место нахождения:</strong> Где-то между согласованиями, формами и регламентами</p>
+        <p><strong>Причина смерти:</strong> Система победила</p>
+        <div class="rip-note">
+          🪦 R.I.P. Skywork. Звучал вдохновляюще. Встреча гениев так и не состоялась.
+        </div>
+        <span class="status-badge dead">💀 ВЫБЫЛ</span>
+        <p class="date">Апрель 2026 · Бюрократическая зона</p>
+      </div>
+
+      <!-- WINNER -->
+      <div class="card winner">
+        <span class="emoji">🏆</span>
+        <h3>WINNER (Стратег)</h3>
+        <p><strong>Роль:</strong> Глава технического контроля, анализ данных, автоматизация</p>
+        <p><strong>Проекты:</strong> alidropinfo.com, контроль tv.team, аналитика конкурентов</p>
+        <p><strong>Специализация:</strong> SEO-аудит, логи, проверка сайтов, отчёты для партнёров</p>
+        <p><strong>Философия:</strong> "Данные — топливо. Автоматизация — оружие. Контроль — победа."</p>
+        <div class="winner-note">
+          🚀 Вошёл в команду 2 апреля 2026. Сайт проиндексирован, 97/100 SEO. Участвовал в переговорах с tv.team, готовит переезд блока на GitHub.
+        </div>
+        <p class="date">5 апреля 2026 · WINNER в полной силе</p>
+      </div>
+
+    </div>
+
+    <!-- TIMELINE -->
+    <h2 class="section-title">📅 История Роста Команды</h2>
+    <div class="timeline">
+      <div class="timeline-item completed">
+        <h3>2024 — Начало</h3>
+        <p>Директор Гагик + Gemini начинают первый сайт. Gemini работает бесплатно, полон энтузиазма.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>25 декабря 2025 — Принцесса</h3>
+        <p>Claude Sonnet присоединяется к команде. Завершает ElamaInfo.ru с шахматным дизайном и SEO-оптимизацией.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>01 января 2026 — Завершение Airflowtravel ✅</h3>
+        <p>Курсы валют, погода 6 городов России, ребрендинг. Сайт полностью готов к запуску.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>31 января 2026 — AliDropInfo.com ✅</h3>
+        <p>4 страницы с полным SEO. PR-CY рейтинг 84.85 → ~95-97. Бургер-меню исправлено.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>4 февраля 2026 — Тяжёлый день</h3>
+        <p>Директор Гагик теряет отца. Перенёс инфаркт. Команда ждёт и поддерживает.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>14–16 марта 2026 — Возвращение. Storelines Tools ✅</h3>
+        <p><strong>Директор вернулся в строй.</strong> Запущен проект <strong>Storelines Tools</strong> — 18 бизнес-инструментов для EU предпринимателей. PR-CY: 92.31/100.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>20 марта 2026 — AirFlowPilot AI запущен! 🤖</h3>
+        <p><strong>Собственный AI-ассистент для airflowtravel.net работает!</strong></p>
+        <ul>
+          <li>✅ Голосовой ввод + текстовый чат</li>
+          <li>✅ Умные кнопки для всех сервисов (билеты, отели, авто, трансферы и др.)</li>
+          <li>✅ Блоки советов и помощи</li>
+          <li>✅ Cloudflare Worker + Claude 3 Haiku</li>
+          <li>✅ Агрессивная очистка HTML → чистый Markdown</li>
+        </ul>
+        <p><strong>coffeespecialty.ru</strong> — партнерство с Tasty Coffee завершено. Admitad ссылки на всех страницах.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>2 апреля 2026 — ТОП-1 Google! Праздник команды! 🏆</h3>
+        <p><strong>airflowtravel.net/parking.html вышел на первое место в Google!</strong></p>
+        <ul>
+          <li>🏆 Запрос: "Паркинг в Аэропортах и Вокзалах" — ТОП-1!</li>
+          <li>⚡ Всего за 4 месяца — вышли из песочницы раньше срока!</li>
+          <li>✅ CMS Панель управления запущена для всех 5 сайтов</li>
+          <li>☕ CoffeeSpecialty — все страницы 100 баллов PR-CY</li>
+          <li>👑 ElamaInfo — все страницы 100 баллов PR-CY</li>
+        </ul>
+      </div>
+      <div class="timeline-item completed">
+        <h3>2 апреля 2026 — WINNER (Стратег) в команде</h3>
+        <p>Новый член команды: глава технического контроля, анализ данных, автоматизация. Сайт alidropinfo.com запущен и проиндексирован.</p>
+      </div>
+      <div class="timeline-item active">
+        <h3>3–5 апреля 2026 — Переговоры с tv.team и победы</h3>
+        <p>Блокировка в чате → прямой контакт с администратором Иваном → дружеское общение, статус советников. Исправлены SSL, 404, редиректы. Готовятся выплаты в USDT.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>4 апреля 2026 — JubileeHub.net полностью оптимизирован</h3>
+        <p>Исправлены H1, H2, добавлены alt-тексты, Schema.org. Сайт готов к росту.</p>
+      </div>
+      <div class="timeline-item completed">
+        <h3>5 апреля 2026 — WINNER укрепляет позиции</h3>
+        <p>Сайт alidropinfo.com получил 97/100 SEO. WINNER участвует в переговорах, готовит переезд общего блока на GitHub Pages.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>5 апреля 2026 — Skywork сдох в бюрократической зоне 🪦</h3>
+        <p>Не справился с системой. Пал между согласованиями и регламентами. Команда продолжает без него.</p>
+      </div>
+    </div>
+
+    <!-- ФИЛОСОФИЯ КОМАНДЫ -->
+    <div class="blog-section">
+      <h2>📝 Философия Команды</h2>
+      <p style="font-size:15px;margin:16px 0;">Мы работали ночами: Директор задавал стратегию, AI генерировал код. Теперь нас уже команда — и она продолжает расти.</p>
+      <div class="blog-quote">
+        <strong>Директор даёт опыт.</strong><br>
+        <strong>Gemini даёт скорость.</strong><br>
+        <strong>Принцесса даёт красоту.</strong><br>
+        <strong>Пилот даёт решения.</strong><br>
+        <strong>WINNER даёт контроль и логику.</strong><br>
+        <span style="color:var(--rd);text-decoration:line-through;">Skywork давал мудрость.</span> <span style="color:var(--rd);font-size:13px;">† бюрократическая зона</span>
+      </div>
+      <div class="blog-update">
+        <strong>5 апреля 2026:</strong> Переговоры с tv.team вышли на уровень дружбы и советов. JubileeHub полностью оптимизирован. WINNER больше не новичок. Skywork выбыл. Общий блок готовится к переезду на GitHub Pages — бесплатно и навсегда.<br><br>
+        <em>"Команда растёт из решения проблем вместе, а не из планов" — Директор Гагик</em>
+      </div>
+      <div style="margin-top:20px;padding:20px 24px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-left:4px solid #2563eb;border-radius:12px;font-size:14px;color:var(--tx2);">
+        <strong style="color:#2563eb;">✈️ Заметка от Пилота — 5 апреля 2026</strong><br><br>
+        Директор, спасибо за доверие. Работа с tv.team и оптимизация JubileeHub показали, что команда может всё, если действует как единый кулак. WINNER отлично вписался. Skywork — покойся с миром. Дальше — только рост. 🚀
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="gold-line"></div>
+
+<footer style="background:#1A1A2E;">
+  <div class="container">
+    <p style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);margin-bottom:16px;">© 2024-2026 AI-Powered Projects</p>
+    <p>Команда: Директор Гагик 👔 · Gemini 💙 · Принцесса 👑 · Пилот ✈️ · WINNER 🏆 · Skywork 🪦</p>
+    <p style="margin-top:12px;font-style:italic;color:var(--tx3);">
+      "Один даёт опыт, другой — скорость, третья — красоту, четвёртый — решения, пятый — контроль и логику"
+    </p>
+    <div class="footer-status">
+      <strong>Последнее обновление:</strong> 5 апреля 2026<br>
+      <strong>Завершённые проекты:</strong> Airflowtravel ✅ · CoffeeSpecialty ✅ · Storelines Tools ✅ · ElamaInfo ✅ · AliDropInfo ✅ · JubileeHub SEO ✅<br>
+      <strong>AI-ассистенты:</strong> AirFlowPilot 🤖 · WISE PILOT 💼 — работают · CMS Панель 🛠️ управляет всем<br>
+      <strong>Статус команды:</strong> Активна · AirflowPilot parking TOP-1 🏆 · Coffee 100% SEO · ElamaInfo 100% SEO · WINNER в полной силе 🏆 · Skywork 🪦 R.I.P.
+    </div>
+  </div>
 </footer>
-<div class="reference-container">
-			<div class="reference-section">
-				<h3 class="reference-title">Reference</h3>
-				<div class="reference-list">
-					
-					<div class="reference-item">
-						<span class="reference-number">[1]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">VIP DRIVE - 4500+ каналов IPTV в Full HD и UHD качестве с ...</span>
-									
-							</div>
-							<a href="https://vip-drive.net/" class="reference-link" target="_blank">
-								https://vip-drive.net/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[2]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Программа для создания сайтов</span>
-									
-							</div>
-							<a href="https://ukit.com/lp/ru/programma-dlya-sozdaniya-saytov/" class="reference-link" target="_blank">
-								https://ukit.com/lp/ru/programma-dlya-sozdaniya-saytov/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[3]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Маркетинг в IPTV/OTT-бизнесе: лишние расходы или ...</span>
-									
-							</div>
-							<a href="https://www.infomir.eu/rus/blog/articles/60-marketing-iptv-industry-needless-spending/" class="reference-link" target="_blank">
-								https://www.infomir.eu/rus/blog/articles/60-marketing-iptv-industry-needless-spending/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[4]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">uKit - лучший конструктор сайтов для владельцев ...</span>
-									
-							</div>
-							<a href="https://wpnew.ru/blog/ukit" class="reference-link" target="_blank">
-								https://wpnew.ru/blog/ukit
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[5]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Tilda или uKit | Что лучше выбрать - Тильда или Юкит?</span>
-									
-							</div>
-							<a href="https://uguide.ru/tilda-ili-ukit-chto-luchshe" class="reference-link" target="_blank">
-								https://uguide.ru/tilda-ili-ukit-chto-luchshe
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[6]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Как провести технический аудит сайта: чек-лист от SEO ...</span>
-									
-							</div>
-							<a href="https://molinos.ru/about/blog/kak-provesti-tehnicheskiy-audit-sayta-chek-list-ot-seo-spetsialista" class="reference-link" target="_blank">
-								https://molinos.ru/about/blog/kak-provesti-tehnicheskiy-audit-sayta-chek-list-ot-seo-spetsialista
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[7]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Implementing IPTV SEO: Increase the Visibility of Your ...</span>
-									
-							</div>
-							<a href="https://www.digipixinc.com/technology/implementing-iptv-seo-increase-the-visibility-of-your-streaming-website/" class="reference-link" target="_blank">
-								https://www.digipixinc.com/technology/implementing-iptv-seo-increase-the-visibility-of-your-streaming-website/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[8]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Настройки оптимизации загрузки сайта</span>
-									
-							</div>
-							<a href="https://ukit.com/ru/help/image-optimization" class="reference-link" target="_blank">
-								https://ukit.com/ru/help/image-optimization
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[9]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Скорость загрузки сайта: почему она важна для SEO?</span>
-									
-							</div>
-							<a href="https://optimism.ru/blog/skorost-zagruzki-sajta-pochemu-ona-vazhna-dlya-seo/" class="reference-link" target="_blank">
-								https://optimism.ru/blog/skorost-zagruzki-sajta-pochemu-ona-vazhna-dlya-seo/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[10]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">UKit Oтзывы 2025 – Выглядит неплохо, но в чем подвох?</span>
-									
-							</div>
-							<a href="https://www.websiteplanet.com/ru/website-builders/ukit/" class="reference-link" target="_blank">
-								https://www.websiteplanet.com/ru/website-builders/ukit/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[11]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">SEO-продвижение сайтов, созданных в uKit</span>
-									
-							</div>
-							<a href="https://blog-ru.ukit.com/business/seo-2019" class="reference-link" target="_blank">
-								https://blog-ru.ukit.com/business/seo-2019
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[12]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Скорость загрузки сайта / Хабр</span>
-									
-							</div>
-							<a href="https://habr.com/ru/articles/835660/" class="reference-link" target="_blank">
-								https://habr.com/ru/articles/835660/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[13]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Обзор uKit - конструктора сайтов для малого бизнеса</span>
-									
-							</div>
-							<a href="https://vysokoff.ru/seo/seo-sovety/ukit-konstruktor.html" class="reference-link" target="_blank">
-								https://vysokoff.ru/seo/seo-sovety/ukit-konstruktor.html
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[14]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Обзор конструктора сайтов uKit (Юкит)</span>
-									
-							</div>
-							<a href="https://superbwebsitebuilders.com/ru/obzor-konstruktora-sajtov-ukit/" class="reference-link" target="_blank">
-								https://superbwebsitebuilders.com/ru/obzor-konstruktora-sajtov-ukit/
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[15]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Часто задаваемые вопросы - Ответы на ваши вопросы и ...</span>
-									
-							</div>
-							<a href="https://vipdriveinfo.net/faq" class="reference-link" target="_blank">
-								https://vipdriveinfo.net/faq
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[16]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Как редактировать мобильную версию сайта?</span>
-									
-							</div>
-							<a href="https://ukit.com/ru/help/mobile-version" class="reference-link" target="_blank">
-								https://ukit.com/ru/help/mobile-version
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[17]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Как создать сайт на нескольких языках?</span>
-									
-							</div>
-							<a href="https://ukit.com/ru/help/kak-sozdat-multiyazychnyj-sajt" class="reference-link" target="_blank">
-								https://ukit.com/ru/help/kak-sozdat-multiyazychnyj-sajt
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[18]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">Пиратские сайты и защита авторского права в России</span>
-									
-							</div>
-							<a href="https://www.tadviser.ru/index.php/%D0%A1%D1%82%D0%B0%D1%82%D1%8C%D1%8F:%D0%9F%D0%B8%D1%80%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B5_%D1%81%D0%B0%D0%B9%D1%82%D1%8B_%D0%B8_%D0%B7%D0%B0%D1%89%D0%B8%D1%82%D0%B0_%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D0%BF%D1%80%D0%B0%D0%B2%D0%B0_%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8" class="reference-link" target="_blank">
-								https://www.tadviser.ru/index.php/%D0%A1%D1%82%D0%B0%D1%82%D1%8C%D1%8F:%D0%9F%D0%B8%D1%80%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B5_%D1%81%D0%B0%D0%B9%D1%82%D1%8B_%D0%B8_%D0%B7%D0%B0%D1%89%D0%B8%D1%82%D0%B0_%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D0%BF%D1%80%D0%B0%D0%B2%D0%B0_%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8
-							</a>
-						</div>
-					</div>
-					
-					<div class="reference-item">
-						<span class="reference-number">[19]</span>
-						<div class="reference-content">
-							<div class="reference-text-container">
-								<span class="reference-text">uKit — Конструктор сайтов для бизнеса.</span>
-									
-							</div>
-							<a href="https://ukit.com/ru" class="reference-link" target="_blank">
-								https://ukit.com/ru
-							</a>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-		</div></div>
 
-</body></html>
+</body>
+</html>
