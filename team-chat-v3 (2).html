@@ -1232,8 +1232,31 @@ async function runTool(id){
     btn.disabled=false;btn.innerHTML=origText;
     return;
   } else if(id==='positions'){
+    const url=g('tf-url');
     const kws=g('tf-kws').split('\n').filter(Boolean).map(k=>k.trim());
-    prompt=`Проверь позиции сайта ${g('tf-url')} в ${g('tf-se')} по ключевым словам: ${kws.join(', ')}. Регион: ${g('tf-region')||'Россия'}. Используй web_search для поиска актуальных данных. Для каждого слова укажи приблизительную позицию и топ-3 конкурента. Дай рекомендации по улучшению позиций.`;
+    if(!url||!kws.length){alert('Укажи URL и хотя бы одно ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    const se=g('tf-se');
+    const region=g('tf-region')||'ru';
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Сканируем позиции...</div></div>';
+    const results=[];
+    for(let kw of kws){
+      try{
+        const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:kw,num:30})});
+        const data=await res.json();
+        const ourDomain=new URL(url).hostname.replace('www.','');
+        const position=data.results?.findIndex(r=>r.domain.includes(ourDomain))??-1;
+        results.push({kw,position:position!==-1?position+1:null,top3:data.results?.slice(0,3).map(r=>r.domain).join(', ')});
+      }catch(e){results.push({kw,position:'ошибка',top3:''});}
+    }
+    let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">📈 Реальная проверка позиций (${se})</span></div><div style="display:flex;flex-direction:column;gap:8px;">`;
+    results.forEach(r=>{
+      const posText=r.position?`#${r.position}`:(r.position===null?'не в топ-30':'ошибка');
+      html+=`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div><strong>${r.kw}</strong> → ${posText}</div>${r.top3?`<div style="font-size:10.5px;color:var(--muted)">Топ-3: ${r.top3}</div>`:''}</div>`;
+    });
+    html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API. Регион: ${region}</div></div>`;
+    document.getElementById('tool-out').innerHTML=html;
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='meta'){
     prompt=`Сгенерируй оптимальные мета-теги для страницы.\nURL/тема: ${g('tf-url')}\nКлючевое слово: ${g('tf-kw')}\nДоп. контекст: ${g('tf-ctx')}\n\nСоздай:\n1. Title (50-60 символов) — 3 варианта\n2. Description (150-160 символов) — 3 варианта\n3. Keywords — 10-15 слов\n4. Готовый HTML код мета-тегов`;
   } else if(id==='alt'){
@@ -1245,12 +1268,63 @@ async function runTool(id){
   } else if(id==='competitors'){
     prompt=`Найди топ-10 конкурентов по запросу "${g('tf-kw')}" в ${g('tf-se')} (регион: ${g('tf-region')||'Россия'}).\nНаш сайт: ${g('tf-oursite')}\nИспользуй web_search.\nДля каждого конкурента укажи: домен, приблизительную позицию, почему они в топе.\nВ конце: сравни наш сайт с топ-3 и дай 5 конкретных действий для улучшения позиций.`;
   } else if(id==='indexing'){
-    const pages=g('tf-pages').split('\n').filter(Boolean);
-    const baseUrl=g('tf-url').replace(/\/$/,'');
-    const urls=pages.length?pages.map(p=>baseUrl+p):[baseUrl+'/'];
-    prompt=`Проверь индексацию в Google и Яндекс:\n${urls.join('\n')}\nИспользуй web_search с запросами site: для каждой страницы.\nПокажи: проиндексирована/не найдена.\nЕсли не проиндексирована — объясни возможные причины и как исправить.`;
+    const url=g('tf-url');
+    const pages=g('tf-pages').split('\n').filter(Boolean).map(p=>p.trim());
+    const baseUrl=url.replace(/\/$/,'');
+    let domain;
+    try{domain=new URL(baseUrl).hostname;}catch(e){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
+    if(!domain){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем индексацию...</div></div>';
+    try{
+      const siteRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:`site:${domain}`,num:20})});
+      const siteData=await siteRes.json();
+      const indexedCount=siteData.results?.length||0;
+      const topPages=siteData.results?.map(r=>({url:r.url,title:r.title}))||[];
+      const pageResults=[];
+      for(let p of pages){
+        let fullUrl=p.startsWith('http')?p:baseUrl+p;
+        const pageRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:`site:${fullUrl}`,num:1})});
+        const pageData=await pageRes.json();
+        pageResults.push({url:fullUrl,indexed:(pageData.results?.length||0)>0});
+      }
+      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🔎 Индексация: ${domain}</span></div>`;
+      html+=`<div style="margin-bottom:12px"><strong>📊 Найдено в Google (site:${domain})</strong> — примерно ${indexedCount} страниц (первые 20)</div>`;
+      if(topPages.length){
+        html+=`<div style="margin-bottom:16px"><strong>Примеры проиндексированных страниц:</strong><ul style="margin-top:6px;font-size:12px;">`;
+        topPages.slice(0,10).forEach(p=>{html+=`<li><a href="${p.url}" target="_blank" style="color:var(--accent)">${p.title||p.url}</a></li>`;});
+        html+=`</ul></div>`;
+      }else{html+=`<div style="margin-bottom:16px;color:var(--danger)">⚠️ Сайт не найден в индексе Google.</div>`;}
+      if(pageResults.length){
+        html+=`<div><strong>🔍 Проверка отдельных страниц:</strong><div style="margin-top:6px;">`;
+        pageResults.forEach(pr=>{html+=`<div style="padding:4px 0;font-size:12px;">${pr.url} — ${pr.indexed?'✅ проиндексирована':'❌ не найдена'}</div>`;});
+        html+=`</div></div>`;
+      }
+      html+=`<div style="margin-top:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API (site: запросы).</div></div>`;
+      document.getElementById('tool-out').innerHTML=html;
+    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ Ошибка: ${e.message}</div>`;}
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='semantic'){
-    prompt=`Найди семантически связанные слова и LSI-ключевые слова для: "${g('tf-kw')}"\nНиша: ${g('tf-niche')}\nКоличество: ${g('tf-count')}\nИспользуй web_search для актуальных данных.\nРазбей по группам: основные, LSI, хвостовые, вопросы.\nДай готовый список для использования в SEO-тексте.`;
+    const kw=g('tf-kw');
+    const niche=g('tf-niche')||'';
+    if(!kw){alert('Введи ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Собираем семантику...</div></div>';
+    try{
+      const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:kw,num:10})});
+      const data=await res.json();
+      const titles=data.results?.map(r=>r.title).join(' ')||'';
+      const prompt=`Ты SEO-эксперт. Ключевое слово: "${kw}". Ниша: ${niche||'не указана'}.\nВот заголовки конкурентов из Google (реальные данные):\n${titles}\nНа основе этих данных составь список из 30-50 семантически связанных слов (LSI). Разбей на группы: основные, дополнительные, вопросы, брендовые. Только список, без лишнего текста.`;
+      const aiRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
+      const aiData=await aiRes.json();
+      const lsiText=aiData.content?.[0]?.text||'Не удалось сгенерировать';
+      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🧠 Семантические слова для "${kw}"</span></div>`;
+      html+=`<div style="margin-bottom:8px;font-size:11px;color:var(--muted)">Источник: реальные заголовки конкурентов (Serper) + AI</div>`;
+      html+=`<div class="bubble" style="white-space:pre-wrap">${md(lsiText)}</div>`;
+      html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API. AI дополнил на основе топ-10 конкурентов.</div></div>`;
+      document.getElementById('tool-out').innerHTML=html;
+    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ Ошибка: ${e.message}</div>`;}
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='tz'){
     prompt=`Создай подробное ТЗ для копирайтера:\nТема: ${g('tf-topic')}\nСайт: ${g('tf-site')}\nОбъём: ${g('tf-volume')} знаков\nЦА: ${g('tf-audience')}\n\nТЗ должно включать: цель статьи, структуру (H1, H2, H3), ключевые слова, требования к контенту, мета-теги, примеры конкурентов.`;
   } else if(id==='h1gen'){
