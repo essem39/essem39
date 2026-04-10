@@ -311,7 +311,7 @@ textarea#inp::placeholder{color:var(--muted);}
       <div class="audit-sub">Вставь URL — Пилот запустит SEO + Скорость + Безопасность одновременно и выдаст единый отчёт.</div>
       <div style="display:flex;gap:8px;align-items:center">
         <input class="audit-input" id="audit-url" placeholder="https://airflowtravel.net/" type="url" style="flex:1" onkeydown="if(event.key==='Enter')runFullAudit()">
-        <input class="audit-input" id="audit-kw" placeholder="Ключевое слово (+ конкуренты)" style="width:220px" onkeydown="if(event.key==='Enter')runFullAudit()">
+        <input class="audit-input" id="audit-kw" placeholder="Ключевое слово (обязательно!)" style="width:220px" onkeydown="if(event.key==='Enter')runFullAudit()">
         <button class="audit-btn" id="audit-btn" onclick="runFullAudit()"><span>🚀</span> Полный аудит</button>
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap" id="audit-quick-btns">
@@ -1046,6 +1046,7 @@ async function runFullAudit(){
   const url=document.getElementById('audit-url').value.trim();
   const kw=document.getElementById('audit-kw').value.trim();
   if(!url){alert('Введи URL сайта');return;}
+  if(!kw){alert('Введи ключевое слово — без него SEO аудит неполный!');return;}
 
   const btn=document.getElementById('audit-btn');
   btn.disabled=true;btn.innerHTML='<span>⏳</span> Сканирую...';
