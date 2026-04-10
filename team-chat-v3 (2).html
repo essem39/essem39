@@ -271,7 +271,7 @@ textarea#inp::placeholder{color:var(--muted);}
           <div class="welcome-icon">✈️</div>
           <h2>Рабочий инструмент команды</h2>
           <p>Выбери проект слева. Отправляй текст, скриншоты, файлы — Пилот разберётся.</p>
-          <div class="welcome-badge">👔 Директор Гагик · ✈️ Пилот готов · 🛠️ 12 инструментов</div>
+          <div class="welcome-badge">👔 Директор Гагик · ✈️ Пилот готов · 🛠️ 16 инструментов</div>
           <div class="quick-actions">
             <button class="qa-btn" onclick="setMode('audit')">🔍 Аудит сайта</button>
             <button class="qa-btn" onclick="setMode('tools')">🛠️ Инструменты</button>
@@ -307,26 +307,25 @@ textarea#inp::placeholder{color:var(--muted);}
   <!-- ====== AUDIT ====== -->
   <div class="audit-panel" id="audit-panel">
     <div class="audit-form">
-      <div class="audit-title">🔍 Аудит сайта</div>
-      <div class="audit-sub">Выбери тип проверки — каждая кнопка делает своё дело. Кофе = кофе, стейк = стейк.</div>
-      <div class="audit-fields">
-        <input class="audit-input" id="audit-url" placeholder="https://airflowtravel.net/" type="url">
-        <input class="audit-input" id="audit-kw" placeholder="Ключевое слово (для конкурентов)">
+      <div class="audit-title">🛰️ Полный аудит сайта</div>
+      <div class="audit-sub">Вставь URL — Пилот запустит SEO + Скорость + Безопасность одновременно и выдаст единый отчёт.</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="audit-input" id="audit-url" placeholder="https://airflowtravel.net/" type="url" style="flex:1" onkeydown="if(event.key==='Enter')runFullAudit()">
+        <input class="audit-input" id="audit-kw" placeholder="Ключевое слово (+ конкуренты)" style="width:220px" onkeydown="if(event.key==='Enter')runFullAudit()">
+        <button class="audit-btn" id="audit-btn" onclick="runFullAudit()"><span>🚀</span> Полный аудит</button>
       </div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px">
-        <button class="audit-type-btn active" id="abtn-seo" onclick="setAuditType('seo',this)">🔍 SEO теги</button>
-        <button class="audit-type-btn" id="abtn-technical" onclick="setAuditType('technical',this)">⚡ Скорость</button>
-        <button class="audit-type-btn" id="abtn-security" onclick="setAuditType('security',this)">🔒 Безопасность</button>
-        <button class="audit-type-btn" id="abtn-competitors" onclick="setAuditType('competitors',this)">🥊 Конкуренты</button>
-        <div style="flex:1"></div>
-        <button class="audit-btn" id="audit-btn" onclick="runAudit()"><span>🚀</span> Запустить</button>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap" id="audit-quick-btns">
+        <button class="audit-type-btn" onclick="runSingleAudit('seo')">🔍 SEO</button>
+        <button class="audit-type-btn" onclick="runSingleAudit('technical')">⚡ Скорость</button>
+        <button class="audit-type-btn" onclick="runSingleAudit('security')">🔒 Безопасность</button>
+        <button class="audit-type-btn" onclick="runSingleAudit('competitors')">🥊 Конкуренты</button>
       </div>
     </div>
     <div class="audit-result" id="audit-result">
       <div class="audit-welcome">
         <div class="audit-welcome-icon">🛰️</div>
-        <h3>Готов к сканированию</h3>
-        <p>Введи URL и ключевое слово. Пилот выйдет в интернет и проведёт полный SEO-аудит.</p>
+        <h3>Готов к полному сканированию</h3>
+        <p>Введи URL и нажми «Полный аудит» — получишь отчёт по всем категориям сразу. Как PR-CY, но твой.</p>
       </div>
     </div>
   </div>
@@ -924,122 +923,282 @@ async function sendMsg(){
   document.getElementById('send-btn').disabled=false;inp.focus();
 }
 
-// AUDIT
-async function runAudit(){
+// AUDIT HELPERS
+function auditFetch(action,url,kw){
+  return fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action,url,keyword:kw||''})}).then(r=>r.json());
+}
+const sc=s=>s==null?'#9ca3af':s>=80?'#16a34a':s>=50?'#d97706':'#dc2626';
+const scBg=s=>s==null?'#f3f4f6':s>=80?'#f0fdf4':s>=50?'#fffbeb':'#fef2f2';
+const scoreLabel=s=>s==null?'Н/Д':s>=80?'Хорошо':s>=50?'Внимание':'Критично';
+
+// Fix modal — create once in body
+function ensureModal(){
+  if(document.getElementById('fix-modal'))return;
+  const m=document.createElement('div');
+  m.id='fix-modal';
+  m.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center';
+  m.innerHTML=`<div style="background:#fff;border-radius:14px;padding:24px;max-width:520px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.18);max-height:80vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-weight:700;font-size:15px;color:#111">✨ Как исправить</div>
+      <button onclick="closeFix()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;line-height:1">×</button>
+    </div>
+    <div id="fix-content" class="bubble" style="font-size:13px;line-height:1.7"></div>
+  </div>`;
+  document.body.appendChild(m);
+}
+ensureModal();
+
+function renderScoreRing(score,label,color){
+  const pct=score??0;
+  const r=32,circ=2*Math.PI*r;
+  const dash=circ*(pct/100);
+  return`<div style="text-align:center;flex-shrink:0">
+    <svg width="80" height="80" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="${r}" fill="none" stroke="#e5e7eb" stroke-width="7"/>
+      <circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="7"
+        stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"
+        stroke-linecap="round" transform="rotate(-90 40 40)"/>
+      <text x="40" y="44" text-anchor="middle" font-size="16" font-weight="800" fill="${color}">${score??'?'}</text>
+    </svg>
+    <div style="font-size:10px;font-weight:700;color:${color};margin-top:1px">${label}</div>
+  </div>`;
+}
+
+function renderChecks(checks,fixUrl){
+  if(!checks)return'';
+  const entries=Object.entries(checks);
+  const crit=entries.filter(([,c])=>c.score!=null&&c.score<50);
+  const warn=entries.filter(([,c])=>c.score!=null&&c.score>=50&&c.score<80);
+  const good=entries.filter(([,c])=>c.score!=null&&c.score>=80);
+
+  const metricCard=([,c])=>`
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
+      <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${c.label}</div>
+      <div style="font-size:22px;font-weight:800;color:${sc(c.score)};margin-bottom:2px">${c.score??'?'}<span style="font-size:11px;font-weight:500;color:#9ca3af">%</span></div>
+      <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-bottom:6px;overflow:hidden">
+        <div style="height:100%;width:${c.score??0}%;background:${sc(c.score)};border-radius:2px;transition:width .6s"></div>
+      </div>
+      <div style="font-size:10.5px;color:#6b7280;line-height:1.4">${c.detail||''}</div>
+    </div>`;
+
+  const issueRow=(tag,color,bgColor)=>([,c])=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:${bgColor};border-radius:8px;border-left:3px solid ${color}">
+      <span style="font-size:10px;font-weight:700;color:${color};white-space:nowrap;padding-top:1px">${tag}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:2px">${c.label}</div>
+        <div style="font-size:11px;color:#6b7280">${c.detail||''}</div>
+      </div>
+      <button onclick="magicFix('${c.label.replace(/'/g,"\\'")}','${fixUrl}')"
+        style="flex-shrink:0;background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;color:#374151;font-family:inherit;white-space:nowrap">
+        ✨ Исправить
+      </button>
+    </div>`;
+
+  return`
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0">
+      ${entries.map(metricCard).join('')}
+    </div>
+    ${crit.length?`
+    <div style="margin-top:14px">
+      <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🔴 Критические ошибки</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${crit.map(issueRow('[КРИТ]','#dc2626','#fef2f2')).join('')}</div>
+    </div>`:''}
+    ${warn.length?`
+    <div style="margin-top:10px">
+      <div style="font-size:11px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🟡 Важные проблемы</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${warn.map(issueRow('[ВАЖНО]','#d97706','#fffbeb')).join('')}</div>
+    </div>`:''}
+    ${good.length?`
+    <div style="margin-top:10px">
+      <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🟢 Работает хорошо</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${good.map(([,c])=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:7px 14px;background:#f0fdf4;border-radius:8px;border-left:3px solid #16a34a">
+          <span style="font-size:10px;font-weight:700;color:#16a34a">[ОК]</span>
+          <div style="font-size:12px;font-weight:600;color:#111">${c.label}</div>
+          <div style="font-size:11px;color:#6b7280;margin-left:4px">${c.detail||''}</div>
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+  `;
+}
+
+function renderSection(icon,title,score,checks,analysis,extra,fixUrl){
+  const color=sc(score);
+  return`<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f3f4f6">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px">${icon}</span>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:#111">${title}</div>
+          <div style="font-size:11px;font-weight:600;color:${color};margin-top:1px">${scoreLabel(score)}</div>
+        </div>
+      </div>
+      ${renderScoreRing(score,score+'/100',color)}
+    </div>
+    ${extra||''}
+    ${renderChecks(checks,fixUrl||'')}
+    ${analysis?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f3f4f6;font-size:12.5px;line-height:1.8;color:#374151" class="bubble">${md(analysis)}</div>`:''}
+  </div>`;
+}
+
+async function runFullAudit(){
   const url=document.getElementById('audit-url').value.trim();
   const kw=document.getElementById('audit-kw').value.trim();
   if(!url){alert('Введи URL сайта');return;}
-  if(auditType==='competitors'&&!kw){alert('Для конкурентов введи ключевое слово!');return;}
 
-  const btn=document.getElementById('audit-btn');btn.disabled=true;
+  const btn=document.getElementById('audit-btn');
+  btn.disabled=true;btn.innerHTML='<span>⏳</span> Сканирую...';
   const res=document.getElementById('audit-result');
-
-  const icons={seo:'🔍',technical:'⚡',security:'🔒',competitors:'🥊'};
-  const names={seo:'SEO анализ',technical:'Скорость',security:'Безопасность',competitors:'Конкуренты'};
   res.innerHTML=`<div style="text-align:center;padding:50px 20px">
-    <div style="font-size:40px;margin-bottom:14px">${icons[auditType]||'🔍'}</div>
-    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">${names[auditType]}: ${url}</div>
-    <div style="max-width:280px;margin:10px auto"><div class="progress-bar"><div class="progress-fill"></div></div></div>
+    <div style="font-size:44px;margin-bottom:16px">🛰️</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px">${url}</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:16px">Запускаю SEO + Скорость + Безопасность параллельно...</div>
+    <div style="max-width:320px;margin:0 auto"><div class="progress-bar"><div class="progress-fill"></div></div></div>
+    <div style="display:flex;justify-content:center;gap:20px;margin-top:20px">
+      <span id="st-seo" style="font-size:11px;color:var(--muted)">🔍 SEO...</span>
+      <span id="st-tech" style="font-size:11px;color:var(--muted)">⚡ Скорость...</span>
+      <span id="st-sec" style="font-size:11px;color:var(--muted)">🔒 Безопасность...</span>
+      ${kw?`<span id="st-comp" style="font-size:11px;color:var(--muted)">🥊 Конкуренты...</span>`:''}
+    </div>
   </div>`;
-  btn.innerHTML='<span>⏳</span> Анализирую...';
+
+  const tick=(id,ok)=>{const el=document.getElementById(id);if(el)el.style.color=ok?'var(--success)':'var(--danger)';};
 
   try{
-    const response=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:auditType,url,keyword:kw})});
-    const data=await response.json();
+    const promises=[
+      auditFetch('seo',url,kw).then(d=>{tick('st-seo',d.ok||d.checks);return{type:'seo',data:d};}),
+      auditFetch('technical',url,kw).then(d=>{tick('st-tech',d.ok||d.checks);return{type:'technical',data:d};}),
+      auditFetch('security',url,kw).then(d=>{tick('st-sec',d.ok||d.checks);return{type:'security',data:d};}),
+    ];
+    if(kw) promises.push(auditFetch('competitors',url,kw).then(d=>{tick('st-comp',d.ok);return{type:'competitors',data:d};}));
 
-    if(data.error){res.innerHTML=`<div class="audit-card">❌ ${data.error}</div>`;btn.disabled=false;btn.innerHTML='<span>🚀</span> Запустить';return;}
+    const results=await Promise.allSettled(promises);
+    const byType={};
+    results.forEach(r=>{if(r.status==='fulfilled')byType[r.value.type]=r.value.data;});
 
-    const score=data.totalScore||0;
-    const sc=s=>s>=80?'#059669':s>=50?'#d97706':'#dc2626';
-    const badge=s=>s>=80?'✅':s>=50?'⚠️':'❌';
-    const scoreLabel=s=>s>=80?'Хорошо':s>=50?'Внимание':'Критично';
+    const seo=byType.seo,tech=byType.technical,sec=byType.security,comp=byType.competitors;
 
-    let html=`<div class="audit-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    // Общий балл
+    const scores=[seo?.totalScore,tech?.totalScore,sec?.totalScore].filter(s=>s!=null);
+    const overall=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+    const overallColor=sc(overall);
+
+    let html=`
+    <div class="audit-card" style="margin-bottom:12px;background:linear-gradient(135deg,${overallColor}11,${overallColor}05);border-color:${overallColor}33">
+      <div style="display:flex;align-items:center;justify-content:space-between">
         <div>
-          <div style="font-weight:700;font-size:15px">${icons[auditType]} ${names[auditType]}: ${url}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">${kw?'КС: '+kw+' · ':''} ${new Date().toLocaleString('ru')}</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Общая оценка</div>
+          <div style="font-size:13px;font-weight:700">${url}</div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:2px">${new Date().toLocaleString('ru')}</div>
         </div>
-        <div style="text-align:center;min-width:70px">
-          <div style="font-size:26px;font-weight:800;color:${sc(score)}">${score}</div>
-          <div style="font-size:10px;color:${sc(score)};font-weight:700">${scoreLabel(score)}</div>
+        <div style="display:flex;gap:16px;align-items:center">
+          ${renderScoreRing(overall,'Итого',overallColor)}
+          ${seo?.totalScore!=null?renderScoreRing(seo.totalScore,'SEO',sc(seo.totalScore)):''}
+          ${tech?.totalScore!=null?renderScoreRing(tech.totalScore,'Скорость',sc(tech.totalScore)):''}
+          ${sec?.totalScore!=null?renderScoreRing(sec.totalScore,'Безопасность',sc(sec.totalScore)):''}
         </div>
-      </div>`;
-
-    // КАРТОЧКИ с прогресс-барами
-    if(data.checks){
-      html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:14px">`;
-      Object.entries(data.checks).forEach(([key,check])=>{
-        const color=sc(check.score);
-        const isIssue=check.score<80;
-        html+=`<div style="padding:10px 13px;background:var(--surface2);border-radius:9px;border-left:3px solid ${color}">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-            <span style="font-size:11px;font-weight:700;color:var(--text2)">${badge(check.score)} ${check.label}</span>
-            <span style="font-size:12px;font-weight:800;color:${color}">${check.score}%</span>
-          </div>
-          <div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:6px;overflow:hidden">
-            <div style="height:100%;width:${check.score}%;background:${color};border-radius:2px;transition:width .5s"></div>
-          </div>
-          <div style="font-size:10.5px;color:var(--muted)">${check.detail||''}</div>
-          ${isIssue?`<button onclick="magicFix('${check.label.replace(/'/g,"\'")}','${url}')" style="margin-top:6px;background:none;border:1px solid rgba(37,99,235,0.3);border-radius:5px;padding:2px 8px;font-size:10px;cursor:pointer;color:var(--accent);font-family:inherit">✨ Исправить</button>`:''}
-        </div>`;
-      });
-      html+=`</div>`;
-    }
-
-    // H2 заголовки (SEO)
-    if(data.h2s?.length){
-      html+=`<div style="margin-bottom:12px;padding:9px 12px;background:var(--surface2);border-radius:8px;font-size:11.5px">
-        <span style="color:var(--muted);font-weight:700">H2 (${data.h2s.length}): </span>
-        ${data.h2s.map(h=>`<span style="background:var(--sidebar);border:1px solid var(--border);border-radius:4px;padding:2px 6px;margin:2px;display:inline-block">${h.slice(0,45)}</span>`).join(' ')}
-      </div>`;
-    }
-
-    // Конкуренты
-    if(auditType==='competitors'&&data.results?.length){
-      const ourDomain=url?new URL(url).hostname.replace('www.',''):'';
-      html+=`<div style="margin-bottom:12px">
-        <div style="font-size:12px;font-weight:700;margin-bottom:7px">🌍 Google топ по "${kw}" ${data.ourPosition?`· <span style="color:var(--accent)">Наш сайт #${data.ourPosition}</span>`:'· Наш сайт не в топ-10'}</div>
-        ${data.results.map(r=>{
-          const isOurs=r.domain.replace('www.','').includes(ourDomain);
-          return `<div style="padding:7px 12px;margin-bottom:5px;border-radius:7px;border:1px solid ${isOurs?'rgba(37,99,235,0.4)':'var(--border)'};background:${isOurs?'var(--accent-light)':'var(--surface2)'};display:flex;align-items:center;gap:8px">
-            <span style="font-weight:800;color:${isOurs?'var(--accent)':'var(--muted)'};min-width:28px;font-size:12px">#${r.position}</span>
-            <div style="flex:1;min-width:0">
-              <div style="font-size:12px;font-weight:${isOurs?700:500};color:${isOurs?'var(--accent)':'var(--text)'}">${r.domain} ${isOurs?'✈️ НАШ САЙТ':''}</div>
-              <div style="font-size:10.5px;color:var(--muted)">${r.title?.slice(0,60)||''}</div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>`;
-    }
-
-    // Анализ AI
-    html+=`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-      <div id="audit-analysis-txt" class="bubble">${md(data.analysis||'')}</div>
-    </div>`;
-
-    html+=`<div style="display:flex;justify-content:flex-end;margin-top:10px">
-      <button onclick="navigator.clipboard.writeText(document.getElementById('audit-analysis-txt').innerText);this.textContent='✓ Скопировано';setTimeout(()=>this.textContent='📋 Копировать',2000)" class="tb-btn">📋 Копировать</button>
-    </div>`;
-
-    html+=`</div>`;
-
-    // Modal для Magic Fix
-    html+=`<div id="fix-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;display:none;align-items:center;justify-content:center">
-      <div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div style="font-weight:700;font-size:15px">✨ Как исправить</div>
-          <button onclick="closeFix()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
-        </div>
-        <div id="fix-content" class="bubble" style="font-size:13px"></div>
       </div>
     </div>`;
 
+    if(seo) html+=renderSection('🔍','SEO теги',seo.totalScore,seo.checks,seo.analysis,
+      seo.h2s?.length?`<div style="padding:8px 12px;background:#f9fafb;border-radius:8px;font-size:11px;margin-bottom:8px;border:1px solid #e5e7eb">
+        <span style="color:#6b7280;font-weight:700">H2: </span>
+        ${seo.h2s.map(h=>`<span style="background:#fff;border:1px solid #e5e7eb;border-radius:4px;padding:2px 7px;margin:2px;display:inline-block">${h.slice(0,40)}</span>`).join(' ')}
+      </div>`:null, url
+    );
+
+    if(tech) html+=renderSection('⚡','Скорость и техническое',tech.totalScore,tech.checks,tech.analysis,
+      tech.techData?.opportunities?.length?`<div style="padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:11px;margin-bottom:8px">
+        <div style="font-weight:700;color:#dc2626;margin-bottom:5px">🐢 Что замедляет сайт:</div>
+        ${tech.techData.opportunities.map(o=>`<div style="margin-bottom:3px">• ${o.title}${o.savings?` <span style="color:#dc2626">${o.savings}</span>`:''}</div>`).join('')}
+      </div>`:null, url
+    );
+
+    if(sec) html+=renderSection('🔒','Безопасность',sec.totalScore,sec.checks,sec.analysis,null,url);
+
+    if(comp&&comp.results?.length){
+      const ourDomain=new URL(url).hostname.replace('www.','');
+      html+=`<div class="audit-card" style="margin-bottom:12px">
+        <div style="font-weight:700;font-size:14px;margin-bottom:10px">🥊 Конкуренты по «${kw}»</div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+          ${comp.results.map(r=>{
+            const isOurs=r.domain.replace('www.','').includes(ourDomain);
+            return`<div style="padding:7px 12px;border-radius:7px;border:1px solid ${isOurs?'rgba(37,99,235,0.4)':'var(--border)'};background:${isOurs?'var(--accent-light)':'var(--surface2)'};display:flex;align-items:center;gap:8px">
+              <span style="font-weight:800;color:${isOurs?'var(--accent)':'var(--muted)'};min-width:24px;font-size:11px">#${r.position}</span>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:11.5px;font-weight:${isOurs?700:500};color:${isOurs?'var(--accent)':'var(--text)'}">${r.domain}${isOurs?' ✈️ НАШ':''}</div>
+                <div style="font-size:10px;color:var(--muted)">${r.title?.slice(0,60)||''}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        ${comp.analysis?`<div class="bubble" style="font-size:12px;line-height:1.7;border-top:1px solid var(--border);padding-top:10px">${md(comp.analysis)}</div>`:''}
+      </div>`;
+    }
+
+    html+=`<div style="display:flex;justify-content:flex-end;gap:7px;padding:4px 0">
+      <button class="tb-btn" onclick="navigator.clipboard.writeText(document.getElementById('audit-result').innerText);this.textContent='✓ Скопировано';setTimeout(()=>this.textContent='📋 Копировать отчёт',2000)">📋 Копировать отчёт</button>
+    </div>`;
+
+    // Fix modal (outside audit-result for proper z-index)
+    const existingModal=document.getElementById('fix-modal');
+    if(!existingModal){
+      const modal=document.createElement('div');
+      modal.id='fix-modal';
+      modal.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center';
+      modal.innerHTML=`<div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-weight:700;font-size:15px">✨ Как исправить</div>
+          <button onclick="closeFix()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1">✕</button>
+        </div>
+        <div id="fix-content" class="bubble" style="font-size:13px;max-height:400px;overflow-y:auto"></div>
+      </div>`;
+      document.body.appendChild(modal);
+    }
+
     res.innerHTML=html;
   }catch(e){res.innerHTML=`<div class="audit-card">❌ ${e.message}</div>`;}
-  btn.disabled=false;btn.innerHTML='<span>🚀</span> Запустить';
+  btn.disabled=false;btn.innerHTML='<span>🚀</span> Полный аудит';
 }
+
+async function runSingleAudit(type){
+  const url=document.getElementById('audit-url').value.trim();
+  const kw=document.getElementById('audit-kw').value.trim();
+  if(!url){alert('Введи URL сайта');return;}
+  if(type==='competitors'&&!kw){alert('Для конкурентов введи ключевое слово!');return;}
+  auditType=type;
+  // Temporarily set auditType and call old flow
+  const btn=document.getElementById('audit-btn');
+  btn.disabled=true;btn.innerHTML='<span>⏳</span> Сканирую...';
+  const res=document.getElementById('audit-result');
+  const icons={seo:'🔍',technical:'⚡',security:'🔒',competitors:'🥊'};
+  const names={seo:'SEO анализ',technical:'Скорость',security:'Безопасность',competitors:'Конкуренты'};
+  res.innerHTML=`<div style="text-align:center;padding:50px 20px">
+    <div style="font-size:40px;margin-bottom:14px">${icons[type]}</div>
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">${names[type]}: ${url}</div>
+    <div style="max-width:280px;margin:10px auto"><div class="progress-bar"><div class="progress-fill"></div></div></div>
+  </div>`;
+  try{
+    const data=await auditFetch(type,url,kw);
+    if(data.error){res.innerHTML=`<div class="audit-card">❌ ${data.error}</div>`;btn.disabled=false;btn.innerHTML='<span>🚀</span> Полный аудит';return;}
+    let html='';
+    if(type==='competitors'&&data.results?.length){
+      const ourDomain=new URL(url).hostname.replace('www.','');
+      html=`<div class="audit-card"><div style="font-weight:700;font-size:14px;margin-bottom:10px">🥊 ${kw} — топ ${data.results.length}</div>
+        ${data.results.map(r=>{const isOurs=r.domain.replace('www.','').includes(ourDomain);return`<div style="padding:7px 12px;margin-bottom:5px;border-radius:7px;border:1px solid ${isOurs?'rgba(37,99,235,0.4)':'var(--border)'};background:${isOurs?'var(--accent-light)':'var(--surface2)'};display:flex;align-items:center;gap:8px"><span style="font-weight:800;color:${isOurs?'var(--accent)':'var(--muted)'};min-width:24px">#${r.position}</span><div><div style="font-size:12px;font-weight:${isOurs?700:500};color:${isOurs?'var(--accent)':'var(--text)'}">${r.domain}${isOurs?' ✈️':''}</div><div style="font-size:10px;color:var(--muted)">${r.title?.slice(0,60)||''}</div></div></div>`;}).join('')}
+        ${data.analysis?`<div class="bubble" style="font-size:12px;border-top:1px solid var(--border);padding-top:10px;margin-top:10px">${md(data.analysis)}</div>`:''}
+      </div>`;
+    }else{html=renderSection(icons[type],names[type],data.totalScore,data.checks,data.analysis);}
+    const existingModal=document.getElementById('fix-modal');
+    if(!existingModal){const modal=document.createElement('div');modal.id='fix-modal';modal.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center';modal.innerHTML=`<div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-weight:700;font-size:15px">✨ Как исправить</div><button onclick="closeFix()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button></div><div id="fix-content" class="bubble" style="font-size:13px;max-height:400px;overflow-y:auto"></div></div>`;document.body.appendChild(modal);}
+    res.innerHTML=html;
+  }catch(e){res.innerHTML=`<div class="audit-card">❌ ${e.message}</div>`;}
+  btn.disabled=false;btn.innerHTML='<span>🚀</span> Полный аудит';
+}
+
+// AUDIT (legacy - kept for compatibility)
+async function runAudit(){runFullAudit();}
 
 async function magicFix(issue, fixUrl){
   const modal=document.getElementById('fix-modal');
@@ -1127,8 +1286,31 @@ async function runTool(id){
     btn.disabled=false;btn.innerHTML=origText;
     return;
   } else if(id==='positions'){
+    const url=g('tf-url');
     const kws=g('tf-kws').split('\n').filter(Boolean).map(k=>k.trim());
-    prompt=`Проверь позиции сайта ${g('tf-url')} в ${g('tf-se')} по ключевым словам: ${kws.join(', ')}. Регион: ${g('tf-region')||'Россия'}. Используй web_search для поиска актуальных данных. Для каждого слова укажи приблизительную позицию и топ-3 конкурента. Дай рекомендации по улучшению позиций.`;
+    if(!url||!kws.length){alert('Укажи URL и хотя бы одно ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    const se=g('tf-se');
+    const region=g('tf-region')||'ru';
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Сканируем позиции...</div></div>';
+    const results=[];
+    for(let kw of kws){
+      try{
+        const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:kw,num:30})});
+        const data=await res.json();
+        const ourDomain=new URL(url).hostname.replace('www.','');
+        const position=data.results?.findIndex(r=>r.domain.includes(ourDomain))??-1;
+        results.push({kw,position:position!==-1?position+1:null,top3:data.results?.slice(0,3).map(r=>r.domain).join(', ')});
+      }catch(e){results.push({kw,position:'ошибка',top3:''});}
+    }
+    let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">📈 Реальная проверка позиций (${se})</span></div><div style="display:flex;flex-direction:column;gap:8px;">`;
+    results.forEach(r=>{
+      const posText=r.position?`#${r.position}`:(r.position===null?'не в топ-30':'ошибка');
+      html+=`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div><strong>${r.kw}</strong> → ${posText}</div>${r.top3?`<div style="font-size:10.5px;color:var(--muted)">Топ-3: ${r.top3}</div>`:''}</div>`;
+    });
+    html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API. Регион: ${region}</div></div>`;
+    document.getElementById('tool-out').innerHTML=html;
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='meta'){
     prompt=`Сгенерируй оптимальные мета-теги для страницы.\nURL/тема: ${g('tf-url')}\nКлючевое слово: ${g('tf-kw')}\nДоп. контекст: ${g('tf-ctx')}\n\nСоздай:\n1. Title (50-60 символов) — 3 варианта\n2. Description (150-160 символов) — 3 варианта\n3. Keywords — 10-15 слов\n4. Готовый HTML код мета-тегов`;
   } else if(id==='alt'){
@@ -1140,12 +1322,63 @@ async function runTool(id){
   } else if(id==='competitors'){
     prompt=`Найди топ-10 конкурентов по запросу "${g('tf-kw')}" в ${g('tf-se')} (регион: ${g('tf-region')||'Россия'}).\nНаш сайт: ${g('tf-oursite')}\nИспользуй web_search.\nДля каждого конкурента укажи: домен, приблизительную позицию, почему они в топе.\nВ конце: сравни наш сайт с топ-3 и дай 5 конкретных действий для улучшения позиций.`;
   } else if(id==='indexing'){
-    const pages=g('tf-pages').split('\n').filter(Boolean);
-    const baseUrl=g('tf-url').replace(/\/$/,'');
-    const urls=pages.length?pages.map(p=>baseUrl+p):[baseUrl+'/'];
-    prompt=`Проверь индексацию в Google и Яндекс:\n${urls.join('\n')}\nИспользуй web_search с запросами site: для каждой страницы.\nПокажи: проиндексирована/не найдена.\nЕсли не проиндексирована — объясни возможные причины и как исправить.`;
+    const url=g('tf-url');
+    const pages=g('tf-pages').split('\n').filter(Boolean).map(p=>p.trim());
+    const baseUrl=url.replace(/\/$/,'');
+    let domain;
+    try{domain=new URL(baseUrl).hostname;}catch(e){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
+    if(!domain){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем индексацию...</div></div>';
+    try{
+      const siteRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:`site:${domain}`,num:20})});
+      const siteData=await siteRes.json();
+      const indexedCount=siteData.results?.length||0;
+      const topPages=siteData.results?.map(r=>({url:r.url,title:r.title}))||[];
+      const pageResults=[];
+      for(let p of pages){
+        let fullUrl=p.startsWith('http')?p:baseUrl+p;
+        const pageRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:`site:${fullUrl}`,num:1})});
+        const pageData=await pageRes.json();
+        pageResults.push({url:fullUrl,indexed:(pageData.results?.length||0)>0});
+      }
+      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🔎 Индексация: ${domain}</span></div>`;
+      html+=`<div style="margin-bottom:12px"><strong>📊 Найдено в Google (site:${domain})</strong> — примерно ${indexedCount} страниц (первые 20)</div>`;
+      if(topPages.length){
+        html+=`<div style="margin-bottom:16px"><strong>Примеры проиндексированных страниц:</strong><ul style="margin-top:6px;font-size:12px;">`;
+        topPages.slice(0,10).forEach(p=>{html+=`<li><a href="${p.url}" target="_blank" style="color:var(--accent)">${p.title||p.url}</a></li>`;});
+        html+=`</ul></div>`;
+      }else{html+=`<div style="margin-bottom:16px;color:var(--danger)">⚠️ Сайт не найден в индексе Google.</div>`;}
+      if(pageResults.length){
+        html+=`<div><strong>🔍 Проверка отдельных страниц:</strong><div style="margin-top:6px;">`;
+        pageResults.forEach(pr=>{html+=`<div style="padding:4px 0;font-size:12px;">${pr.url} — ${pr.indexed?'✅ проиндексирована':'❌ не найдена'}</div>`;});
+        html+=`</div></div>`;
+      }
+      html+=`<div style="margin-top:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API (site: запросы).</div></div>`;
+      document.getElementById('tool-out').innerHTML=html;
+    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ Ошибка: ${e.message}</div>`;}
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='semantic'){
-    prompt=`Найди семантически связанные слова и LSI-ключевые слова для: "${g('tf-kw')}"\nНиша: ${g('tf-niche')}\nКоличество: ${g('tf-count')}\nИспользуй web_search для актуальных данных.\nРазбей по группам: основные, LSI, хвостовые, вопросы.\nДай готовый список для использования в SEO-тексте.`;
+    const kw=g('tf-kw');
+    const niche=g('tf-niche')||'';
+    if(!kw){alert('Введи ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Собираем семантику...</div></div>';
+    try{
+      const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:kw,num:10})});
+      const data=await res.json();
+      const titles=data.results?.map(r=>r.title).join(' ')||'';
+      const prompt=`Ты SEO-эксперт. Ключевое слово: "${kw}". Ниша: ${niche||'не указана'}.\nВот заголовки конкурентов из Google (реальные данные):\n${titles}\nНа основе этих данных составь список из 30-50 семантически связанных слов (LSI). Разбей на группы: основные, дополнительные, вопросы, брендовые. Только список, без лишнего текста.`;
+      const aiRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
+      const aiData=await aiRes.json();
+      const lsiText=aiData.content?.[0]?.text||'Не удалось сгенерировать';
+      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🧠 Семантические слова для "${kw}"</span></div>`;
+      html+=`<div style="margin-bottom:8px;font-size:11px;color:var(--muted)">Источник: реальные заголовки конкурентов (Serper) + AI</div>`;
+      html+=`<div class="bubble" style="white-space:pre-wrap">${md(lsiText)}</div>`;
+      html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API. AI дополнил на основе топ-10 конкурентов.</div></div>`;
+      document.getElementById('tool-out').innerHTML=html;
+    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ Ошибка: ${e.message}</div>`;}
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='tz'){
     prompt=`Создай подробное ТЗ для копирайтера:\nТема: ${g('tf-topic')}\nСайт: ${g('tf-site')}\nОбъём: ${g('tf-volume')} знаков\nЦА: ${g('tf-audience')}\n\nТЗ должно включать: цель статьи, структуру (H1, H2, H3), ключевые слова, требования к контенту, мета-теги, примеры конкурентов.`;
   } else if(id==='h1gen'){
