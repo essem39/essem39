@@ -2,8 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINNER Аудит — как AirFlow Pilot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WINNER Аудит — современный отчёт</title>
+    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter + Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,53 +16,48 @@
         }
 
         body {
-            background: #f0f2f5;
-            font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
-            padding: 32px 20px;
-            color: #1e293b;
+            background: linear-gradient(145deg, #f0f4fa 0%, #e6edf4 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 40px 24px;
+            color: #0b2b3d;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* главная карточка */
-        .card {
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        /* карточка ввода */
+        .input-card {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 32px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.6);
+            transition: all 0.2s;
         }
 
-        .card-header {
-            padding: 28px 32px 12px 32px;
-            border-bottom: 1px solid #e9eef3;
-        }
-
-        .card-header h1 {
+        h1 {
+            font-family: 'Space Grotesk', monospace;
+            font-weight: 600;
             font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            background: linear-gradient(125deg, #1e2b6e, #2563eb);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            display: inline-block;
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
         }
 
-        .card-header p {
-            color: #5b6e8c;
-            margin-top: 8px;
+        .sub {
+            color: #4a627a;
+            margin-bottom: 28px;
             font-size: 14px;
         }
 
-        .card-body {
-            padding: 28px 32px;
-        }
-
-        /* поля ввода */
-        .url-group {
-            margin-bottom: 24px;
+        .input-group {
+            margin-bottom: 20px;
         }
 
         label {
@@ -66,399 +65,411 @@
             font-size: 13px;
             display: block;
             margin-bottom: 6px;
-            color: #334155;
+            color: #1e3a5f;
         }
 
-        input[type="url"], input[type="text"] {
+        input, .checks-grid {
             width: 100%;
-            padding: 12px 16px;
+        }
+
+        input {
+            padding: 14px 18px;
+            border-radius: 60px;
+            border: 1px solid #cbdde9;
+            background: white;
             font-size: 15px;
-            border: 1px solid #cbd5e1;
-            border-radius: 24px;
-            background: #fff;
             transition: 0.2s;
         }
 
         input:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
         }
 
-        .checks-row {
+        .checks-flex {
             display: flex;
             flex-wrap: wrap;
-            gap: 24px;
-            margin: 20px 0 24px;
-            background: #f8fafc;
-            padding: 16px 20px;
-            border-radius: 32px;
+            gap: 28px;
+            margin: 16px 0 20px 0;
+            background: #f8fafd;
+            padding: 16px 24px;
+            border-radius: 60px;
         }
 
-        .check-item {
+        .check {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
         }
 
-        .check-item input {
+        .check input {
             width: 18px;
             height: 18px;
-            cursor: pointer;
-            accent-color: #3b82f6;
+            accent-color: #2563eb;
         }
 
-        button {
-            background: linear-gradient(105deg, #2563eb, #4f46e5);
+        button.primary {
+            background: linear-gradient(105deg, #1e3a8a, #2563eb);
             border: none;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 40px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
             color: white;
-            cursor: pointer;
             width: 100%;
+            cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 6px 12px rgba(37,99,235,0.25);
+            box-shadow: 0 10px 18px -6px #1e3a8a40;
         }
 
-        button:hover {
-            transform: translateY(-1px);
+        button.primary:hover {
+            transform: translateY(-2px);
             filter: brightness(1.02);
         }
 
-        button:disabled {
-            opacity: 0.6;
-            transform: none;
+        /* Результат — сетка */
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 28px;
         }
 
-        /* результат — как AirFlow Pilot */
-        .result {
-            margin-top: 32px;
-            border-top: 1px solid #e9eef3;
-            padding-top: 24px;
+        .metric-tile {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            border: 1px solid rgba(148, 184, 218, 0.3);
+            overflow: hidden;
         }
 
-        .platform-badge {
-            background: #fffbeb;
-            border-left: 5px solid #f59e0b;
-            border-radius: 20px;
-            padding: 12px 20px;
-            margin-bottom: 24px;
-            font-size: 13px;
-            color: #92400e;
-        }
-
-        .score-big {
-            font-size: 28px;
-            font-weight: 800;
-            display: inline-block;
-            margin-right: 12px;
-        }
-
-        /* карточка метрики */
-        .metric-card {
-            background: #ffffff;
-            border-radius: 24px;
-            border: 1px solid #eef2ff;
-            padding: 16px 20px;
-            margin-bottom: 14px;
-            transition: 0.1s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-
-        .metric-header {
+        .tile-header {
+            padding: 18px 20px 8px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            border-bottom: 1px solid #eff3f8;
         }
 
-        .metric-name {
+        .tile-title {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .metric-score {
+        .tile-score {
+            font-size: 28px;
             font-weight: 800;
-            font-size: 20px;
         }
 
-        .progress {
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
+        .progress-wrapper {
+            padding: 0 20px;
             margin: 12px 0 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2edf7;
+            border-radius: 20px;
+            overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            border-radius: 10px;
             width: 0%;
-        }
-
-        .metric-detail {
-            font-size: 12px;
-            color: #475569;
-            margin-top: 6px;
-        }
-
-        .green {
-            color: #10b981;
-        }
-        .yellow {
-            color: #f59e0b;
-        }
-        .red {
-            color: #ef4444;
-        }
-
-        .bg-green-light {
-            background: #ecfdf5;
-            border-left: 4px solid #10b981;
-        }
-        .bg-yellow-light {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-        }
-        .bg-red-light {
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-        }
-
-        .competitor-item {
-            background: #f8fafc;
             border-radius: 20px;
-            padding: 12px 18px;
-            margin-bottom: 10px;
+        }
+
+        .tile-detail {
+            padding: 8px 20px 12px 20px;
+            font-size: 13px;
+            color: #3a5a78;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-spoiler {
+            background: #f0f4fa;
+            border: none;
+            padding: 10px 16px;
+            margin: 0 20px 18px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
-            border: 1px solid #e2e8f0;
+            justify-content: space-between;
+            color: #1e3a8a;
+            transition: 0.2s;
         }
 
-        .competitor-rank {
-            font-weight: 800;
-            font-size: 18px;
-            min-width: 40px;
-            color: #2563eb;
+        .btn-spoiler i {
+            transition: transform 0.2s;
         }
 
-        .competitor-domain {
-            font-weight: 600;
+        .spoiler-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: #fbfeff;
+            border-top: 1px solid #eef3fc;
+            padding: 0 20px;
         }
 
-        hr {
-            margin: 24px 0;
-            border: 0;
-            height: 1px;
-            background: #e9eef3;
+        .spoiler-content.show {
+            max-height: 600px;
+            padding: 16px 20px 20px 20px;
         }
 
-        .footer-note {
-            text-align: center;
-            font-size: 11px;
-            color: #6c86a3;
-            margin-top: 28px;
+        .issues-list {
+            list-style: none;
+            margin: 0;
+        }
+
+        .issues-list li {
+            margin-bottom: 12px;
+            font-size: 13px;
+            display: flex;
+            gap: 8px;
+            align-items: baseline;
+        }
+
+        .issues-list li i {
+            margin-top: 3px;
+            font-size: 12px;
+            color: #f59e0b;
+        }
+
+        .platform-note {
+            background: #fffbeb;
+            border-radius: 28px;
+            padding: 14px 24px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #b45f06;
+            border-left: 5px solid #f59e0b;
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            margin: 24px 0 16px 0;
+            margin: 32px 0 16px 0;
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 8px;
+        }
+
+        hr {
+            margin: 16px 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, #cbdde9, transparent);
+        }
+
+        @media (max-width: 700px) {
+            .input-card { padding: 24px; }
+            .result-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h1>✈️ WINNER Аудит</h1>
-            <p>Вставьте URL, выберите проверки — получите отчёт как у AirFlow Pilot</p>
+    <div class="input-card">
+        <h1><i class="fas fa-chart-line"></i> WINNER Аудит</h1>
+        <div class="sub">Проверь сайт за 10 секунд — каждая проблема с цветом и спойлером</div>
+        <div class="input-group">
+            <label>🌐 Адрес сайта</label>
+            <input type="url" id="siteUrl" placeholder="https://jubileehub.net" value="https://jubileehub.net">
         </div>
-        <div class="card-body">
-            <div class="url-group">
-                <label>🌐 Адрес сайта</label>
-                <input type="url" id="url" placeholder="https://jubileehub.net" value="https://jubileehub.net">
-            </div>
-
-            <div class="checks-row">
-                <label class="check-item"><input type="checkbox" id="chk-seo" checked> 🔍 SEO</label>
-                <label class="check-item"><input type="checkbox" id="chk-speed"> ⚡ Скорость</label>
-                <label class="check-item"><input type="checkbox" id="chk-security"> 🔒 Безопасность</label>
-                <label class="check-item"><input type="checkbox" id="chk-competitors"> 🥊 Конкуренты</label>
-            </div>
-
-            <div class="url-group">
-                <label>📌 Ключевое слово (для конкурентов)</label>
-                <input type="text" id="keyword" placeholder="jubilee">
-            </div>
-
-            <button id="runBtn">🚀 Запустить аудит</button>
-
-            <div id="resultArea" class="result"></div>
+        <div class="checks-flex">
+            <label class="check"><input type="checkbox" id="chkSeo" checked> 🔍 SEO</label>
+            <label class="check"><input type="checkbox" id="chkSpeed"> ⚡ Скорость</label>
+            <label class="check"><input type="checkbox" id="chkSecurity"> 🔒 Безопасность</label>
+            <label class="check"><input type="checkbox" id="chkCompetitors"> 🥊 Конкуренты</label>
         </div>
+        <div class="input-group">
+            <label>📌 Ключевое слово (для конкурентов)</label>
+            <input type="text" id="keyword" placeholder="jubilee">
+        </div>
+        <button class="primary" id="runBtn"><i class="fas fa-rocket"></i> Запустить аудит</button>
     </div>
-    <div class="footer-note">⚡ WINNER — каждый пункт с цветом, коротко и ясно</div>
+
+    <div id="resultsArea"></div>
 </div>
 
 <script>
-    const WORKER = 'https://pilot-chat.esem39.workers.dev';
+    const WORKER_URL = 'https://pilot-chat.esem39.workers.dev';
 
-    async function fetchAction(action, url, keyword) {
-        const body = { action, url, keyword: keyword || '' };
-        const resp = await fetch(WORKER, {
+    async function callWorker(action, url, keyword) {
+        const response = await fetch(WORKER_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
+            body: JSON.stringify({ action, url, keyword: keyword || '' })
         });
-        return resp.json();
+        return await response.json();
     }
 
-    function getColorClass(score) {
-        if (score >= 80) return 'green';
-        if (score >= 50) return 'yellow';
-        return 'red';
+    function getColorByScore(score) {
+        if (score >= 80) return '#10b981';
+        if (score >= 50) return '#f59e0b';
+        return '#ef4444';
     }
 
-    function getBgClass(score) {
-        if (score >= 80) return 'bg-green-light';
-        if (score >= 50) return 'bg-yellow-light';
-        return 'bg-red-light';
-    }
-
-    function renderMetric(c) {
-        const color = getColorClass(c.score);
-        const bgClass = getBgClass(c.score);
+    function renderMetricTile(key, metric, index) {
+        const color = getColorByScore(metric.score);
+        const bgLight = metric.score >= 80 ? '#ecfdf5' : (metric.score >= 50 ? '#fffbeb' : '#fef2f2');
+        const issueText = metric.detail || 'нет данных';
         return `
-            <div class="metric-card ${bgClass}">
-                <div class="metric-header">
-                    <div class="metric-name">${c.label}</div>
-                    <div class="metric-score ${color}">${c.score}%</div>
+            <div class="metric-tile">
+                <div class="tile-header">
+                    <div class="tile-title"><i class="fas fa-chart-simple"></i> ${metric.label}</div>
+                    <div class="tile-score" style="color:${color}">${metric.score}%</div>
                 </div>
-                <div class="progress"><div class="progress-fill ${color}" style="width:${c.score}%; background:${c.score>=80?'#10b981':c.score>=50?'#f59e0b':'#ef4444'}"></div></div>
-                <div class="metric-detail">${c.detail || ''}</div>
+                <div class="progress-wrapper">
+                    <div class="progress-bar"><div class="progress-fill" style="width:${metric.score}%; background:${color}"></div></div>
+                </div>
+                <div class="tile-detail">
+                    <span><i class="fas fa-info-circle"></i> ${issueText.substring(0, 60)}</span>
+                </div>
+                <button class="btn-spoiler" data-idx="${index}">
+                    <span><i class="fas fa-lightbulb"></i> Что делать?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="spoiler-content" id="spoiler-${index}">
+                    <ul class="issues-list">
+                        <li><i class="fas fa-wrench"></i> <strong>Рекомендация:</strong> ${metric.detail || 'Проверьте вручную'}</li>
+                        <li><i class="fas fa-code"></i> <strong>Как исправить:</strong> Оптимизируйте ${metric.label.toLowerCase()} согласно стандартам.</li>
+                    </ul>
+                </div>
             </div>
         `;
     }
 
-    async function runAudit() {
-        const url = document.getElementById('url').value.trim();
+    function renderPlatform(platformName, limitations) {
+        if (!platformName) return '';
+        return `<div class="platform-note"><i class="fas fa-cube"></i> <strong>Платформа: ${platformName}</strong> — ${limitations.slice(0,2).join(', ')}</div>`;
+    }
+
+    async function runFullAudit() {
+        const url = document.getElementById('siteUrl').value.trim();
         if (!url) { alert('Введите URL'); return; }
-        const withSEO = document.getElementById('chk-seo').checked;
-        const withSpeed = document.getElementById('chk-speed').checked;
-        const withSecurity = document.getElementById('chk-security').checked;
-        const withCompetitors = document.getElementById('chk-competitors').checked;
+        const withSeo = document.getElementById('chkSeo').checked;
+        const withSpeed = document.getElementById('chkSpeed').checked;
+        const withSecurity = document.getElementById('chkSecurity').checked;
+        const withComp = document.getElementById('chkCompetitors').checked;
         const keyword = document.getElementById('keyword').value.trim();
 
-        if (!withSEO && !withSpeed && !withSecurity && !withCompetitors) {
-            alert('Выберите хотя бы одну проверку');
+        if (!withSeo && !withSpeed && !withSecurity && !withComp) {
+            alert('Выберите хотя бы один тип проверки');
             return;
         }
 
-        const runBtn = document.getElementById('runBtn');
-        runBtn.disabled = true;
-        runBtn.textContent = '⏳ Сканируем...';
-        const resultDiv = document.getElementById('resultArea');
-        resultDiv.innerHTML = '<div style="text-align:center; padding:40px;">🛰️ Анализируем сайт...</div>';
+        const btn = document.getElementById('runBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Анализирую...';
+        const resultsDiv = document.getElementById('resultsArea');
+        resultsDiv.innerHTML = '<div style="text-align:center; padding:40px;"><i class="fas fa-microchip"></i> Сканирую сайт, подождите...</div>';
 
-        let seo = null, speed = null, security = null, competitors = null;
+        let seoData = null, speedData = null, securityData = null, competitorsData = null;
         try {
-            if (withSEO) seo = await fetchAction('seo', url, keyword);
-            if (withSpeed) speed = await fetchAction('technical', url, '');
-            if (withSecurity) security = await fetchAction('security', url, '');
-            if (withCompetitors && keyword) competitors = await fetchAction('competitors', url, keyword);
+            if (withSeo) seoData = await callWorker('seo', url, keyword);
+            if (withSpeed) speedData = await callWorker('technical', url, '');
+            if (withSecurity) securityData = await callWorker('security', url, '');
+            if (withComp && keyword) competitorsData = await callWorker('competitors', url, keyword);
         } catch(e) {
-            resultDiv.innerHTML = `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка соединения: ${e.message}</div>`;
-            runBtn.disabled = false;
-            runBtn.textContent = '🚀 Запустить аудит';
+            resultsDiv.innerHTML = `<div class="platform-note" style="background:#fee2e2;">❌ Ошибка: ${e.message}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-rocket"></i> Запустить аудит';
             return;
         }
 
         let html = '';
 
-        // Платформа
-        let platformName = seo?.platformName || speed?.platformName || security?.platformName;
-        let limitations = seo?.platformLimitations || speed?.platformLimitations || security?.platformLimitations || [];
-        if (platformName) {
-            html += `<div class="platform-badge">
-                        <strong>⚠️ Платформа: ${platformName}</strong><br>
-                        ${limitations.length ? `Ограничения: ${limitations.slice(0,3).join(', ')}` : ''}
-                     </div>`;
-        }
+        // платформа
+        const platformName = seoData?.platformName || speedData?.platformName || securityData?.platformName;
+        const limitations = seoData?.platformLimitations || speedData?.platformLimitations || securityData?.platformLimitations || [];
+        if (platformName) html += renderPlatform(platformName, limitations);
 
         // SEO
-        if (withSEO && seo && !seo.error) {
-            html += `<div class="section-title">🔍 SEO · общая оценка <span class="score-big ${getColorClass(seo.totalScore)}">${seo.totalScore}</span></div>`;
-            for (let [k, c] of Object.entries(seo.checks || {})) {
-                html += renderMetric(c);
+        if (withSeo && seoData && !seoData.error) {
+            html += `<div class="section-title"><i class="fas fa-search"></i> SEO-анализ</div><div class="result-grid">`;
+            let idx = 0;
+            for (let [key, metric] of Object.entries(seoData.checks || {})) {
+                html += renderMetricTile(key, metric, idx++);
             }
-            if (seo.analysis) {
-                html += `<div class="metric-card bg-yellow-light" style="margin-top:8px;"><div class="metric-name">📌 Рекомендации</div><div class="metric-detail">${seo.analysis.substring(0,350)}${seo.analysis.length>350?'…':''}</div></div>`;
+            html += `</div>`;
+            if (seoData.analysis) {
+                html += `<div class="platform-note" style="background:#e6f7ec;"><i class="fas fa-check-circle"></i> <strong>Рекомендации AI:</strong> ${seoData.analysis.substring(0, 200)}…</div>`;
             }
-        } else if (withSEO && seo?.error) {
-            html += `<div class="platform-badge" style="background:#fee2e2;">❌ SEO ошибка: ${seo.error}</div>`;
         }
 
         // Скорость
-        if (withSpeed && speed && !speed.error) {
-            html += `<hr><div class="section-title">⚡ Скорость · общая оценка <span class="score-big ${getColorClass(speed.totalScore)}">${speed.totalScore}</span></div>`;
-            for (let [k, c] of Object.entries(speed.checks || {})) {
-                html += renderMetric(c);
+        if (withSpeed && speedData && !speedData.error) {
+            html += `<div class="section-title"><i class="fas fa-tachometer-alt"></i> Скорость</div><div class="result-grid">`;
+            let idx = 0;
+            for (let [key, metric] of Object.entries(speedData.checks || {})) {
+                html += renderMetricTile(key, metric, idx++);
             }
-            if (speed.analysis) html += `<div class="metric-card bg-yellow-light"><div class="metric-name">💡 Совет</div><div class="metric-detail">${speed.analysis.substring(0,300)}</div></div>`;
-        } else if (withSpeed && speed?.error) {
-            html += `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка скорости: ${speed.error}</div>`;
+            html += `</div>`;
+            if (speedData.analysis) html += `<div class="platform-note" style="background:#e6f7ec;">⚡ ${speedData.analysis.substring(0, 200)}…</div>`;
         }
 
         // Безопасность
-        if (withSecurity && security && !security.error) {
-            html += `<hr><div class="section-title">🔒 Безопасность · общая оценка <span class="score-big ${getColorClass(security.totalScore)}">${security.totalScore}</span></div>`;
-            for (let [k, c] of Object.entries(security.checks || {})) {
-                html += renderMetric(c);
+        if (withSecurity && securityData && !securityData.error) {
+            html += `<div class="section-title"><i class="fas fa-shield-alt"></i> Безопасность</div><div class="result-grid">`;
+            let idx = 0;
+            for (let [key, metric] of Object.entries(securityData.checks || {})) {
+                html += renderMetricTile(key, metric, idx++);
             }
-            if (security.analysis) html += `<div class="metric-card bg-yellow-light"><div class="metric-name">🛡️ Рекомендации</div><div class="metric-detail">${security.analysis.substring(0,300)}</div></div>`;
-        } else if (withSecurity && security?.error) {
-            html += `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка безопасности: ${security.error}</div>`;
+            html += `</div>`;
+            if (securityData.analysis) html += `<div class="platform-note" style="background:#e6f7ec;">🔒 ${securityData.analysis.substring(0, 200)}…</div>`;
         }
 
         // Конкуренты
-        if (withCompetitors && keyword && competitors && !competitors.error) {
-            html += `<hr><div class="section-title">🥊 Конкуренты по запросу «${keyword}»</div>`;
-            if (competitors.ourPosition) html += `<div class="metric-card bg-green-light"><div class="metric-name">📍 Наш сайт</div><div class="metric-detail">Позиция #${competitors.ourPosition} в топ‑10</div></div>`;
-            else html += `<div class="metric-card bg-yellow-light"><div class="metric-name">📍 Наш сайт</div><div class="metric-detail">Не в топ‑10</div></div>`;
-            const results = competitors.results || [];
-            for (let i=0; i<Math.min(results.length, 7); i++) {
-                const r = results[i];
-                html += `<div class="competitor-item">
-                            <div class="competitor-rank">#${r.position}</div>
-                            <div><div class="competitor-domain">${r.domain}</div><div style="font-size:12px; color:#475569;">${r.title?.slice(0,70) || ''}</div></div>
-                         </div>`;
+        if (withComp && keyword && competitorsData && !competitorsData.error) {
+            html += `<div class="section-title"><i class="fas fa-trophy"></i> Конкуренты по запросу «${keyword}»</div>`;
+            if (competitorsData.ourPosition) {
+                html += `<div class="platform-note" style="background:#d9f0ec;"><i class="fas fa-flag-checkered"></i> Наш сайт на #${competitorsData.ourPosition} позиции в Google</div>`;
+            } else {
+                html += `<div class="platform-note" style="background:#fff3e0;"><i class="fas fa-eye-slash"></i> Наш сайт не в топ-10</div>`;
             }
-            if (competitors.analysis) {
-                html += `<div class="metric-card bg-yellow-light"><div class="metric-name">🧠 Стратегия</div><div class="metric-detail">${competitors.analysis.substring(0,250)}</div></div>`;
-            }
-        } else if (withCompetitors && keyword && competitors?.error) {
-            html += `<div class="platform-badge" style="background:#fee2e2;">❌ Конкуренты: ${competitors.error}</div>`;
+            const top = competitorsData.results?.slice(0,6) || [];
+            html += `<div class="result-grid">`;
+            top.forEach((r, i) => {
+                html += `<div class="metric-tile"><div class="tile-header"><div class="tile-title">#${r.position} ${r.domain}</div><div class="tile-score" style="color:#2563eb">📈</div></div><div class="tile-detail">${r.title?.substring(0,70) || ''}</div></div>`;
+            });
+            html += `</div>`;
+            if (competitorsData.analysis) html += `<div class="platform-note">🧠 ${competitorsData.analysis.substring(0, 280)}</div>`;
         }
 
-        if (!html) html = `<div class="platform-badge">⚠️ Нет данных. Попробуйте позже.</div>`;
-        resultDiv.innerHTML = html;
-        runBtn.disabled = false;
-        runBtn.textContent = '🚀 Запустить аудит';
+        if (!html) html = `<div class="platform-note">⚠️ Не удалось получить данные. Попробуйте другие параметры.</div>`;
+
+        resultsDiv.innerHTML = html;
+        // аккордеоны
+        document.querySelectorAll('.btn-spoiler').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = btn.getAttribute('data-idx');
+                const spoiler = document.getElementById(`spoiler-${idx}`);
+                if (spoiler) {
+                    spoiler.classList.toggle('show');
+                    const icon = btn.querySelector('.fa-chevron-down');
+                    if (icon) icon.style.transform = spoiler.classList.contains('show') ? 'rotate(180deg)' : '';
+                }
+            });
+        });
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-rocket"></i> Запустить аудит';
     }
 
-    document.getElementById('runBtn').addEventListener('click', runAudit);
+    document.getElementById('runBtn').addEventListener('click', runFullAudit);
 </script>
 </body>
 </html>
