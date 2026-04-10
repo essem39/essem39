@@ -314,11 +314,19 @@ textarea#inp::placeholder{color:var(--muted);}
         <input class="audit-input" id="audit-kw" placeholder="Ключевое слово (обязательно!)" style="width:220px" onkeydown="if(event.key==='Enter')runFullAudit()">
         <button class="audit-btn" id="audit-btn" onclick="runFullAudit()"><span>🚀</span> Полный аудит</button>
       </div>
-      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap" id="audit-quick-btns">
-        <button class="audit-type-btn" onclick="runSingleAudit('seo')">🔍 SEO</button>
-        <button class="audit-type-btn" onclick="runSingleAudit('technical')">⚡ Скорость</button>
-        <button class="audit-type-btn" onclick="runSingleAudit('security')">🔒 Безопасность</button>
-        <button class="audit-type-btn" onclick="runSingleAudit('competitors')">🥊 Конкуренты</button>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap" id="audit-quick-btns">
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:5px 10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px">
+          <input type="checkbox" id="chk-seo" checked style="accent-color:#2563eb"> 🔍 SEO
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:5px 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:7px">
+          <input type="checkbox" id="chk-tech" checked style="accent-color:#d97706"> ⚡ Скорость
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:5px 10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px">
+          <input type="checkbox" id="chk-sec" checked style="accent-color:#16a34a"> 🔒 Безопасность
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;padding:5px 10px;background:#fdf2f8;border:1px solid #f5d0fe;border-radius:7px">
+          <input type="checkbox" id="chk-comp" style="accent-color:#7c3aed"> 🥊 Конкуренты
+        </label>
       </div>
     </div>
     <div class="audit-result" id="audit-result">
@@ -1023,6 +1031,29 @@ function renderChecks(checks,fixUrl){
   `;
 }
 
+function formatAnalysis(text){
+  if(!text)return'';
+  // Split into paragraphs, detect code blocks
+  const parts=text.split(/(```[\s\S]*?```)/g);
+  return parts.map(part=>{
+    if(part.startsWith('```')){
+      const code=part.replace(/^```\w*\n?/,'').replace(/```$/,'').trim();
+      return`<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;margin:8px 0;overflow-x:auto">
+        <pre style="font-size:11.5px;color:#1e293b;white-space:pre-wrap;font-family:monospace;margin:0;line-height:1.6">${code}</pre>
+      </div>`;
+    }
+    // Clean markdown and render as structured text
+    const clean=part.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code style="background:#f1f5f9;color:#334155;padding:1px 5px;border-radius:4px;font-size:11px">$1</code>');
+    const lines=clean.split('\n').filter(l=>l.trim());
+    return lines.map(l=>{
+      if(l.match(/^#{1,3}\s/)) return`<div style="font-size:13px;font-weight:700;color:#111;margin:10px 0 4px">${l.replace(/^#+\s/,'')}</div>`;
+      if(l.match(/^[-•*]\s/)) return`<div style="display:flex;gap:8px;font-size:12px;color:#374151;margin:3px 0;line-height:1.6"><span style="color:#2563eb;flex-shrink:0">•</span><span>${l.replace(/^[-•*]\s/,'')}</span></div>`;
+      if(l.match(/^\d+\.\s/)) return`<div style="display:flex;gap:8px;font-size:12px;color:#374151;margin:4px 0;line-height:1.6"><span style="font-weight:700;color:#2563eb;flex-shrink:0">${l.match(/^(\d+)\./)[1]}.</span><span>${l.replace(/^\d+\.\s/,'')}</span></div>`;
+      return`<div style="font-size:12px;color:#374151;margin:3px 0;line-height:1.7">${l}</div>`;
+    }).join('');
+  }).join('');
+}
+
 function renderSection(icon,title,score,checks,analysis,extra,fixUrl){
   const color=sc(score);
   return`<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
@@ -1038,7 +1069,16 @@ function renderSection(icon,title,score,checks,analysis,extra,fixUrl){
     </div>
     ${extra||''}
     ${renderChecks(checks,fixUrl||'')}
-    ${analysis?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f3f4f6;font-size:12.5px;line-height:1.8;color:#374151" class="bubble">${md(analysis)}</div>`:''}
+    ${analysis?`
+    <div style="margin-top:14px;border-top:1px solid #f3f4f6;padding-top:2px">
+      <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.arr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'"
+        style="width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:none;padding:10px 0;cursor:pointer;font-size:12px;font-weight:700;color:#6b7280">
+        <span>💡 AI-рекомендации</span><span class="arr">▼</span>
+      </button>
+      <div style="display:none">
+        ${formatAnalysis(analysis)}
+      </div>
+    </div>`:''}
   </div>`;
 }
 
@@ -1047,6 +1087,11 @@ async function runFullAudit(){
   const kw=document.getElementById('audit-kw').value.trim();
   if(!url){alert('Введи URL сайта');return;}
   if(!kw){alert('Введи ключевое слово — без него SEO аудит неполный!');return;}
+  const doSeo=document.getElementById('chk-seo')?.checked;
+  const doTech=document.getElementById('chk-tech')?.checked;
+  const doSec=document.getElementById('chk-sec')?.checked;
+  const doComp=document.getElementById('chk-comp')?.checked;
+  if(!doSeo&&!doTech&&!doSec&&!doComp){alert('Выбери хотя бы один тип аудита!');return;}
 
   const btn=document.getElementById('audit-btn');
   btn.disabled=true;btn.innerHTML='<span>⏳</span> Сканирую...';
@@ -1057,22 +1102,21 @@ async function runFullAudit(){
     <div style="font-size:11px;color:var(--muted);margin-bottom:16px">Запускаю SEO + Скорость + Безопасность параллельно...</div>
     <div style="max-width:320px;margin:0 auto"><div class="progress-bar"><div class="progress-fill"></div></div></div>
     <div style="display:flex;justify-content:center;gap:20px;margin-top:20px">
-      <span id="st-seo" style="font-size:11px;color:var(--muted)">🔍 SEO...</span>
-      <span id="st-tech" style="font-size:11px;color:var(--muted)">⚡ Скорость...</span>
-      <span id="st-sec" style="font-size:11px;color:var(--muted)">🔒 Безопасность...</span>
-      ${kw?`<span id="st-comp" style="font-size:11px;color:var(--muted)">🥊 Конкуренты...</span>`:''}
+      ${doSeo?`<span id="st-seo" style="font-size:11px;color:var(--muted)">🔍 SEO...</span>`:''}
+      ${doTech?`<span id="st-tech" style="font-size:11px;color:var(--muted)">⚡ Скорость...</span>`:''}
+      ${doSec?`<span id="st-sec" style="font-size:11px;color:var(--muted)">🔒 Безопасность...</span>`:''}
+      ${doComp&&kw?`<span id="st-comp" style="font-size:11px;color:var(--muted)">🥊 Конкуренты...</span>`:''}
     </div>
   </div>`;
 
   const tick=(id,ok)=>{const el=document.getElementById(id);if(el)el.style.color=ok?'var(--success)':'var(--danger)';};
 
   try{
-    const promises=[
-      auditFetch('seo',url,kw).then(d=>{tick('st-seo',d.ok||d.checks);return{type:'seo',data:d};}),
-      auditFetch('technical',url,kw).then(d=>{tick('st-tech',d.ok||d.checks);return{type:'technical',data:d};}),
-      auditFetch('security',url,kw).then(d=>{tick('st-sec',d.ok||d.checks);return{type:'security',data:d};}),
-    ];
-    if(kw) promises.push(auditFetch('competitors',url,kw).then(d=>{tick('st-comp',d.ok);return{type:'competitors',data:d};}));
+    const promises=[];
+    if(doSeo) promises.push(auditFetch('seo',url,kw).then(d=>{tick('st-seo',d.ok||d.checks);return{type:'seo',data:d};}));
+    if(doTech) promises.push(auditFetch('technical',url,kw).then(d=>{tick('st-tech',d.ok||d.checks);return{type:'technical',data:d};}));
+    if(doSec) promises.push(auditFetch('security',url,kw).then(d=>{tick('st-sec',d.ok||d.checks);return{type:'security',data:d};}));
+    if(doComp&&kw) promises.push(auditFetch('competitors',url,kw).then(d=>{tick('st-comp',d.ok);return{type:'competitors',data:d};}));
 
     const results=await Promise.allSettled(promises);
     const byType={};
@@ -1212,16 +1256,20 @@ async function magicFix(issue, fixUrl){
       body:JSON.stringify({action:'fix',issue,fixUrl})});
     const data=await res.json();
     const text=data.fix||'Нет рекомендаций';
+    // Clean markdown bold/italic markers
+    const clean=t=>t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/`([^`]+)`/g,'$1').replace(/^#+\s*/gm,'').trim();
 
     // Parse numbered steps and render as cards
     const lines=text.split('\n').filter(l=>l.trim());
     const steps=[];
     let current=null;
     lines.forEach(line=>{
+      const stripped=clean(line);
+      if(!stripped)return;
       const m=line.match(/^(\d+)[.)]\s*(.+)/);
-      if(m){if(current)steps.push(current);current={num:m[1],text:m[2],details:[]};}
-      else if(current&&line.trim()&&!line.match(/^\d+[.)]/)){current.details.push(line.trim());}
-      else if(!current){steps.push({num:'',text:line.trim(),details:[]});}
+      if(m){if(current)steps.push(current);current={num:m[1],text:clean(m[2]),details:[]};}
+      else if(current){current.details.push(stripped);}
+      else{steps.push({num:'',text:stripped,details:[]});}
     });
     if(current)steps.push(current);
 
@@ -1230,23 +1278,21 @@ async function magicFix(issue, fixUrl){
 
     let html='';
     if(steps.length<=1){
-      // Fallback — just render markdown
-      html=md(text);
+      html=`<div style="font-size:13px;line-height:1.8;color:#374151">${clean(text).replace(/\n/g,'<br>')}</div>`;
     } else {
       steps.forEach((s,i)=>{
         if(!s.text)return;
         const c=colors[i%colors.length];
         const bg=bgColors[i%bgColors.length];
-        const isCode=s.text.includes('<')||s.details.some(d=>d.includes('<')||d.includes('`'));
         html+=`<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:${bg};border-radius:10px;margin-bottom:8px;border:1px solid ${c}22">
-          ${s.num?`<div style="width:28px;height:28px;background:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">${s.num}</div>`:'<div style="width:6px;height:6px;background:'+c+';border-radius:50%;margin-top:6px;flex-shrink:0"></div>'}
+          ${s.num?`<div style="width:28px;height:28px;background:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">${s.num}</div>`:`<div style="width:8px;height:8px;background:${c};border-radius:50%;margin-top:6px;flex-shrink:0"></div>`}
           <div style="flex:1;min-width:0">
             <div style="font-size:13px;font-weight:600;color:#111;line-height:1.5">${s.text}</div>
             ${s.details.map(d=>{
-              const isCodeLine=d.startsWith('<')||d.startsWith('`')||d.includes('content=');
+              const isCodeLine=d.startsWith('<')||d.includes('content=')||d.startsWith('meta ')||d.startsWith('title>');
               return isCodeLine
-                ?`<pre style="background:#1e293b;color:#e2e8f0;border-radius:6px;padding:8px 12px;font-size:11px;margin:6px 0;overflow-x:auto;white-space:pre-wrap">${d.replace(/`/g,'')}</pre>`
-                :`<div style="font-size:11.5px;color:#6b7280;margin-top:4px">${d}</div>`;
+                ?`<pre style="background:#1e293b;color:#e2e8f0;border-radius:6px;padding:8px 12px;font-size:11px;margin:6px 0;overflow-x:auto;white-space:pre-wrap;font-family:monospace">${d}</pre>`
+                :`<div style="font-size:11.5px;color:#6b7280;margin-top:4px;line-height:1.6">${d}</div>`;
             }).join('')}
           </div>
         </div>`;
