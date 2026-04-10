@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WINNER Аудит — современный отчёт</title>
-    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <title>WINNER Аудит — умный отчёт с AI-помощью</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts: Inter + Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,30 +12,25 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             background: linear-gradient(145deg, #f0f4fa 0%, #e6edf4 100%);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             padding: 40px 24px;
             color: #0b2b3d;
         }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
-
         /* карточка ввода */
         .input-card {
-            background: rgba(255,255,255,0.92);
+            background: rgba(255,255,255,0.94);
             backdrop-filter: blur(4px);
             border-radius: 48px;
             padding: 32px 40px;
             margin-bottom: 40px;
             box-shadow: 0 20px 35px -12px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.6);
-            transition: all 0.2s;
         }
-
         h1 {
             font-family: 'Space Grotesk', monospace;
             font-weight: 600;
@@ -49,17 +42,14 @@
             letter-spacing: -0.3px;
             margin-bottom: 8px;
         }
-
         .sub {
             color: #4a627a;
             margin-bottom: 28px;
             font-size: 14px;
         }
-
         .input-group {
             margin-bottom: 20px;
         }
-
         label {
             font-weight: 600;
             font-size: 13px;
@@ -67,12 +57,8 @@
             margin-bottom: 6px;
             color: #1e3a5f;
         }
-
-        input, .checks-grid {
-            width: 100%;
-        }
-
         input {
+            width: 100%;
             padding: 14px 18px;
             border-radius: 60px;
             border: 1px solid #cbdde9;
@@ -80,13 +66,11 @@
             font-size: 15px;
             transition: 0.2s;
         }
-
         input:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
         }
-
         .checks-flex {
             display: flex;
             flex-wrap: wrap;
@@ -96,7 +80,6 @@
             padding: 16px 24px;
             border-radius: 60px;
         }
-
         .check {
             display: flex;
             align-items: center;
@@ -104,13 +87,11 @@
             font-weight: 500;
             cursor: pointer;
         }
-
         .check input {
             width: 18px;
             height: 18px;
             accent-color: #2563eb;
         }
-
         button.primary {
             background: linear-gradient(105deg, #1e3a8a, #2563eb);
             border: none;
@@ -124,29 +105,27 @@
             transition: 0.2s;
             box-shadow: 0 10px 18px -6px #1e3a8a40;
         }
-
         button.primary:hover {
             transform: translateY(-2px);
             filter: brightness(1.02);
         }
-
-        /* Результат — сетка */
+        /* результат */
         .result-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 24px;
             margin-top: 28px;
         }
-
         .metric-tile {
             background: white;
-            border-radius: 28px;
+            border-radius: 32px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             transition: all 0.2s;
             border: 1px solid rgba(148, 184, 218, 0.3);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-
         .tile-header {
             padding: 18px 20px 8px 20px;
             display: flex;
@@ -154,7 +133,6 @@
             justify-content: space-between;
             border-bottom: 1px solid #eff3f8;
         }
-
         .tile-title {
             font-weight: 700;
             font-size: 16px;
@@ -162,30 +140,25 @@
             align-items: center;
             gap: 8px;
         }
-
         .tile-score {
             font-size: 28px;
             font-weight: 800;
         }
-
         .progress-wrapper {
             padding: 0 20px;
             margin: 12px 0 8px;
         }
-
         .progress-bar {
             height: 8px;
             background: #e2edf7;
             border-radius: 20px;
             overflow: hidden;
         }
-
         .progress-fill {
             height: 100%;
             width: 0%;
             border-radius: 20px;
         }
-
         .tile-detail {
             padding: 8px 20px 12px 20px;
             font-size: 13px;
@@ -193,61 +166,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-
-        .btn-spoiler {
-            background: #f0f4fa;
+        .btn-fix {
+            background: #eef2ff;
             border: none;
-            padding: 10px 16px;
-            margin: 0 20px 18px 20px;
-            border-radius: 50px;
-            font-size: 13px;
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 6px;
             color: #1e3a8a;
             transition: 0.2s;
         }
-
-        .btn-spoiler i {
-            transition: transform 0.2s;
+        .btn-fix:hover {
+            background: #2563eb;
+            color: white;
         }
-
         .spoiler-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
             background: #fbfeff;
             border-top: 1px solid #eef3fc;
             padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
         }
-
         .spoiler-content.show {
-            max-height: 600px;
+            max-height: 800px;
             padding: 16px 20px 20px 20px;
         }
-
-        .issues-list {
-            list-style: none;
-            margin: 0;
-        }
-
-        .issues-list li {
-            margin-bottom: 12px;
+        .ai-advice {
+            background: #f0f9ff;
+            border-radius: 24px;
+            padding: 14px;
+            margin-top: 12px;
             font-size: 13px;
-            display: flex;
-            gap: 8px;
-            align-items: baseline;
+            color: #0c4e6e;
         }
-
-        .issues-list li i {
-            margin-top: 3px;
-            font-size: 12px;
-            color: #f59e0b;
-        }
-
         .platform-note {
             background: #fffbeb;
             border-radius: 28px;
@@ -257,7 +216,6 @@
             color: #b45f06;
             border-left: 5px solid #f59e0b;
         }
-
         .section-title {
             font-size: 22px;
             font-weight: 700;
@@ -266,25 +224,33 @@
             gap: 10px;
             align-items: center;
         }
-
         hr {
             margin: 16px 0;
             border: 0;
             height: 1px;
             background: linear-gradient(to right, #cbdde9, transparent);
         }
-
         @media (max-width: 700px) {
             .input-card { padding: 24px; }
             .result-grid { grid-template-columns: 1fr; }
         }
+        .status-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+        .badge-good { background: #e0f2e9; color: #0b6e41; }
+        .badge-warn { background: #fff0db; color: #b45f06; }
+        .badge-bad { background: #fee9e6; color: #bc1c2e; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="input-card">
-        <h1><i class="fas fa-chart-line"></i> WINNER Аудит</h1>
-        <div class="sub">Проверь сайт за 10 секунд — каждая проблема с цветом и спойлером</div>
+        <h1><i class="fas fa-brain"></i> WINNER Аудит</h1>
+        <div class="sub">Проверка сайта + AI-помощник: нажми «Как исправить?» — получишь точный совет</div>
         <div class="input-group">
             <label>🌐 Адрес сайта</label>
             <input type="url" id="siteUrl" placeholder="https://jubileehub.net" value="https://jubileehub.net">
@@ -301,7 +267,6 @@
         </div>
         <button class="primary" id="runBtn"><i class="fas fa-rocket"></i> Запустить аудит</button>
     </div>
-
     <div id="resultsArea"></div>
 </div>
 
@@ -309,58 +274,73 @@
     const WORKER_URL = 'https://pilot-chat.esem39.workers.dev';
 
     async function callWorker(action, url, keyword) {
-        const response = await fetch(WORKER_URL, {
+        const resp = await fetch(WORKER_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action, url, keyword: keyword || '' })
         });
-        return await response.json();
+        return await resp.json();
     }
 
-    function getColorByScore(score) {
-        if (score >= 80) return '#10b981';
-        if (score >= 50) return '#f59e0b';
-        return '#ef4444';
+    async function askAiFix(metricLabel, currentValue, platform, url) {
+        const prompt = `Ты SEO-эксперт. Сайт на платформе ${platform}. Метрика: "${metricLabel}". Текущее значение: "${currentValue}". Напиши короткую конкретную инструкцию (2-3 предложения), как это исправить на данной платформе. Не более 150 символов.`;
+        try {
+            const resp = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'chat', messages: [{ role: 'user', content: prompt }], system: 'Ты помощник по SEO, отвечай кратко и по делу.' })
+            });
+            const data = await resp.json();
+            const text = data.content?.[0]?.text || 'Не удалось получить совет. Проверьте настройки вручную.';
+            return text;
+        } catch(e) {
+            return 'Ошибка AI, попробуйте позже.';
+        }
     }
 
-    function renderMetricTile(key, metric, index) {
-        const color = getColorByScore(metric.score);
-        const bgLight = metric.score >= 80 ? '#ecfdf5' : (metric.score >= 50 ? '#fffbeb' : '#fef2f2');
-        const issueText = metric.detail || 'нет данных';
+    function getScoreInfo(score) {
+        if (score >= 90) return { text: 'Отлично!', class: 'badge-good' };
+        if (score >= 70) return { text: 'Хорошо', class: 'badge-good' };
+        if (score >= 50) return { text: 'Внимание, можно улучшить', class: 'badge-warn' };
+        return { text: 'Плохо, требуется исправление', class: 'badge-bad' };
+    }
+
+    function renderMetricTile(key, metric, platformName, url, idx) {
+        const score = metric.score;
+        const info = getScoreInfo(score);
+        const color = score >= 80 ? '#10b981' : (score >= 50 ? '#f59e0b' : '#ef4444');
+        const detailText = metric.detail || '—';
+        const tileId = `tile-${idx}`;
         return `
-            <div class="metric-tile">
+            <div class="metric-tile" id="${tileId}">
                 <div class="tile-header">
-                    <div class="tile-title"><i class="fas fa-chart-simple"></i> ${metric.label}</div>
-                    <div class="tile-score" style="color:${color}">${metric.score}%</div>
+                    <div class="tile-title"><i class="fas fa-chart-line"></i> ${metric.label}</div>
+                    <div class="tile-score" style="color:${color}">${score}%</div>
                 </div>
                 <div class="progress-wrapper">
-                    <div class="progress-bar"><div class="progress-fill" style="width:${metric.score}%; background:${color}"></div></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${score}%; background:${color}"></div></div>
                 </div>
                 <div class="tile-detail">
-                    <span><i class="fas fa-info-circle"></i> ${issueText.substring(0, 60)}</span>
+                    <span><i class="fas fa-info-circle"></i> ${detailText.substring(0, 80)}</span>
+                    <span class="status-badge ${info.class}">${info.text}</span>
                 </div>
-                <button class="btn-spoiler" data-idx="${index}">
-                    <span><i class="fas fa-lightbulb"></i> Что делать?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="spoiler-content" id="spoiler-${index}">
-                    <ul class="issues-list">
-                        <li><i class="fas fa-wrench"></i> <strong>Рекомендация:</strong> ${metric.detail || 'Проверьте вручную'}</li>
-                        <li><i class="fas fa-code"></i> <strong>Как исправить:</strong> Оптимизируйте ${metric.label.toLowerCase()} согласно стандартам.</li>
-                    </ul>
+                <div style="padding: 0 20px 12px 20px;">
+                    <button class="btn-fix" data-metric="${metric.label}" data-value="${detailText.replace(/"/g, '&quot;')}" data-platform="${platformName}" data-url="${url}"><i class="fas fa-magic"></i> Как исправить?</button>
+                </div>
+                <div class="spoiler-content" id="spoiler-${idx}">
+                    <div class="ai-advice" id="advice-${idx}">💡 Нажмите «Как исправить?», чтобы получить совет от AI</div>
                 </div>
             </div>
         `;
     }
 
-    function renderPlatform(platformName, limitations) {
-        if (!platformName) return '';
-        return `<div class="platform-note"><i class="fas fa-cube"></i> <strong>Платформа: ${platformName}</strong> — ${limitations.slice(0,2).join(', ')}</div>`;
-    }
+    let currentPlatform = '';
+    let currentSiteUrl = '';
 
     async function runFullAudit() {
         const url = document.getElementById('siteUrl').value.trim();
         if (!url) { alert('Введите URL'); return; }
+        currentSiteUrl = url;
         const withSeo = document.getElementById('chkSeo').checked;
         const withSpeed = document.getElementById('chkSpeed').checked;
         const withSecurity = document.getElementById('chkSecurity').checked;
@@ -385,29 +365,30 @@
             if (withSecurity) securityData = await callWorker('security', url, '');
             if (withComp && keyword) competitorsData = await callWorker('competitors', url, keyword);
         } catch(e) {
-            resultsDiv.innerHTML = `<div class="platform-note" style="background:#fee2e2;">❌ Ошибка: ${e.message}</div>`;
+            resultsDiv.innerHTML = `<div class="platform-note" style="background:#fee2e2;">❌ Ошибка соединения: ${e.message}</div>`;
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-rocket"></i> Запустить аудит';
             return;
         }
 
         let html = '';
-
-        // платформа
-        const platformName = seoData?.platformName || speedData?.platformName || securityData?.platformName;
+        const platformName = seoData?.platformName || speedData?.platformName || securityData?.platformName || 'неизвестно';
+        currentPlatform = platformName;
         const limitations = seoData?.platformLimitations || speedData?.platformLimitations || securityData?.platformLimitations || [];
-        if (platformName) html += renderPlatform(platformName, limitations);
+        if (platformName !== 'неизвестно') {
+            html += `<div class="platform-note"><i class="fas fa-cube"></i> <strong>Платформа: ${platformName}</strong> — ${limitations.slice(0,2).join(', ')}</div>`;
+        }
 
         // SEO
         if (withSeo && seoData && !seoData.error) {
             html += `<div class="section-title"><i class="fas fa-search"></i> SEO-анализ</div><div class="result-grid">`;
             let idx = 0;
             for (let [key, metric] of Object.entries(seoData.checks || {})) {
-                html += renderMetricTile(key, metric, idx++);
+                html += renderMetricTile(key, metric, platformName, url, idx++);
             }
             html += `</div>`;
             if (seoData.analysis) {
-                html += `<div class="platform-note" style="background:#e6f7ec;"><i class="fas fa-check-circle"></i> <strong>Рекомендации AI:</strong> ${seoData.analysis.substring(0, 200)}…</div>`;
+                html += `<div class="platform-note" style="background:#e6f7ec;"><i class="fas fa-robot"></i> <strong>AI-рекомендация:</strong> ${seoData.analysis.substring(0, 300)}…</div>`;
             }
         }
 
@@ -416,10 +397,10 @@
             html += `<div class="section-title"><i class="fas fa-tachometer-alt"></i> Скорость</div><div class="result-grid">`;
             let idx = 0;
             for (let [key, metric] of Object.entries(speedData.checks || {})) {
-                html += renderMetricTile(key, metric, idx++);
+                html += renderMetricTile(key, metric, platformName, url, idx++);
             }
             html += `</div>`;
-            if (speedData.analysis) html += `<div class="platform-note" style="background:#e6f7ec;">⚡ ${speedData.analysis.substring(0, 200)}…</div>`;
+            if (speedData.analysis) html += `<div class="platform-note" style="background:#e6f7ec;">⚡ ${speedData.analysis.substring(0, 300)}…</div>`;
         }
 
         // Безопасность
@@ -427,10 +408,10 @@
             html += `<div class="section-title"><i class="fas fa-shield-alt"></i> Безопасность</div><div class="result-grid">`;
             let idx = 0;
             for (let [key, metric] of Object.entries(securityData.checks || {})) {
-                html += renderMetricTile(key, metric, idx++);
+                html += renderMetricTile(key, metric, platformName, url, idx++);
             }
             html += `</div>`;
-            if (securityData.analysis) html += `<div class="platform-note" style="background:#e6f7ec;">🔒 ${securityData.analysis.substring(0, 200)}…</div>`;
+            if (securityData.analysis) html += `<div class="platform-note" style="background:#e6f7ec;">🔒 ${securityData.analysis.substring(0, 300)}…</div>`;
         }
 
         // Конкуренты
@@ -442,26 +423,41 @@
                 html += `<div class="platform-note" style="background:#fff3e0;"><i class="fas fa-eye-slash"></i> Наш сайт не в топ-10</div>`;
             }
             const top = competitorsData.results?.slice(0,6) || [];
-            html += `<div class="result-grid">`;
-            top.forEach((r, i) => {
-                html += `<div class="metric-tile"><div class="tile-header"><div class="tile-title">#${r.position} ${r.domain}</div><div class="tile-score" style="color:#2563eb">📈</div></div><div class="tile-detail">${r.title?.substring(0,70) || ''}</div></div>`;
-            });
-            html += `</div>`;
+            if (top.length) {
+                html += `<div class="result-grid">`;
+                top.forEach(r => {
+                    html += `<div class="metric-tile"><div class="tile-header"><div class="tile-title">#${r.position} ${r.domain}</div><div class="tile-score" style="color:#2563eb">📈</div></div><div class="tile-detail">${r.title?.substring(0,70) || ''}</div></div>`;
+                });
+                html += `</div>`;
+            }
             if (competitorsData.analysis) html += `<div class="platform-note">🧠 ${competitorsData.analysis.substring(0, 280)}</div>`;
         }
 
         if (!html) html = `<div class="platform-note">⚠️ Не удалось получить данные. Попробуйте другие параметры.</div>`;
 
         resultsDiv.innerHTML = html;
-        // аккордеоны
-        document.querySelectorAll('.btn-spoiler').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = btn.getAttribute('data-idx');
+
+        // Привязываем обработчики к кнопкам "Как исправить?"
+        const fixButtons = document.querySelectorAll('.btn-fix');
+        fixButtons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const metric = btn.getAttribute('data-metric');
+                const value = btn.getAttribute('data-value');
+                const platform = btn.getAttribute('data-platform');
+                const siteUrl = btn.getAttribute('data-url');
+                const tile = btn.closest('.metric-tile');
+                const idx = Array.from(tile.parentNode.children).indexOf(tile);
                 const spoiler = document.getElementById(`spoiler-${idx}`);
-                if (spoiler) {
-                    spoiler.classList.toggle('show');
-                    const icon = btn.querySelector('.fa-chevron-down');
-                    if (icon) icon.style.transform = spoiler.classList.contains('show') ? 'rotate(180deg)' : '';
+                if (!spoiler) return;
+                // Показываем спойлер, если скрыт
+                if (!spoiler.classList.contains('show')) {
+                    spoiler.classList.add('show');
+                }
+                const adviceDiv = document.getElementById(`advice-${idx}`);
+                if (adviceDiv) {
+                    adviceDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> AI думает...';
+                    const fixText = await askAiFix(metric, value, platform, siteUrl);
+                    adviceDiv.innerHTML = `<i class="fas fa-lightbulb"></i> ${fixText}`;
                 }
             });
         });
