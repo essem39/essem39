@@ -1211,7 +1211,48 @@ async function magicFix(issue, fixUrl){
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'fix',issue,fixUrl})});
     const data=await res.json();
-    content.innerHTML=md(data.fix||'Нет рекомендаций');
+    const text=data.fix||'Нет рекомендаций';
+
+    // Parse numbered steps and render as cards
+    const lines=text.split('\n').filter(l=>l.trim());
+    const steps=[];
+    let current=null;
+    lines.forEach(line=>{
+      const m=line.match(/^(\d+)[.)]\s*(.+)/);
+      if(m){if(current)steps.push(current);current={num:m[1],text:m[2],details:[]};}
+      else if(current&&line.trim()&&!line.match(/^\d+[.)]/)){current.details.push(line.trim());}
+      else if(!current){steps.push({num:'',text:line.trim(),details:[]});}
+    });
+    if(current)steps.push(current);
+
+    const colors=['#2563eb','#16a34a','#d97706','#7c3aed','#dc2626'];
+    const bgColors=['#eff6ff','#f0fdf4','#fffbeb','#f5f3ff','#fef2f2'];
+
+    let html='';
+    if(steps.length<=1){
+      // Fallback — just render markdown
+      html=md(text);
+    } else {
+      steps.forEach((s,i)=>{
+        if(!s.text)return;
+        const c=colors[i%colors.length];
+        const bg=bgColors[i%bgColors.length];
+        const isCode=s.text.includes('<')||s.details.some(d=>d.includes('<')||d.includes('`'));
+        html+=`<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:${bg};border-radius:10px;margin-bottom:8px;border:1px solid ${c}22">
+          ${s.num?`<div style="width:28px;height:28px;background:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">${s.num}</div>`:'<div style="width:6px;height:6px;background:'+c+';border-radius:50%;margin-top:6px;flex-shrink:0"></div>'}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;color:#111;line-height:1.5">${s.text}</div>
+            ${s.details.map(d=>{
+              const isCodeLine=d.startsWith('<')||d.startsWith('`')||d.includes('content=');
+              return isCodeLine
+                ?`<pre style="background:#1e293b;color:#e2e8f0;border-radius:6px;padding:8px 12px;font-size:11px;margin:6px 0;overflow-x:auto;white-space:pre-wrap">${d.replace(/`/g,'')}</pre>`
+                :`<div style="font-size:11.5px;color:#6b7280;margin-top:4px">${d}</div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      });
+    }
+    content.innerHTML=html;
   }catch(e){content.innerHTML='❌ '+e.message;}
 }
 
