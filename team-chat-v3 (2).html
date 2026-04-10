@@ -1,1024 +1,392 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Пилот — Рабочий инструмент</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:#f4f5f7; --sidebar:#fff; --surface:#f9fafb; --surface2:#f0f2f5;
-  --border:#e4e7ec; --border2:#d1d5db;
-  --accent:#2563eb; --accent2:#7c3aed; --accent-light:#eff6ff;
-  --gold:#d97706; --gold-light:#fffbeb;
-  --text:#111827; --text2:#6b7280; --muted:#9ca3af;
-  --success:#059669; --success-light:#ecfdf5;
-  --danger:#dc2626; --danger-light:#fef2f2;
-  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,.08);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden;}
-
-/* SIDEBAR */
-.sidebar{width:242px;min-width:242px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;box-shadow:var(--shadow);}
-.sidebar-header{padding:14px 12px 10px;border-bottom:1px solid var(--border);}
-.logo{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
-.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(37,99,235,.3);}
-.logo-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;letter-spacing:-.3px;}
-.logo-sub{font-size:9px;color:var(--muted);font-weight:500;}
-.new-btn{width:100%;background:var(--accent);border:none;border-radius:8px;padding:7px 10px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .2s;box-shadow:0 2px 6px rgba(37,99,235,.25);}
-.new-btn:hover{background:#1d4ed8;}
-.sec-label{padding:8px 12px 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);}
-.proj-list{padding:0 5px;}
-.proj-item{display:flex;align-items:center;gap:7px;padding:6px 7px;border-radius:7px;cursor:pointer;transition:all .15s;margin-bottom:2px;border:1px solid transparent;}
-.proj-item:hover{background:var(--surface2);}
-.proj-item.active{background:var(--accent-light);border-color:rgba(37,99,235,.2);}
-.proj-emoji{font-size:14px;width:18px;text-align:center;}
-.proj-name{font-size:11.5px;font-weight:600;}
-.proj-item.active .proj-name{color:var(--accent);}
-.proj-del-btn{background:none;border:none;cursor:pointer;font-size:12px;opacity:0;transition:opacity .2s;padding:2px;flex-shrink:0;}
-.proj-item:hover .proj-del-btn{opacity:0.6;}
-.proj-del-btn:hover{opacity:1!important;}
-.proj-url{font-size:9.5px;color:var(--muted);}
-.convs{flex:1;overflow-y:auto;padding:0 5px;}
-.convs::-webkit-scrollbar{width:3px;}
-.convs::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-.conv-item{padding:6px 7px;border-radius:6px;cursor:pointer;transition:all .15s;margin-bottom:2px;display:flex;align-items:center;gap:5px;border:1px solid transparent;}
-.conv-item:hover{background:var(--surface2);}
-.conv-item.active{background:var(--surface2);border-color:var(--border2);}
-.conv-title{font-size:10.5px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
-.conv-del{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;}
-.conv-item:hover .conv-del{opacity:1;}
-.conv-del:hover{color:var(--danger);}
-.sidebar-foot{padding:8px 12px;border-top:1px solid var(--border);}
-.cost-box{display:flex;align-items:center;justify-content:space-between;background:var(--success-light);border:1px solid rgba(5,150,105,.2);border-radius:7px;padding:6px 10px;}
-.cost-label{font-size:10px;color:var(--success);font-weight:600;}
-.cost-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--success);font-weight:700;}
-
-/* MAIN */
-.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
-.topbar{background:var(--sidebar);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;box-shadow:var(--shadow);}
-.cur-proj{display:flex;align-items:center;gap:7px;}
-.cur-proj-name{font-size:13px;font-weight:700;}
-.mode-tabs{display:flex;gap:3px;background:var(--surface2);border-radius:8px;padding:3px;}
-.mode-tab{background:none;border:none;border-radius:6px;padding:4px 11px;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.mode-tab.active{background:var(--sidebar);color:var(--accent);box-shadow:var(--shadow);}
-.tb-btn{background:none;border:1px solid var(--border2);border-radius:6px;padding:4px 9px;color:var(--text2);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.tb-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-.tb-btn.danger:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-light);}
-.ml-auto{margin-left:auto;display:flex;gap:6px;align-items:center;}
-.status-dot{width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.status-txt{font-size:10.5px;color:var(--success);font-weight:600;}
-
-/* System panel */
-.sys-panel{background:var(--gold-light);border-bottom:1px solid rgba(217,119,6,.2);padding:7px 16px;display:none;gap:10px;align-items:flex-start;}
-.sys-panel.show{display:flex;}
-.sys-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);white-space:nowrap;padding-top:4px;}
-.sys-ta{flex:1;background:#fff;border:1px solid rgba(217,119,6,.25);border-radius:6px;padding:6px 10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;resize:vertical;min-height:44px;line-height:1.6;}
-
-/* ============ CHAT ============ */
-.chat-panel{display:flex;flex-direction:column;flex:1;overflow:hidden;}
-.msgs{flex:1;overflow-y:auto;padding:18px 0;scroll-behavior:smooth;}
-.msgs::-webkit-scrollbar{width:4px;}
-.msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
-.msgs-inner{max-width:720px;margin:0 auto;padding:0 18px;display:flex;flex-direction:column;gap:16px;}
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:44px 20px;text-align:center;}
-.welcome-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 8px 24px rgba(37,99,235,.22);}
-.welcome h2{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;}
-.welcome p{color:var(--text2);font-size:12.5px;max-width:380px;line-height:1.7;}
-.welcome-badge{display:flex;align-items:center;gap:7px;background:var(--accent-light);border:1px solid rgba(37,99,235,.2);border-radius:20px;padding:6px 14px;font-size:11px;font-weight:600;color:var(--accent);}
-.quick-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;}
-.qa-btn{background:var(--sidebar);border:1px solid var(--border2);border-radius:20px;padding:6px 12px;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.qa-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-.msg{display:flex;gap:9px;animation:fadeUp .2s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
-.msg.user{flex-direction:row-reverse;}
-.av{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;}
-.av.u{background:linear-gradient(135deg,#f59e0b,#ef4444);}
-.av.a{background:linear-gradient(135deg,var(--accent),var(--accent2));}
-.msg-body{flex:1;min-width:0;}
-.msg-role{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
-.msg.user .msg-role{text-align:right;color:rgba(245,158,11,.7);}
-.msg.ai .msg-role{color:rgba(37,99,235,.7);}
-.bubble{font-size:13px;line-height:1.75;color:var(--text);}
-.msg.user .bubble{background:var(--accent-light);border:1px solid rgba(37,99,235,.15);border-radius:12px 4px 12px 12px;padding:9px 13px;display:inline-block;max-width:100%;float:right;clear:both;}
-.bubble strong{color:var(--text);font-weight:700;}
-.bubble code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(37,99,235,.08);color:var(--accent2);padding:2px 5px;border-radius:4px;}
-.bubble pre{background:#1e293b;border:1px solid #334155;border-radius:9px;padding:12px 14px;overflow-x:auto;margin:8px 0;position:relative;}
-.bubble pre code{background:none;color:#e2e8f0;padding:0;font-size:11.5px;line-height:1.6;}
-.copy-btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:2px 7px;color:#94a3b8;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff;}
-.bubble h1,.bubble h2,.bubble h3{color:var(--text);margin:10px 0 4px;font-weight:700;}
-.bubble h1{font-size:15px;}.bubble h2{font-size:13.5px;}.bubble h3{font-size:12.5px;}
-.bubble p{margin-bottom:7px;}.bubble p:last-child{margin-bottom:0;}
-.bubble ul,.bubble ol{padding-left:18px;margin-bottom:8px;}
-.bubble li{margin-bottom:3px;}
-.bubble blockquote{border-left:3px solid var(--accent);padding:6px 13px;margin:7px 0;background:var(--accent-light);border-radius:0 5px 5px 0;color:var(--text2);}
-.bubble table{width:100%;border-collapse:collapse;margin:7px 0;font-size:11.5px;}
-.bubble th{background:var(--surface2);padding:6px 9px;text-align:left;font-weight:700;border:1px solid var(--border2);}
-.bubble td{padding:5px 9px;border:1px solid var(--border);color:var(--text2);}
-.img-preview{max-width:280px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;display:block;}
-.thinking-row{display:flex;gap:9px;align-items:flex-start;}
-.thinking-bubble{padding:9px 13px;background:var(--sidebar);border:1px solid var(--border);border-radius:12px 4px 12px 12px;display:flex;gap:5px;align-items:center;}
-.dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:bounce 1.3s infinite;}
-.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
-@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.3;}30%{transform:translateY(-5px);opacity:1;}}
-.input-area{background:var(--sidebar);border-top:1px solid var(--border);padding:10px 16px;flex-shrink:0;}
-.input-wrap{max-width:720px;margin:0 auto;}
-.img-strip{display:none;gap:7px;margin-bottom:7px;flex-wrap:wrap;}
-.img-strip.show{display:flex;}
-.img-thumb{position:relative;width:52px;height:52px;border-radius:7px;overflow:hidden;border:2px solid var(--accent);}
-.img-thumb img{width:100%;height:100%;object-fit:cover;}
-.img-thumb-del{position:absolute;top:1px;right:1px;width:15px;height:15px;background:var(--danger);border:none;border-radius:50%;color:#fff;font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
-.input-row{display:flex;gap:6px;align-items:flex-end;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:7px 9px;transition:border-color .2s;}
-.input-row:focus-within{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-textarea#inp{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;resize:none;line-height:1.6;min-height:22px;max-height:150px;overflow-y:auto;}
-textarea#inp::placeholder{color:var(--muted);}
-.icon-btn{width:30px;height:30px;background:var(--sidebar);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent);}
-.icon-btn.rec{background:rgba(220,38,38,.08);border-color:var(--danger);color:var(--danger);animation:micPulse 1s infinite;}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4);}50%{box-shadow:0 0 0 5px rgba(220,38,38,0);}}
-.send-btn{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;box-shadow:0 2px 6px rgba(37,99,235,.3);}
-.send-btn:hover{transform:scale(1.06);}
-.send-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
-.hints{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
-.hint{background:none;border:1px solid var(--border);border-radius:20px;padding:2px 9px;color:var(--text2);font-size:10.5px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.hint:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-#file-inp{display:none;}
-
-/* ============ AUDIT ============ */
-.audit-panel{display:none;flex-direction:column;flex:1;overflow:hidden;}
-.audit-panel.show{display:flex;}
-.audit-form{background:var(--sidebar);border-bottom:1px solid var(--border);padding:16px 20px;flex-shrink:0;}
-.audit-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:3px;}
-.audit-sub{font-size:11.5px;color:var(--text2);margin-bottom:14px;}
-.audit-fields{display:grid;grid-template-columns:1fr 260px;gap:8px;margin-bottom:10px;}
-.audit-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12.5px;outline:none;transition:all .2s;width:100%;}
-.audit-input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-.audit-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;padding:8px 18px;color:#fff;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(37,99,235,.3);}
-.audit-btn:hover{transform:translateY(-1px);}
-.audit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.audit-type-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
-.audit-type-btn:hover{border-color:var(--accent);color:var(--accent);}
-.audit-type-btn.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
-.audit-opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
-.audit-opt{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);cursor:pointer;}
-.audit-opt input{accent-color:var(--accent);}
-.audit-result{flex:1;overflow-y:auto;padding:18px;}
-.audit-result::-webkit-scrollbar{width:4px;}
-.audit-result::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
-.audit-welcome{text-align:center;padding:50px 20px;}
-.audit-welcome-icon{font-size:44px;margin-bottom:12px;}
-.audit-welcome h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:7px;}
-.audit-welcome p{color:var(--text2);font-size:12.5px;max-width:380px;margin:0 auto;}
-.audit-card{background:var(--sidebar);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow);animation:fadeUp .3s ease;}
-
-/* ============ TOOLS ============ */
-.tools-panel{display:none;flex-direction:column;flex:1;overflow:hidden;}
-.tools-panel.show{display:flex;}
-.tools-body{display:flex;flex:1;overflow:hidden;}
-.tools-sidebar{width:200px;min-width:200px;background:var(--sidebar);border-right:1px solid var(--border);padding:10px 6px;overflow-y:auto;flex-shrink:0;}
-.tool-cat-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:6px 7px 3px;}
-.tool-item{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:all .15s;margin-bottom:1px;border:1px solid transparent;font-size:11.5px;font-weight:500;color:var(--text2);}
-.tool-item:hover{background:var(--surface2);color:var(--text);}
-.tool-item.active{background:var(--accent-light);border-color:rgba(37,99,235,.2);color:var(--accent);font-weight:600;}
-.tool-item .ti{font-size:14px;width:18px;text-align:center;}
-.tools-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.tool-header{background:var(--sidebar);border-bottom:1px solid var(--border);padding:14px 20px;flex-shrink:0;}
-.tool-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px;margin-bottom:3px;}
-.tool-desc{font-size:11.5px;color:var(--text2);}
-.tool-content{flex:1;overflow-y:auto;padding:18px 20px;}
-.tool-content::-webkit-scrollbar{width:4px;}
-.tool-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
-.tool-form{background:var(--sidebar);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
-.tf-label{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
-.tf-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .2s;margin-bottom:10px;}
-.tf-input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-.tf-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12.5px;outline:none;resize:vertical;min-height:80px;line-height:1.6;transition:all .2s;margin-bottom:10px;}
-.tf-textarea:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-.tf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.run-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;padding:9px 20px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 2px 8px rgba(37,99,235,.3);transition:all .2s;}
-.run-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.4);}
-.run-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.tool-result{background:var(--sidebar);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);animation:fadeUp .3s ease;}
-.tool-result-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.tool-result-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;}
-.copy-result-btn{background:none;border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:10.5px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-.copy-result-btn:hover{border-color:var(--accent);color:var(--accent);}
-.tool-empty{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
-.tool-empty-icon{font-size:36px;margin-bottom:10px;}
-.progress-bar{height:4px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:12px;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;animation:progress 2s ease-in-out infinite;}
-@keyframes progress{0%{width:0%;margin-left:0;}50%{width:60%;margin-left:20%;}100%{width:0%;margin-left:100%;}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аудит сайта — WINNER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f1f5f9;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 32px 20px;
+            color: #0f172a;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        /* карточка */
+        .card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .card-header {
+            padding: 28px 32px 12px 32px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .card-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .card-header p {
+            color: #475569;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .card-body {
+            padding: 28px 32px;
+        }
+        /* поля */
+        .url-group {
+            margin-bottom: 28px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            background: #fff;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .checks-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin: 20px 0 24px 0;
+            background: #f8fafc;
+            padding: 20px 24px;
+            border-radius: 28px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .check-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #3b82f6;
+        }
+        .kw-group {
+            margin-bottom: 28px;
+        }
+        .kw-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        button {
+            background: linear-gradient(105deg, #2563eb, #4f46e5);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            box-shadow: 0 6px 14px rgba(37,99,235,0.25);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        button:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 32px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 28px;
+        }
+        .alert-platform {
+            background: #fffbeb;
+            border-left: 5px solid #f59e0b;
+            padding: 14px 18px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #92400e;
+        }
+        .score-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px,1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: #f8fafc;
+            border-radius: 18px;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+        }
+        .metric .label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #475569;
+        }
+        .metric .value {
+            font-size: 18px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+        .analysis {
+            background: #fefce8;
+            border-radius: 24px;
+            padding: 20px 24px;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        hr {
+            margin: 20px 0;
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+        .footer-note {
+            font-size: 11px;
+            text-align: center;
+            margin-top: 28px;
+            color: #64748b;
+        }
+    </style>
 </head>
 <body>
-
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <div class="logo">
-      <div class="logo-icon">✈️</div>
-      <div>
-        <div class="logo-text">Пилот</div>
-        <div class="logo-sub">Команда Директора Гагика</div>
-      </div>
-    </div>
-    <button class="new-btn" onclick="newChat()">＋ Новый чат</button>
-  </div>
-  <div class="sec-label">Проекты</div>
-  <div class="proj-list" id="proj-list"></div>
-  <div class="sec-label" style="margin-top:4px">История</div>
-  <div class="convs" id="convs"></div>
-  <div class="sidebar-foot">
-    <div class="cost-box">
-      <span class="cost-label">💰 API расходы</span>
-      <span class="cost-val" id="cost">€0.0000</span>
-    </div>
-  </div>
-</aside>
-
-<main class="main">
-  <div class="topbar">
-    <div class="cur-proj">
-      <span id="proj-emoji" style="font-size:17px">✈️</span>
-      <span class="cur-proj-name" id="proj-name">Выбери проект</span>
-    </div>
-    <div class="mode-tabs">
-      <button class="mode-tab active" id="tab-chat" onclick="setMode('chat')">💬 Чат</button>
-      <button class="mode-tab" id="tab-audit" onclick="setMode('audit')">🔍 Аудит</button>
-      <button class="mode-tab" id="tab-tools" onclick="setMode('tools')">🛠️ Инструменты</button>
-    </div>
-    <div class="ml-auto">
-      <div class="status-dot"></div>
-      <span class="status-txt">Пилот активен</span>
-      <button class="tb-btn" onclick="toggleSys()">📋 Контекст</button>
-      <button class="tb-btn danger" onclick="clearChat()">🗑</button>
-    </div>
-  </div>
-
-  <div class="sys-panel" id="sys-panel">
-    <span class="sys-lbl">Контекст</span>
-    <textarea class="sys-ta" id="sys-ta" rows="3"></textarea>
-  </div>
-
-  <!-- ====== CHAT ====== -->
-  <div class="chat-panel" id="chat-panel">
-    <div class="msgs" id="msgs">
-      <div class="msgs-inner" id="msgs-inner">
-        <div class="welcome" id="welcome">
-          <div class="welcome-icon">✈️</div>
-          <h2>Рабочий инструмент команды</h2>
-          <p>Выбери проект слева. Отправляй текст, скриншоты, файлы — Пилот разберётся.</p>
-          <div class="welcome-badge">👔 Директор Гагик · ✈️ Пилот готов · 🛠️ 12 инструментов</div>
-          <div class="quick-actions">
-            <button class="qa-btn" onclick="setMode('audit')">🔍 Аудит сайта</button>
-            <button class="qa-btn" onclick="setMode('tools')">🛠️ Инструменты</button>
-            <button class="qa-btn" onclick="setHint('Напиши HTML для: ')">💻 HTML</button>
-            <button class="qa-btn" onclick="setHint('Найди в интернете: ')">🌐 Поиск</button>
-          </div>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>🔍 Аудит сайта — WINNER</h1>
+            <p>Вставьте URL, отметьте нужные проверки и получите честный отчёт</p>
         </div>
-      </div>
-    </div>
-    <div class="input-area">
-      <div class="input-wrap">
-        <div class="img-strip" id="img-strip"></div>
-        <div class="input-row">
-          <textarea id="inp" placeholder="Напиши задачу или нажми 📎 для файла/скриншота..." rows="1"></textarea>
-          <input type="file" id="file-inp" accept="image/*,.html,.css,.js,.txt" multiple onchange="handleFiles(this.files)">
-          <button class="icon-btn" title="Прикрепить" onclick="document.getElementById('file-inp').click()">📎</button>
-          <button class="icon-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
-          <button class="send-btn" id="send-btn" onclick="sendMsg()">➤</button>
-        </div>
-        <div class="hints">
-          <button class="hint" onclick="setHint('SEO оптимизация: ')">🔍 SEO</button>
-          <button class="hint" onclick="setHint('Напиши HTML для: ')">💻 HTML</button>
-          <button class="hint" onclick="setHint('Исправь код:\n\n')">🔧 Фикс</button>
-          <button class="hint" onclick="setHint('Schema.org для: ')">📊 Schema</button>
-          <button class="hint" onclick="setHint('Meta теги для: ')">🏷️ Meta</button>
-          <button class="hint" onclick="setHint('Найди в интернете: ')">🌐 Поиск</button>
-          <button class="hint" onclick="setHint('Проверь позиции сайта ')">📈 Позиции</button>
-        </div>
-      </div>
-    </div>
-  </div>
+        <div class="card-body">
+            <div class="url-group">
+                <label>🌐 Адрес сайта</label>
+                <input type="url" id="url" placeholder="https://jubileehub.net" value="https://jubileehub.net">
+            </div>
 
-  <!-- ====== AUDIT ====== -->
-  <div class="audit-panel" id="audit-panel">
-    <div class="audit-form">
-      <div class="audit-title">🔍 Аудит сайта</div>
-      <div class="audit-sub">Выбери тип проверки — каждая кнопка делает своё дело.</div>
-      <div class="audit-fields">
-        <input class="audit-input" id="audit-url" placeholder="https://airflowtravel.net/" type="url">
-        <input class="audit-input" id="audit-kw" placeholder="Ключевое слово (для конкурентов)">
-      </div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px">
-        <button class="audit-type-btn active" id="abtn-seo" onclick="setAuditType('seo',this)">🔍 SEO теги</button>
-        <button class="audit-type-btn" id="abtn-technical" onclick="setAuditType('technical',this)">⚡ Скорость</button>
-        <button class="audit-type-btn" id="abtn-security" onclick="setAuditType('security',this)">🔒 Безопасность</button>
-        <button class="audit-type-btn" id="abtn-competitors" onclick="setAuditType('competitors',this)">🥊 Конкуренты</button>
-        <div style="flex:1"></div>
-        <button class="audit-btn" id="audit-btn" onclick="runAudit()"><span>🚀</span> Запустить</button>
-      </div>
-    </div>
-    <div class="audit-result" id="audit-result">
-      <div class="audit-welcome">
-        <div class="audit-welcome-icon">🛰️</div>
-        <h3>Готов к сканированию</h3>
-        <p>Введи URL и ключевое слово. Пилот выйдет в интернет и проведёт полный SEO-аудит.</p>
-      </div>
-    </div>
-  </div>
+            <div class="checks-grid">
+                <label class="check-item"><input type="checkbox" id="chk-seo" checked> 🔍 SEO-теги</label>
+                <label class="check-item"><input type="checkbox" id="chk-speed"> ⚡ Скорость</label>
+                <label class="check-item"><input type="checkbox" id="chk-security"> 🔒 Безопасность</label>
+                <label class="check-item"><input type="checkbox" id="chk-competitors"> 🥊 Конкуренты</label>
+            </div>
 
-  <!-- ====== TOOLS ====== -->
-  <div class="tools-panel" id="tools-panel">
-    <div class="tools-body">
-      <div class="tools-sidebar">
-        <div class="tool-cat-label">🔍 SEO</div>
-        <div class="tool-item active" onclick="selectTool('positions')" id="ti-positions"><span class="ti">📈</span>Проверка позиций</div>
-        <div class="tool-item" onclick="selectTool('meta')" id="ti-meta"><span class="ti">🏷️</span>Генератор мета-тегов</div>
-        <div class="tool-item" onclick="selectTool('alt')" id="ti-alt"><span class="ti">🖼️</span>Генератор ALT-тегов</div>
-        <div class="tool-item" onclick="selectTool('serp')" id="ti-serp"><span class="ti">🌍</span>Google поиск (реальный)</div>
-        <div class="tool-item" onclick="selectTool('competitors')" id="ti-competitors"><span class="ti">🥊</span>Анализ конкурентов</div>
-        <div class="tool-item" onclick="selectTool('indexing')" id="ti-indexing"><span class="ti">🔎</span>Проверка индексации</div>
-        <div class="tool-item" onclick="selectTool('semantic')" id="ti-semantic"><span class="ti">🧠</span>Семантические слова</div>
-        <div class="tool-cat-label" style="margin-top:6px">📝 Контент</div>
-        <div class="tool-item" onclick="selectTool('tz')" id="ti-tz"><span class="ti">📋</span>ТЗ для копирайтера</div>
-        <div class="tool-item" onclick="selectTool('h1gen')" id="ti-h1gen"><span class="ti">✍️</span>Генератор H1</div>
-        <div class="tool-item" onclick="selectTool('paraphrase')" id="ti-paraphrase"><span class="ti">🔄</span>Перефразировать текст</div>
-        <div class="tool-cat-label" style="margin-top:6px">🔧 Технические</div>
-        <div class="tool-item" onclick="selectTool('robots')" id="ti-robots"><span class="ti">🤖</span>Генерация robots.txt</div>
-        <div class="tool-item" onclick="selectTool('sitemap')" id="ti-sitemap"><span class="ti">🗺️</span>XML Sitemap</div>
-        <div class="tool-item" onclick="selectTool('whois')" id="ti-whois"><span class="ti">🌐</span>Whois домена</div>
-        <div class="tool-cat-label" style="margin-top:6px">✍️ Текст</div>
-        <div class="tool-item" onclick="selectTool('humanize')" id="ti-humanize"><span class="ti">🧑</span>Очеловечить текст</div>
-        <div class="tool-item" onclick="selectTool('unique')" id="ti-unique"><span class="ti">🔍</span>Уникальность текста</div>
-        <div class="tool-item" onclick="selectTool('imgdesc')" id="ti-imgdesc"><span class="ti">🎨</span>Описание картинки</div>
-      </div>
-      <div class="tools-main">
-        <div class="tool-header" id="tool-header">
-          <div class="tool-title" id="tool-title">📈 Проверка позиций</div>
-          <div class="tool-desc" id="tool-desc">Проверь позиции сайта в Google и Яндекс по ключевым словам</div>
+            <div class="kw-group">
+                <label>📌 Ключевое слово (только для конкурентов)</label>
+                <input type="text" id="keyword" placeholder="jubilee">
+            </div>
+
+            <button id="runBtn">🚀 Запустить аудит</button>
+
+            <div id="resultArea" class="result"></div>
         </div>
-        <div class="tool-content" id="tool-content"></div>
-      </div>
     </div>
-  </div>
-</main>
+    <div class="footer-note">⚡ WINNER engine — реальные данные через API. Адаптация под платформу.</div>
+</div>
 
 <script>
-const WORKER = 'https://pilot-chat.esem39.workers.dev';
+    const WORKER_URL = 'https://pilot-chat.esem39.workers.dev'; // твой существующий worker
 
-const PROJECTS = [
-  {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:'Ты Пилот — технический SEO-специалист. Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код и конкретные данные.'},
-  {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:'Ты Пилот — технический SEO-специалист. Проект: coffeespecialty.ru (кофе, Admitad, 100% SEO). Отвечай коротко, давай готовый код.'},
-  {id:'elama',emoji:'📢',name:'eLamaInfo',url:'elamainfo.ru',sys:'Ты Пилот — технический SEO-специалист. Проект: elamainfo.ru (реклама, eLama, 100% SEO). Отвечай коротко, давай готовый код.'},
-  {id:'alidrop',emoji:'🛒',name:'AliDropInfo',url:'alidropinfo.com',sys:'Ты Пилот — технический SEO-специалист. Проект: alidropinfo.com (дропшиппинг, 97/100 SEO). Отвечай коротко, давай готовый код.'},
-  {id:'storelines',emoji:'🛠️',name:'Storelines',url:'storelines.net',sys:'Ты Пилот — технический SEO-специалист. Проект: storelines.net (18 инструментов EU, WISE PILOT). Отвечай коротко, давай готовый код.'},
-  {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:'Ты Пилот — технический SEO-специалист. Проект: jubileehub.net (SEO оптимизирован). Отвечай коротко, давай готовый код.'},
-  {id:'new',emoji:'＋',name:'Добавить сайт',url:'',sys:''},
-];
+    const runBtn = document.getElementById('runBtn');
+    const resultDiv = document.getElementById('resultArea');
 
-let activeProj = PROJECTS[0];
-let msgs = [], convs = [], activeConvId = null, totalCost = 0;
-let pendingImages = [];
-let currentMode = 'chat';
-let auditType = 'seo';
-let activeTool = 'positions';
-let altImgData = null;
-
-try{convs=JSON.parse(localStorage.getItem('p_convs')||'[]');}catch(e){}
-try{totalCost=parseFloat(localStorage.getItem('p_cost')||'0');}catch(e){}
-
-const inp = document.getElementById('inp');
-
-function init(){
-  document.getElementById('cost').textContent='€'+totalCost.toFixed(4);
-  renderProjects(); renderConvs(); renderTool('positions');
-}
-
-function setMode(m){
-  currentMode=m;
-  ['chat','audit','tools'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active',t===m);
-  });
-  document.getElementById('chat-panel').style.display=m==='chat'?'flex':'none';
-  document.getElementById('audit-panel').classList.toggle('show',m==='audit');
-  document.getElementById('tools-panel').classList.toggle('show',m==='tools');
-  if(m==='audit') document.getElementById('audit-url').value='https://'+activeProj.url+'/';
-  if(m==='tools') renderTool(activeTool);
-}
-
-function renderProjects(){
-  document.getElementById('proj-list').innerHTML=PROJECTS.map(p=>`
-    <div class="proj-item ${p.id===activeProj.id?'active':''}" onclick="selectProj(PROJECTS.find(x=>x.id==='${p.id}'))">
-      <span class="proj-emoji">${p.emoji}</span>
-      <div style="flex:1;min-width:0"><div class="proj-name">${p.name}</div><div class="proj-url">${p.url||'новый'}</div></div>
-      ${p.id!=='new'?`<button class="proj-del-btn" onclick="event.stopPropagation();deleteProj('${p.id}')" title="Удалить">🗑️</button>`:''}
-    </div>`).join('');
-}
-
-function selectProj(p){
-  if(!p)return;
-  if(p.id==='new'){addNewSite();return;}
-  activeProj=p;
-  document.getElementById('proj-emoji').textContent=p.emoji;
-  document.getElementById('proj-name').textContent=p.name;
-  document.getElementById('sys-ta').value=p.sys;
-  renderProjects(); newChat();
-  if(currentMode==='audit') document.getElementById('audit-url').value='https://'+p.url+'/';
-  if(currentMode==='tools') renderTool(activeTool);
-}
-
-function deleteProj(id){
-  if(!confirm('Удалить сайт из списка?'))return;
-  const idx=PROJECTS.findIndex(p=>p.id===id);
-  if(idx===-1)return;
-  PROJECTS.splice(idx,1);
-  if(activeProj.id===id){activeProj=PROJECTS[0];document.getElementById('proj-emoji').textContent=activeProj.emoji;document.getElementById('proj-name').textContent=activeProj.name;}
-  renderProjects();
-}
-
-function addNewSite(){
-  const url=prompt('URL нового сайта (напр: mysite.com):');
-  if(!url)return;
-  const name=prompt('Название сайта:')||url;
-  const np={id:'c'+Date.now(),emoji:'🌐',name,url:url.replace(/^https?:\/\//,''),
-    sys:`Ты Пилот — технический SEO-специалист. Проект: ${url} (${name}). Отвечай коротко, давай готовый код.`};
-  PROJECTS.splice(PROJECTS.length-1,0,np);
-  activeProj=np;
-  document.getElementById('proj-emoji').textContent=np.emoji;
-  document.getElementById('proj-name').textContent=np.name;
-  document.getElementById('sys-ta').value=np.sys;
-  renderProjects(); newChat();
-}
-
-function renderConvs(){
-  const el=document.getElementById('convs');
-  if(!convs.length){el.innerHTML='<div style="padding:6px 7px;font-size:10.5px;color:var(--muted)">Нет чатов</div>';return;}
-  el.innerHTML=convs.slice().reverse().map(c=>`
-    <div class="conv-item ${c.id===activeConvId?'active':''}" onclick="loadConv('${c.id}')">
-      <span style="font-size:11px">${c.emoji||'💬'}</span>
-      <span class="conv-title">${c.title}</span>
-      <button class="conv-del" onclick="event.stopPropagation();delConv('${c.id}')">✕</button>
-    </div>`).join('');
-}
-
-function newChat(){
-  msgs=[];pendingImages=[];activeConvId=null;updateImgStrip();
-  document.getElementById('msgs-inner').innerHTML=`
-    <div class="welcome" id="welcome">
-      <div class="welcome-icon">${activeProj.emoji}</div>
-      <h2>${activeProj.name}</h2>
-      <p>${activeProj.url} · Готов к работе</p>
-      <div class="welcome-badge">👔 Директор Гагик · ✈️ Пилот готов</div>
-      <div class="quick-actions">
-        <button class="qa-btn" onclick="setMode('audit')">🔍 Аудит</button>
-        <button class="qa-btn" onclick="setMode('tools')">🛠️ Инструменты</button>
-        <button class="qa-btn" onclick="setHint('Найди в интернете: ')">🌐 Поиск</button>
-      </div>
-    </div>`;
-  renderConvs();
-}
-
-function loadConv(id){
-  const c=convs.find(x=>x.id===id);if(!c)return;
-  activeConvId=id;msgs=[...c.messages];
-  const p=PROJECTS.find(x=>x.id===c.projId)||PROJECTS[0];
-  activeProj=p;
-  document.getElementById('proj-emoji').textContent=p.emoji;
-  document.getElementById('proj-name').textContent=p.name;
-  document.getElementById('sys-ta').value=p.sys;
-  renderProjects();
-  document.getElementById('msgs-inner').innerHTML='';
-  msgs.forEach(m=>{
-    const txt=typeof m.content==='string'?m.content:(m.content.find?.(b=>b.type==='text')?.text||'');
-    renderMsg(m.role,txt);
-  });
-  scrollDown();renderConvs();
-}
-
-function delConv(id){convs=convs.filter(c=>c.id!==id);saveConvs();if(activeConvId===id)newChat();renderConvs();}
-
-function saveConv(){
-  if(!msgs.length)return;
-  const ft=typeof msgs[0].content==='string'?msgs[0].content:(msgs[0].content.find?.(b=>b.type==='text')?.text||'');
-  const title=ft.slice(0,36)+(ft.length>36?'...':'');
-  if(activeConvId){const i=convs.findIndex(c=>c.id===activeConvId);if(i!==-1){convs[i].messages=[...msgs];convs[i].title=title;}}
-  else{activeConvId=Date.now().toString();convs.push({id:activeConvId,projId:activeProj.id,emoji:activeProj.emoji,title,messages:[...msgs]});}
-  saveConvs();renderConvs();
-}
-function saveConvs(){try{localStorage.setItem('p_convs',JSON.stringify(convs));}catch(e){}}
-function clearChat(){if(confirm('Очистить чат?'))newChat();}
-function setAuditType(type, btn) {
-  auditType = type;
-  document.querySelectorAll('.audit-type-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const kwInput = document.getElementById('audit-kw');
-  if (type === 'competitors') {
-    kwInput.placeholder = 'Ключевое слово (обязательно!)';
-    kwInput.style.borderColor = 'var(--gold)';
-  } else {
-    kwInput.placeholder = 'Ключевое слово (необязательно)';
-    kwInput.style.borderColor = '';
-  }
-}
-
-function toggleSys(){document.getElementById('sys-panel').classList.toggle('show');}
-function setHint(t){inp.value=t;inp.focus();inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,150)+'px';}
-function getTime(){return new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});}
-
-function handleFiles(files){
-  Array.from(files).forEach(f=>{
-    const r=new FileReader();
-    r.onload=e=>{const d=e.target.result;pendingImages.push({base64:d.split(',')[1],type:f.type||'image/png',name:f.name,preview:d});updateImgStrip();};
-    r.readAsDataURL(f);
-  });
-  document.getElementById('file-inp').value='';
-}
-function updateImgStrip(){
-  const s=document.getElementById('img-strip');
-  if(!pendingImages.length){s.classList.remove('show');s.innerHTML='';return;}
-  s.classList.add('show');
-  s.innerHTML=pendingImages.map((img,i)=>`<div class="img-thumb"><img src="${img.preview}"><button class="img-thumb-del" onclick="removePendingImg(${i})">✕</button></div>`).join('');
-}
-function removePendingImg(i){pendingImages.splice(i,1);updateImgStrip();}
-
-function renderMsg(role,content,imgPreviews){
-  const w=document.getElementById('welcome');if(w)w.remove();
-  const inner=document.getElementById('msgs-inner');
-  const d=document.createElement('div');d.className='msg '+(role==='user'?'user':'ai');
-  const av=document.createElement('div');av.className='av '+(role==='user'?'u':'a');av.textContent=role==='user'?'👔':'✈️';
-  const body=document.createElement('div');body.className='msg-body';
-  const rl=document.createElement('div');rl.className='msg-role';
-  rl.textContent=role==='user'?`Директор · ${getTime()}`:`Пилот · ${getTime()}`;
-  const bub=document.createElement('div');bub.className='bubble';
-  if(imgPreviews?.length) imgPreviews.forEach(src=>{const im=document.createElement('img');im.src=src;im.className='img-preview';bub.appendChild(im);});
-  if(role==='user'){const s=document.createElement('span');s.textContent=content;bub.appendChild(s);}
-  else{
-    const t=document.createElement('div');t.innerHTML=md(content);bub.appendChild(t);
-    bub.querySelectorAll('pre').forEach(pre=>{
-      const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='Копировать';
-      btn.onclick=()=>{navigator.clipboard.writeText(pre.querySelector('code')?.textContent||pre.textContent);btn.textContent='✓';setTimeout(()=>btn.textContent='Копировать',2000);};
-      pre.appendChild(btn);
-    });
-  }
-  body.appendChild(rl);body.appendChild(bub);d.appendChild(av);d.appendChild(body);inner.appendChild(d);
-}
-
-function addThinking(){
-  const w=document.getElementById('welcome');if(w)w.remove();
-  const inner=document.getElementById('msgs-inner');
-  const d=document.createElement('div');d.id='thinking';d.className='thinking-row';
-  d.innerHTML=`<div class="av a">✈️</div><div class="thinking-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-  inner.appendChild(d);scrollDown();
-}
-function removeThinking(){const el=document.getElementById('thinking');if(el)el.remove();}
-function scrollDown(){const m=document.getElementById('msgs');m.scrollTop=m.scrollHeight;}
-
-function md(t){
-  t=t.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${esc(c.trim())}</code></pre>`);
-  t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
-  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  t=t.replace(/\*(.*?)\*/g,'<em>$1</em>');
-  t=t.replace(/^### (.*$)/gm,'<h3>$1</h3>');
-  t=t.replace(/^## (.*$)/gm,'<h2>$1</h2>');
-  t=t.replace(/^# (.*$)/gm,'<h1>$1</h1>');
-  t=t.replace(/^> (.*$)/gm,'<blockquote>$1</blockquote>');
-  t=t.replace(/^[-*] (.*$)/gm,'<li>$1</li>');
-  t=t.replace(/^---$/gm,'<hr style="border-color:var(--border);margin:10px 0">');
-  t=t.split('\n\n').map(p=>p.startsWith('<')?p:`<p>${p.replace(/\n/g,'<br>')}</p>`).join('\n');
-  return t;
-}
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function extractText(data){if(!data.content)return null;const texts=data.content.filter(b=>b.type==='text').map(b=>b.text).filter(Boolean);if(!texts.length)return null;return texts[texts.length-1];}
-
-async function callWorker(prompt,system){
-  const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:system||activeProj.sys,messages:[{role:'user',content:prompt}]})});
-  const data=await res.json();
-  if(data.usage){
-    const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;
-    totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}
-    document.getElementById('cost').textContent='€'+totalCost.toFixed(4);
-  }
-  return extractText(data);
-}
-
-async function sendMsg(){
-  const text=inp.value.trim();const hasImg=pendingImages.length>0;
-  if((!text&&!hasImg)||document.getElementById('send-btn').disabled)return;
-  inp.value='';inp.style.height='auto';
-  document.getElementById('send-btn').disabled=true;
-  const imgPrev=pendingImages.map(i=>i.preview);
-  const imgSend=[...pendingImages];pendingImages=[];updateImgStrip();
-  renderMsg('user',text||'📎 Файл',imgPrev.length?imgPrev:null);scrollDown();
-  let uc;
-  if(imgSend.length){
-    uc=[];
-    imgSend.forEach(i=>{if(i.type.startsWith('image/'))uc.push({type:'image',source:{type:'base64',media_type:i.type,data:i.base64}});});
-    uc.push({type:'text',text:text||'Проанализируй изображение. Что видишь? Проблемы? Рекомендации?'});
-  }else{uc=text;}
-  msgs.push({role:'user',content:uc});
-  addThinking();
-  const sys=document.getElementById('sys-ta').value||activeProj.sys;
-  try{
-    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:sys,messages:msgs})});
-    const data=await res.json();removeThinking();
-    const reply=extractText(data);
-    if(reply){renderMsg('ai',reply);msgs.push({role:'assistant',content:reply});scrollDown();saveConv();
-      if(data.usage){const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}}
-    else renderMsg('ai','❌ Ошибка: '+JSON.stringify(data.error||data));
-  }catch(e){removeThinking();renderMsg('ai','❌ Ошибка: '+e.message);}
-  document.getElementById('send-btn').disabled=false;inp.focus();
-}
-
-// ---------- АУДИТ (обновлён с отображением платформы) ----------
-async function runAudit(){
-  const url=document.getElementById('audit-url').value.trim();
-  const kw=document.getElementById('audit-kw').value.trim();
-  if(!url){alert('Введи URL сайта');return;}
-  if(auditType==='competitors'&&!kw){alert('Для конкурентов введи ключевое слово!');return;}
-
-  const btn=document.getElementById('audit-btn');btn.disabled=true;
-  const resDiv=document.getElementById('audit-result');
-
-  const icons={seo:'🔍',technical:'⚡',security:'🔒',competitors:'🥊'};
-  const names={seo:'SEO анализ',technical:'Скорость',security:'Безопасность',competitors:'Конкуренты'};
-  resDiv.innerHTML=`<div style="text-align:center;padding:50px 20px">
-    <div style="font-size:40px;margin-bottom:14px">${icons[auditType]||'🔍'}</div>
-    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">${names[auditType]}: ${url}</div>
-    <div style="max-width:280px;margin:10px auto"><div class="progress-bar"><div class="progress-fill"></div></div></div>
-  </div>`;
-  btn.innerHTML='<span>⏳</span> Анализирую...';
-
-  try{
-    let actionType = auditType;
-    if (auditType === 'seo') actionType = 'seo';
-    else if (auditType === 'technical') actionType = 'technical';
-    else if (auditType === 'security') actionType = 'security';
-    else if (auditType === 'competitors') actionType = 'competitors';
-    else actionType = 'seo';
-
-    const response=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:actionType,url,keyword:kw})});
-    const data=await response.json();
-
-    if(data.error){resDiv.innerHTML=`<div class="audit-card">❌ ${data.error}</div>`;btn.disabled=false;btn.innerHTML='<span>🚀</span> Запустить';return;}
-
-    const score=data.totalScore||0;
-    const sc=s=>s>=80?'#059669':s>=50?'#d97706':'#dc2626';
-    const badge=s=>s>=80?'✅':s>=50?'⚠️':'❌';
-    const scoreLabel=s=>s>=80?'Хорошо':s>=50?'Внимание':'Критично';
-
-    let platformHtml = '';
-    if (data.platformName) {
-      platformHtml = `<div style="background:rgba(245,158,11,0.1); border-left:3px solid #F59E0B; padding:8px 12px; margin-bottom:12px; border-radius:6px; font-size:12px;">
-        <strong>⚠️ Платформа: ${data.platformName}</strong><br>
-        ${data.platformLimitations && data.platformLimitations.length ? `Ограничения: ${data.platformLimitations.join(', ')}. Рекомендации в отчёте адаптированы под эту платформу.` : ''}
-      </div>`;
+    async function fetchAudit(action, url, keyword) {
+        const body = { action, url, keyword: keyword || '' };
+        const resp = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        return await resp.json();
     }
 
-    let html=`<div class="audit-card">
-      ${platformHtml}
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
-        <div>
-          <div style="font-weight:700;font-size:15px">${icons[auditType]} ${names[auditType]}: ${url}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">${kw?'КС: '+kw+' · ':''} ${new Date().toLocaleString('ru')}</div>
-        </div>
-        <div style="text-align:center;min-width:70px">
-          <div style="font-size:26px;font-weight:800;color:${sc(score)}">${score}</div>
-          <div style="font-size:10px;color:${sc(score)};font-weight:700">${scoreLabel(score)}</div>
-        </div>
-      </div>`;
+    async function runFullAudit() {
+        const url = document.getElementById('url').value.trim();
+        if (!url) {
+            alert('Введите URL сайта');
+            return;
+        }
+        const withSEO = document.getElementById('chk-seo').checked;
+        const withSpeed = document.getElementById('chk-speed').checked;
+        const withSecurity = document.getElementById('chk-security').checked;
+        const withCompetitors = document.getElementById('chk-competitors').checked;
+        const keyword = document.getElementById('keyword').value.trim();
 
-    if(data.checks){
-      html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:14px">`;
-      Object.entries(data.checks).forEach(([key,check])=>{
-        const color=sc(check.score);
-        html+=`<div style="padding:10px 13px;background:var(--surface2);border-radius:9px;border-left:3px solid ${color}">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-            <span style="font-size:11px;font-weight:700;color:var(--text2)">${badge(check.score)} ${check.label}</span>
-            <span style="font-size:12px;font-weight:800;color:${color}">${check.score}%</span>
-          </div>
-          <div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:6px;overflow:hidden">
-            <div style="height:100%;width:${check.score}%;background:${color};border-radius:2px"></div>
-          </div>
-          <div style="font-size:10.5px;color:var(--muted)">${check.detail||''}</div>
-        </div>`;
-      });
-      html+=`</div>`;
+        if (!withSEO && !withSpeed && !withSecurity && !withCompetitors) {
+            alert('Выберите хотя бы один тип проверки');
+            return;
+        }
+
+        runBtn.disabled = true;
+        runBtn.textContent = '⏳ Анализируем...';
+        resultDiv.innerHTML = `<div style="text-align:center; padding:40px;">🛰️ Сканируем сайт, подождите...</div>`;
+
+        let seoData = null, speedData = null, securityData = null, competitorsData = null;
+
+        try {
+            if (withSEO) seoData = await fetchAudit('seo', url, keyword);
+            if (withSpeed) speedData = await fetchAudit('technical', url, '');
+            if (withSecurity) securityData = await fetchAudit('security', url, '');
+            if (withCompetitors && keyword) competitorsData = await fetchAudit('competitors', url, keyword);
+        } catch (err) {
+            resultDiv.innerHTML = `<div class="alert-platform" style="background:#fee2e2;">❌ Ошибка: ${err.message}</div>`;
+            runBtn.disabled = false;
+            runBtn.textContent = '🚀 Запустить аудит';
+            return;
+        }
+
+        // формируем отчёт
+        let html = '';
+
+        // платформа (берём из SEO, если есть, иначе из технического)
+        let platformName = '';
+        let platformLimitations = [];
+        if (seoData && seoData.platformName) {
+            platformName = seoData.platformName;
+            platformLimitations = seoData.platformLimitations || [];
+        } else if (speedData && speedData.platformName) {
+            platformName = speedData.platformName;
+            platformLimitations = speedData.platformLimitations || [];
+        }
+
+        if (platformName) {
+            html += `<div class="alert-platform">
+                        <strong>⚠️ Платформа: ${platformName}</strong><br>
+                        ${platformLimitations.length ? `Ограничения: ${platformLimitations.join(', ')}. Рекомендации адаптированы.` : ''}
+                     </div>`;
+        }
+
+        // --- SEO ---
+        if (withSEO && seoData && !seoData.error) {
+            const checks = seoData.checks || {};
+            const total = seoData.totalScore || 0;
+            const color = total >= 80 ? '#10b981' : (total >= 50 ? '#f59e0b' : '#ef4444');
+            html += `<div style="margin-bottom:24px;">
+                        <div class="score-badge" style="background:#eef2ff;">🔍 SEO · общая оценка <strong style="color:${color};">${total}</strong></div>
+                        <div class="metrics-grid">`;
+            for (let [key, c] of Object.entries(checks)) {
+                html += `<div class="metric"><div class="label">${c.label}</div><div class="value">${c.score}%</div><div style="font-size:11px; color:#475569;">${c.detail || ''}</div></div>`;
+            }
+            html += `</div>`;
+            if (seoData.h2 && seoData.h2.length) {
+                html += `<div style="font-size:13px; margin-top:8px;"><strong>H2:</strong> ${seoData.h2.slice(0,5).join(' · ')}</div>`;
+            }
+            html += `<div class="analysis">📋 <strong>Анализ и рекомендации</strong><br>${seoData.analysis || '—'}</div>`;
+            html += `</div>`;
+        } else if (withSEO && seoData?.error) {
+            html += `<div class="alert-platform" style="background:#fee2e2;">❌ SEO ошибка: ${seoData.error}</div>`;
+        }
+
+        // --- Скорость ---
+        if (withSpeed && speedData && !speedData.error) {
+            const checks = speedData.checks || {};
+            const total = speedData.totalScore || 0;
+            html += `<hr><div style="margin:16px 0 8px;"><div class="score-badge" style="background:#eef2ff;">⚡ Скорость · ${total}</div></div>
+                     <div class="metrics-grid">`;
+            for (let [key, c] of Object.entries(checks)) {
+                html += `<div class="metric"><div class="label">${c.label}</div><div class="value">${c.score}%</div><div style="font-size:11px;">${c.detail || ''}</div></div>`;
+            }
+            html += `</div><div class="analysis">📌 ${speedData.analysis || 'Рекомендации по скорости'}</div>`;
+        } else if (withSpeed && speedData?.error) {
+            html += `<div class="alert-platform" style="background:#fee2e2;">❌ Ошибка скорости: ${speedData.error}</div>`;
+        }
+
+        // --- Безопасность ---
+        if (withSecurity && securityData && !securityData.error) {
+            const checks = securityData.checks || {};
+            const total = securityData.totalScore || 0;
+            html += `<hr><div><div class="score-badge" style="background:#eef2ff;">🔒 Безопасность · ${total}</div></div>
+                     <div class="metrics-grid">`;
+            for (let [key, c] of Object.entries(checks)) {
+                html += `<div class="metric"><div class="label">${c.label}</div><div class="value">${c.score}%</div><div style="font-size:11px;">${c.detail || ''}</div></div>`;
+            }
+            html += `</div><div class="analysis">🛡️ ${securityData.analysis || 'Рекомендации по безопасности'}</div>`;
+        } else if (withSecurity && securityData?.error) {
+            html += `<div class="alert-platform" style="background:#fee2e2;">❌ Ошибка безопасности: ${securityData.error}</div>`;
+        }
+
+        // --- Конкуренты ---
+        if (withCompetitors && keyword) {
+            if (competitorsData && !competitorsData.error) {
+                const results = competitorsData.results || [];
+                const ourPos = competitorsData.ourPosition;
+                html += `<hr><div><div class="score-badge" style="background:#eef2ff;">🥊 Конкуренты по запросу «${keyword}»</div>`;
+                if (ourPos) html += `<div style="margin-bottom:12px;">📍 Наш сайт: позиция #${ourPos}</div>`;
+                else html += `<div style="margin-bottom:12px;">📍 Наш сайт не в топ‑10</div>`;
+                html += `<div style="display:flex; flex-direction:column; gap:10px;">`;
+                for (let i=0; i<Math.min(results.length,8); i++) {
+                    const r = results[i];
+                    html += `<div style="background:#f8fafc; border-radius:16px; padding:10px 16px; border:1px solid #e2e8f0;">
+                                <div style="font-weight:700;">${r.position}. ${r.domain}</div>
+                                <div style="font-size:12px; color:#334155;">${r.title?.slice(0,90) || ''}</div>
+                             </div>`;
+                }
+                html += `</div>`;
+                if (competitorsData.analysis) {
+                    html += `<div class="analysis" style="margin-top:14px;">🧠 ${competitorsData.analysis}</div>`;
+                }
+            } else {
+                html += `<div class="alert-platform" style="background:#fee2e2;">❌ Не удалось получить конкурентов: ${competitorsData?.error || 'ошибка'}</div>`;
+            }
+        }
+
+        if (!html) {
+            html = `<div class="alert-platform">⚠️ Нет данных для выбранных проверок. Попробуйте позже.</div>`;
+        }
+
+        resultDiv.innerHTML = html;
+        runBtn.disabled = false;
+        runBtn.textContent = '🚀 Запустить аудит';
     }
 
-    if(data.h2 && data.h2.length){
-      html+=`<div style="margin-bottom:12px;padding:9px 12px;background:var(--surface2);border-radius:8px;font-size:11.5px">
-        <span style="color:var(--muted);font-weight:700">H2 (${data.h2.length}): </span>
-        ${data.h2.map(h=>`<span style="background:var(--sidebar);border:1px solid var(--border);border-radius:4px;padding:2px 6px;margin:2px;display:inline-block">${h.slice(0,45)}</span>`).join(' ')}
-      </div>`;
-    }
-
-    html+=`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-      <div id="audit-analysis-txt" class="bubble">${md(data.analysis||'')}</div>
-    </div>`;
-
-    html+=`<div style="display:flex;justify-content:flex-end;margin-top:10px">
-      <button onclick="navigator.clipboard.writeText(document.getElementById('audit-analysis-txt').innerText);this.textContent='✓ Скопировано';setTimeout(()=>this.textContent='📋 Копировать',2000)" class="tb-btn">📋 Копировать</button>
-    </div>`;
-
-    html+=`</div>`;
-    resDiv.innerHTML=html;
-  }catch(e){resDiv.innerHTML=`<div class="audit-card">❌ ${e.message}</div>`;}
-  btn.disabled=false;btn.innerHTML='<span>🚀</span> Запустить';
-}
-
-// Остальные функции (selectTool, runTool, renderTool и т.д.) остаются без изменений из предыдущей версии.
-// Для краткости я их не копирую, но они должны быть. Если нужно, я добавлю их в третьем сообщении.
-// Однако для работы инструментов они необходимы. Поэтому я продолжу в следующем сообщении.
-// Но чтобы не затягивать, я лучше дам ссылку на полный файл? Нет, нельзя. Поэтому я сейчас отправлю продолжение с недостающими функциями.
-  // ---------- ИНСТРУМЕНТЫ (TOOLS) ----------
-function selectTool(id){
-  activeTool=id;
-  document.querySelectorAll('.tool-item').forEach(el=>el.classList.remove('active'));
-  const ti=document.getElementById('ti-'+id);if(ti)ti.classList.add('active');
-  renderTool(id);
-}
-
-function renderTool(id){
-  const t=TOOLS[id];if(!t)return;
-  document.getElementById('tool-title').innerHTML=t.icon+' '+t.title;
-  document.getElementById('tool-desc').textContent=t.desc;
-  document.getElementById('tool-content').innerHTML=t.render();
-}
-
-async function runTool(id){
-  const btn=document.getElementById('tool-run-btn');
-  if(!btn||btn.disabled)return;
-  btn.disabled=true;const origText=btn.innerHTML;btn.innerHTML='⏳ Работаю...';
-  document.getElementById('tool-out').innerHTML=`<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Пилот думает...</div></div>`;
-  
-  let prompt='', msgContent=null;
-  const g=id=>document.getElementById(id)?.value||'';
-  
-  if(id==='serp'){
-    const query=g('tf-serpq');
-    const ourSite=g('tf-serpsite');
-    if(!query){alert('Введи поисковый запрос');btn.disabled=false;btn.innerHTML=origText;document.getElementById('tool-out').innerHTML='';return;}
-    try{
-      const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'search',query})});
-      const data=await res.json();
-      if(!data.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${data.error?.message||'Ошибка'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
-      const results=data.results||[];
-      const ourPos=results.findIndex(r=>r.domain.includes(ourSite.replace(/^https?:\/\//,'').replace(/\/.*$/,'')));
-      let html=`<div class="tool-result">
-        <div class="tool-result-head"><span class="tool-result-title">🌍 Google: "${query}"${ourPos>=0?` · Наш сайт: #${ourPos+1}`:' · Наш сайт: не в топ-10'}</span></div>
-        <div style="display:flex;flex-direction:column;gap:8px;">`;
-      results.forEach((r,i)=>{
-        const isOurs=ourSite&&r.domain.includes(ourSite.replace(/^https?:\/\//,'').replace(/\/.*$/,''));
-        html+=`<div style="padding:10px 14px;border-radius:8px;border:1px solid ${isOurs?'rgba(37,99,235,0.4)':' var(--border)'};background:${isOurs?'var(--accent-light)':'var(--surface2)'}">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span style="font-size:11px;font-weight:800;color:${isOurs?'var(--accent)':'var(--muted)'};width:20px">#${r.position}</span>
-            <span style="font-size:12px;font-weight:700;color:${isOurs?'var(--accent)':'var(--text)'}">${r.domain} ${isOurs?'✈️ НАШ САЙТ':''}</span>
-          </div>
-          <div style="font-size:12px;color:var(--text2);padding-left:28px">${r.title}</div>
-          <div style="font-size:11px;color:var(--muted);padding-left:28px;margin-top:3px">${r.snippet?.slice(0,120)||''}</div>
-        </div>`;
-      });
-      html+='</div></div>';
-      document.getElementById('tool-out').innerHTML=html;
-    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${e.message}</div>`;}
-    btn.disabled=false;btn.innerHTML=origText;
-    return;
-  }
-  else if(id==='positions'){
-    const url=g('tf-url');
-    const kws=g('tf-kws').split('\n').filter(Boolean).map(k=>k.trim());
-    if(!url||!kws.length){alert('Укажи URL и хотя бы одно ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
-    const se=g('tf-se');
-    const region=g('tf-region')||'ru';
-    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Сканируем позиции...</div></div>';
-    const results=[];
-    for(let kw of kws){
-      try{
-        const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({action:'search',query:kw,num:30})});
-        const data=await res.json();
-        const ourDomain=new URL(url).hostname.replace('www.','');
-        const position=data.results?.findIndex(r=>r.domain.includes(ourDomain))??-1;
-        results.push({kw,position:position!==-1?position+1:null,top3:data.results?.slice(0,3).map(r=>r.domain).join(', ')});
-      }catch(e){results.push({kw,position:'ошибка',top3:''});}
-    }
-    let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">📈 Реальная проверка позиций (${se})</span></div><div style="display:flex;flex-direction:column;gap:8px;">`;
-    results.forEach(r=>{
-      const posText=r.position?`#${r.position}`:(r.position===null?'не в топ-30':'ошибка');
-      html+=`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div><strong>${r.kw}</strong> → ${posText}</div>${r.top3?`<div style="font-size:10.5px;color:var(--muted)">Топ-3: ${r.top3}</div>`:''}</div>`;
-    });
-    html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API. Регион: ${region}</div></div>`;
-    document.getElementById('tool-out').innerHTML=html;
-  }
-  else if(id==='indexing'){
-    const url=g('tf-url');
-    const pages=g('tf-pages').split('\n').filter(Boolean).map(p=>p.trim());
-    const baseUrl=url.replace(/\/$/,'');
-    const domain=new URL(baseUrl).hostname;
-    if(!domain){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
-    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем индексацию...</div></div>';
-    try{
-      const siteRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'search',query:`site:${domain}`,num:20})});
-      const siteData=await siteRes.json();
-      const indexedCount=siteData.results?.length||0;
-      const topPages=siteData.results?.map(r=>({url:r.url,title:r.title}))||[];
-      const pageResults=[];
-      for(let p of pages){
-        let fullUrl=p.startsWith('http')?p:baseUrl+p;
-        const pageRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({action:'search',query:`site:${fullUrl}`,num:1})});
-        const pageData=await pageRes.json();
-        const found=pageData.results?.length>0;
-        pageResults.push({url:fullUrl,indexed:found});
-      }
-      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🔎 Индексация: ${domain}</span></div>`;
-      html+=`<div style="margin-bottom:12px"><strong>📊 Найдено в Google (site:${domain})</strong> — примерно ${indexedCount} страниц (первые 20)</div>`;
-      if(topPages.length){
-        html+=`<div style="margin-bottom:16px"><strong>Примеры проиндексированных страниц:</strong><ul style="margin-top:6px;font-size:12px;">`;
-        topPages.slice(0,10).forEach(p=>{html+=`<li><a href="${p.url}" target="_blank" style="color:var(--accent)">${p.title||p.url}</a></li>`;});
-        html+=`</ul></div>`;
-      }else{html+=`<div style="margin-bottom:16px;color:var(--danger)">⚠️ Сайт не найден в индексе Google (возможно, заблокирован или новый).</div>`;}
-      if(pageResults.length){
-        html+=`<div><strong>🔍 Проверка отдельных страниц:</strong><div style="margin-top:6px;">`;
-        pageResults.forEach(pr=>{html+=`<div style="padding:4px 0;font-size:12px;">${pr.url} — ${pr.indexed?'✅ проиндексирована':'❌ не найдена'}</div>`;});
-        html+=`</div></div>`;
-      }
-      html+=`<div style="margin-top:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API (site: запросы).</div></div>`;
-      document.getElementById('tool-out').innerHTML=html;
-    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${e.message}</div>`;}
-  }
-  else if(id==='semantic'){
-    const kw=g('tf-kw');
-    const niche=g('tf-niche')||'';
-    if(!kw){alert('Введи ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
-    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Собираем семантику...</div></div>';
-    try{
-      const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'search',query:kw,num:10})});
-      const data=await res.json();
-      const titles=data.results?.map(r=>r.title).join(' ')||'';
-      const prompt=`Ты SEO-эксперт. Ключевое слово: "${kw}". Ниша: ${niche||'не указана'}. Заголовки конкурентов: ${titles}. На основе этих данных составь список из 30-50 семантически связанных слов (LSI). Разбей на группы: основные, дополнительные, вопросы, брендовые. Верни только список, без лишнего текста.`;
-      const aiRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'chat',messages:[{role:'user',content:prompt}],system:'Ты SEO-специалист. Отвечай на русском.'})});
-      const aiData=await aiRes.json();
-      const lsiText=aiData.content?.[0]?.text||'Не удалось сгенерировать';
-      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🧠 Семантические слова для "${kw}"</span></div>`;
-      html+=`<div class="bubble" style="white-space:pre-wrap">${md(lsiText)}</div>`;
-      html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API + AI.</div></div>`;
-      document.getElementById('tool-out').innerHTML=html;
-    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${e.message}</div>`;}
-  }
-  else if(id==='whois'){
-    const domain=g('tf-domain');
-    if(!domain){alert('Введи домен');btn.disabled=false;btn.innerHTML=origText;return;}
-    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Ищем whois данные...</div></div>';
-    try{
-      const whoisRes=await fetch(`https://whoisjson.com/api/v1/whois?domain=${domain}`);
-      const whoisData=await whoisRes.json();
-      if(whoisData.error){throw new Error(whoisData.error);}
-      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🌐 Whois: ${domain}</span></div>`;
-      html+=`<div><strong>Регистратор:</strong> ${whoisData.registrar||'н/д'}</div>`;
-      html+=`<div><strong>Дата регистрации:</strong> ${whoisData.createdDate||'н/д'}</div>`;
-      html+=`<div><strong>Истекает:</strong> ${whoisData.expiryDate||'н/д'}</div>`;
-      html+=`<div><strong>DNS:</strong> ${whoisData.nameServers?.join(', ')||'н/д'}</div>`;
-      html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted)">Данные из whoisjson.com (бесплатно, 500 запросов/день).</div></div>`;
-      document.getElementById('tool-out').innerHTML=html;
-    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ Не удалось получить whois: ${e.message}</div>`;}
-  }
-  else{
-    // Для остальных инструментов (meta, alt, tz, robots, sitemap и т.д.) используем AI-генерацию через чат
-    let inputText='';
-    if(id==='meta'){
-      inputText=`Сгенерируй мета-теги для URL/темы: ${g('tf-url')}. Ключевое слово: ${g('tf-kw')}. Контекст: ${g('tf-ctx')}.`;
-    } else if(id==='alt'){
-      if(!altImgData){alert('Загрузи изображение');btn.disabled=false;btn.innerHTML=origText;return;}
-      msgContent=[{type:'image',source:{type:'base64',media_type:altImgData.type,data:altImgData.base64}},
-                  {type:'text',text:`Создай ALT-тег для этого изображения. Сайт: ${g('tf-altctx')}, ключ: ${g('tf-altkw')}. Дай 3 варианта.`}];
-    } else if(id==='tz'){
-      inputText=`Создай ТЗ для копирайтера: тема ${g('tf-topic')}, сайт ${g('tf-site')}, объём ${g('tf-volume')}, ЦА ${g('tf-audience')}.`;
-    } else if(id==='robots'){
-      inputText=`Сгенерируй robots.txt для ${g('tf-domain')}, тип сайта ${g('tf-sitetype')}, закрыть: ${g('tf-disallow')}, sitemap: ${g('tf-sitemap')}.`;
-    } else if(id==='sitemap'){
-      inputText=`Создай XML sitemap для ${g('tf-url')} со страницами:\n${g('tf-pages')}. Частота: ${g('tf-freq')}.`;
-    } else if(id==='humanize'){
-      inputText=`Очеловечь текст:\n${g('tf-text')}\nСтиль: ${g('tf-style')}, личные детали: ${g('tf-personal')}.`;
-    } else if(id==='unique'){
-      inputText=`Оцени уникальность текста:\n${g('tf-text')}\nURL: ${g('tf-url')}`;
-    } else if(id==='imgdesc'){
-      if(!altImgData){alert('Загрузи изображение');btn.disabled=false;btn.innerHTML=origText;return;}
-      msgContent=[{type:'image',source:{type:'base64',media_type:altImgData.type,data:altImgData.base64}},
-                  {type:'text',text:`Опиши изображение для SEO: ALT, подпись, описание. Ключ: ${g('tf-altkw')}. Сайт: ${g('tf-altctx')}`}];
-    } else {
-      inputText=`Выполни задачу: ${id}`;
-    }
-
-    if(!msgContent && !inputText){btn.disabled=false;btn.innerHTML=origText;return;}
-    try{
-      let reply;
-      if(msgContent){
-        const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({action:'chat',messages:[{role:'user',content:msgContent}],system:activeProj.sys})});
-        const data=await res.json();
-        reply=data.content?.[0]?.text||'Ошибка генерации';
-      }else{
-        const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({action:'chat',messages:[{role:'user',content:inputText}],system:activeProj.sys})});
-        const data=await res.json();
-        reply=data.content?.[0]?.text||'Ошибка';
-      }
-      document.getElementById('tool-out').innerHTML=`
-        <div class="tool-result">
-          <div class="tool-result-head"><span class="tool-result-title">✈️ Результат</span><button class="copy-result-btn" onclick="navigator.clipboard.writeText(document.getElementById('tool-out-content').innerText);this.textContent='✓';setTimeout(()=>this.textContent='📋',2000)">📋</button></div>
-          <div id="tool-out-content" class="bubble">${md(reply)}</div>
-        </div>`;
-    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${e.message}</div>`;}
-  }
-  btn.disabled=false;btn.innerHTML=origText;
-}
-
-function previewAltImg(input){
-  if(!input.files[0])return;
-  const r=new FileReader();
-  r.onload=e=>{
-    altImgData={base64:e.target.result.split(',')[1],type:input.files[0].type};
-    document.getElementById('alt-preview').innerHTML=`<img src="${e.target.result}" style="max-height:120px;border-radius:8px;border:1px solid var(--border)">`;
-  };
-  r.readAsDataURL(input.files[0]);
-}
-
-// ---------- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ----------
-function previewAltImg(input){
-  if(!input.files[0])return;
-  const r=new FileReader();
-  r.onload=e=>{
-    altImgData={base64:e.target.result.split(',')[1],type:input.files[0].type};
-    document.getElementById('alt-preview').innerHTML=`<img src="${e.target.result}" style="max-height:120px;border-radius:8px;border:1px solid var(--border)">`;
-  };
-  r.readAsDataURL(input.files[0]);
-}
-
-let recognition=null,isRec=false;
-function toggleMic(){
-  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){alert('Нужен Chrome');return;}
-  if(isRec){recognition.stop();return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=true;
-  const btn=document.getElementById('mic-btn');
-  recognition.onstart=()=>{isRec=true;btn.classList.add('rec');btn.textContent='🔴';inp.placeholder='Говори...';};
-  recognition.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;inp.value=t;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,150)+'px';};
-  recognition.onend=()=>{isRec=false;btn.classList.remove('rec');btn.textContent='🎤';inp.placeholder='Напиши задачу или нажми 📎...';if(inp.value.trim())setTimeout(()=>sendMsg(),300);};
-  recognition.onerror=()=>{isRec=false;btn.classList.remove('rec');btn.textContent='🎤';};
-  recognition.start();
-}
-
-function magicFix(issue, fixUrl){
-  alert('Функция магического исправления в разработке');
-}
-
-function closeFix(){
-  const modal=document.getElementById('fix-modal');
-  if(modal)modal.style.display='none';
-}
-
-// Определение TOOLS для рендеринга (минимальное, чтобы не сломать)
-const TOOLS = {
-  positions: { icon:'📈', title:'Проверка позиций', desc:'Реальная проверка позиций через Google', render:()=>`<div class="tool-form"><div class="tf-label">URL сайта</div><input class="tf-input" id="tf-url" placeholder="https://airflowtravel.net/"><div class="tf-label">Ключевые слова (каждое с новой строки)</div><textarea class="tf-textarea" id="tf-kws" rows="3"></textarea><div class="tf-row"><div><div class="tf-label">Поисковик</div><select class="tf-input" id="tf-se"><option>Google</option><option>Яндекс</option></select></div><div><div class="tf-label">Регион</div><input class="tf-input" id="tf-region" placeholder="Россия"></div></div><button class="run-btn" id="tool-run-btn" onclick="runTool('positions')">🚀 Проверить</button></div><div id="tool-out"></div>` },
-  indexing: { icon:'🔎', title:'Проверка индексации', desc:'Реальная индексация через site:', render:()=>`<div class="tool-form"><div class="tf-label">URL сайта</div><input class="tf-input" id="tf-url" placeholder="https://site.com/"><div class="tf-label">Страницы (каждая с новой строки)</div><textarea class="tf-textarea" id="tf-pages" rows="3" placeholder="/about/\n/contact/"></textarea><button class="run-btn" id="tool-run-btn" onclick="runTool('indexing')">🔎 Проверить</button></div><div id="tool-out"></div>` },
-  semantic: { icon:'🧠', title:'Семантические слова', desc:'LSI-слова на основе конкурентов', render:()=>`<div class="tool-form"><div class="tf-label">Ключевое слово</div><input class="tf-input" id="tf-kw" placeholder="дропшиппинг"><div class="tf-label">Ниша</div><input class="tf-input" id="tf-niche" placeholder="ecommerce"><button class="run-btn" id="tool-run-btn" onclick="runTool('semantic')">🧠 Найти</button></div><div id="tool-out"></div>` },
-  whois: { icon:'🌐', title:'Whois домена', desc:'Информация о домене', render:()=>`<div class="tool-form"><div class="tf-label">Домен</div><input class="tf-input" id="tf-domain" placeholder="example.com"><button class="run-btn" id="tool-run-btn" onclick="runTool('whois')">🌐 Проверить</button></div><div id="tool-out"></div>` },
-  meta: { icon:'🏷️', title:'Генератор мета-тегов', desc:'Генерация title/description', render:()=>`<div class="tool-form"><div class="tf-label">URL/тема</div><input class="tf-input" id="tf-url"><div class="tf-label">Ключевое слово</div><input class="tf-input" id="tf-kw"><button class="run-btn" id="tool-run-btn" onclick="runTool('meta')">🏷️ Сгенерировать</button></div><div id="tool-out"></div>` },
-  alt: { icon:'🖼️', title:'Генератор ALT-тегов', desc:'ALT по картинке', render:()=>`<div class="tool-form"><input type="file" id="alt-file" accept="image/*" onchange="previewAltImg(this)"><div id="alt-preview"></div><div class="tf-label">Контекст</div><input class="tf-input" id="tf-altctx"><div class="tf-label">Ключ</div><input class="tf-input" id="tf-altkw"><button class="run-btn" id="tool-run-btn" onclick="runTool('alt')">🖼️ Сгенерировать</button></div><div id="tool-out"></div>` },
-  tz: { icon:'📋', title:'ТЗ для копирайтера', desc:'Техническое задание', render:()=>`<div class="tool-form"><div class="tf-label">Тема</div><input class="tf-input" id="tf-topic"><div class="tf-label">Сайт</div><input class="tf-input" id="tf-site"><div class="tf-label">Объём</div><select class="tf-input" id="tf-volume"><option>3000-5000</option></select><button class="run-btn" id="tool-run-btn" onclick="runTool('tz')">📋 Создать</button></div><div id="tool-out"></div>` },
-  robots: { icon:'🤖', title:'robots.txt', desc:'Генерация robots.txt', render:()=>`<div class="tool-form"><div class="tf-label">Домен</div><input class="tf-input" id="tf-domain"><div class="tf-label">Тип сайта</div><select class="tf-input" id="tf-sitetype"><option>Информационный</option></select><button class="run-btn" id="tool-run-btn" onclick="runTool('robots')">🤖 Создать</button></div><div id="tool-out"></div>` },
-  sitemap: { icon:'🗺️', title:'Sitemap', desc:'Генерация XML sitemap', render:()=>`<div class="tool-form"><div class="tf-label">URL сайта</div><input class="tf-input" id="tf-url"><div class="tf-label">Страницы</div><textarea class="tf-textarea" id="tf-pages" rows="3"></textarea><button class="run-btn" id="tool-run-btn" onclick="runTool('sitemap')">🗺️ Создать</button></div><div id="tool-out"></div>` },
-  humanize: { icon:'🧑', title:'Очеловечить текст', desc:'Сделать текст живым', render:()=>`<div class="tool-form"><div class="tf-label">Текст</div><textarea class="tf-textarea" id="tf-text" rows="5"></textarea><button class="run-btn" id="tool-run-btn" onclick="runTool('humanize')">🧑 Очеловечить</button></div><div id="tool-out"></div>` },
-  unique: { icon:'🔍', title:'Уникальность текста', desc:'Оценка уникальности (AI)', render:()=>`<div class="tool-form"><textarea class="tf-textarea" id="tf-text" rows="5"></textarea><button class="run-btn" id="tool-run-btn" onclick="runTool('unique')">🔍 Проверить</button></div><div id="tool-out"></div>` },
-  imgdesc: { icon:'🎨', title:'Описание картинки', desc:'SEO-описание изображения', render:()=>`<div class="tool-form"><input type="file" id="alt-file" accept="image/*" onchange="previewAltImg(this)"><div id="alt-preview"></div><button class="run-btn" id="tool-run-btn" onclick="runTool('imgdesc')">🎨 Создать</button></div><div id="tool-out"></div>` },
-  serp: { icon:'🌍', title:'Google поиск', desc:'Реальный поиск', render:()=>`<div class="tool-form"><div class="tf-label">Запрос</div><input class="tf-input" id="tf-serpq"><div class="tf-label">Наш сайт</div><input class="tf-input" id="tf-serpsite"><button class="run-btn" id="tool-run-btn" onclick="runTool('serp')">🌍 Найти</button></div><div id="tool-out"></div>` },
-  competitors: { icon:'🥊', title:'Анализ конкурентов', desc:'Конкуренты по запросу', render:()=>`<div class="tool-form"><div class="tf-label">Ключевое слово</div><input class="tf-input" id="tf-kw"><button class="run-btn" id="tool-run-btn" onclick="runTool('competitors')">🥊 Анализ</button></div><div id="tool-out"></div>` },
-  h1gen: { icon:'✍️', title:'Генератор H1', desc:'Варианты заголовков', render:()=>`<div class="tool-form"><div class="tf-label">Тема</div><input class="tf-input" id="tf-topic"><button class="run-btn" id="tool-run-btn" onclick="runTool('h1gen')">✍️ Сгенерировать</button></div><div id="tool-out"></div>` },
-  paraphrase: { icon:'🔄', title:'Перефразировать', desc:'Рерайт текста', render:()=>`<div class="tool-form"><textarea class="tf-textarea" id="tf-text" rows="5"></textarea><button class="run-btn" id="tool-run-btn" onclick="runTool('paraphrase')">🔄 Перефразировать</button></div><div id="tool-out"></div>` }
-};
-
-// Инициализация после загрузки
-inp.addEventListener('input',()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,150)+'px';});
-inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
-document.addEventListener('paste',e=>{
-  if(currentMode!=='chat')return;
-  const items=e.clipboardData?.items;if(!items)return;
-  for(const item of items) if(item.type.startsWith('image/')){const f=item.getAsFile();if(f)handleFiles([f]);}
-});
-
-init();
+    runBtn.addEventListener('click', runFullAudit);
 </script>
 </body>
 </html>
