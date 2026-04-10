@@ -3,198 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аудит сайта — WINNER</title>
+    <title>WINNER Аудит — как AirFlow Pilot</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            background: #f1f5f9;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f2f5;
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
             padding: 32px 20px;
-            color: #0f172a;
+            color: #1e293b;
         }
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
         }
-        /* карточка */
+
+        /* главная карточка */
         .card {
-            background: white;
+            background: #ffffff;
             border-radius: 32px;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: all 0.2s;
         }
+
         .card-header {
             padding: 28px 32px 12px 32px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e9eef3;
         }
+
         .card-header h1 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            letter-spacing: -0.3px;
+            display: inline-block;
         }
+
         .card-header p {
-            color: #475569;
+            color: #5b6e8c;
             margin-top: 8px;
             font-size: 14px;
         }
+
         .card-body {
             padding: 28px 32px;
         }
-        /* поля */
+
+        /* поля ввода */
         .url-group {
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
+
         label {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             display: block;
-            margin-bottom: 8px;
-            color: #1e293b;
+            margin-bottom: 6px;
+            color: #334155;
         }
-        input[type="url"] {
+
+        input[type="url"], input[type="text"] {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 16px;
             font-size: 15px;
             border: 1px solid #cbd5e1;
-            border-radius: 20px;
+            border-radius: 24px;
             background: #fff;
             transition: 0.2s;
-            font-family: inherit;
         }
-        input[type="url"]:focus {
+
+        input:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
-        .checks-grid {
+
+        .checks-row {
             display: flex;
             flex-wrap: wrap;
             gap: 24px;
-            margin: 20px 0 24px 0;
+            margin: 20px 0 24px;
             background: #f8fafc;
-            padding: 20px 24px;
-            border-radius: 28px;
+            padding: 16px 20px;
+            border-radius: 32px;
         }
+
         .check-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-size: 15px;
+            gap: 8px;
+            font-size: 14px;
             font-weight: 500;
+            cursor: pointer;
         }
+
         .check-item input {
             width: 18px;
             height: 18px;
             cursor: pointer;
             accent-color: #3b82f6;
         }
-        .kw-group {
-            margin-bottom: 28px;
-        }
-        .kw-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 20px;
-            font-size: 14px;
-        }
+
         button {
             background: linear-gradient(105deg, #2563eb, #4f46e5);
             border: none;
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: 40px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             color: white;
             cursor: pointer;
-            transition: 0.2s;
             width: 100%;
-            box-shadow: 0 6px 14px rgba(37,99,235,0.25);
+            transition: 0.2s;
+            box-shadow: 0 6px 12px rgba(37,99,235,0.25);
         }
+
         button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             filter: brightness(1.02);
         }
+
         button:disabled {
             opacity: 0.6;
             transform: none;
-            cursor: not-allowed;
         }
+
+        /* результат — как AirFlow Pilot */
         .result {
             margin-top: 32px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 28px;
+            border-top: 1px solid #e9eef3;
+            padding-top: 24px;
         }
-        .alert-platform {
+
+        .platform-badge {
             background: #fffbeb;
             border-left: 5px solid #f59e0b;
-            padding: 14px 18px;
             border-radius: 20px;
+            padding: 12px 20px;
             margin-bottom: 24px;
             font-size: 13px;
             color: #92400e;
         }
-        .score-badge {
-            display: inline-block;
-            background: #f1f5f9;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px,1fr));
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .metric {
-            background: #f8fafc;
-            border-radius: 18px;
-            padding: 12px 14px;
-            border: 1px solid #e2e8f0;
-        }
-        .metric .label {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #475569;
-        }
-        .metric .value {
-            font-size: 18px;
+
+        .score-big {
+            font-size: 28px;
             font-weight: 800;
+            display: inline-block;
+            margin-right: 12px;
+        }
+
+        /* карточка метрики */
+        .metric-card {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #eef2ff;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+            transition: 0.1s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .metric-name {
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-score {
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .progress {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+        }
+
+        .metric-detail {
+            font-size: 12px;
+            color: #475569;
             margin-top: 6px;
         }
-        .analysis {
-            background: #fefce8;
-            border-radius: 24px;
-            padding: 20px 24px;
-            margin-top: 20px;
-            font-size: 14px;
-            line-height: 1.6;
+
+        .green {
+            color: #10b981;
         }
+        .yellow {
+            color: #f59e0b;
+        }
+        .red {
+            color: #ef4444;
+        }
+
+        .bg-green-light {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+        }
+        .bg-yellow-light {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+        }
+        .bg-red-light {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .competitor-item {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .competitor-rank {
+            font-weight: 800;
+            font-size: 18px;
+            min-width: 40px;
+            color: #2563eb;
+        }
+
+        .competitor-domain {
+            font-weight: 600;
+        }
+
         hr {
-            margin: 20px 0;
+            margin: 24px 0;
             border: 0;
             height: 1px;
-            background: #e2e8f0;
+            background: #e9eef3;
         }
+
         .footer-note {
-            font-size: 11px;
             text-align: center;
+            font-size: 11px;
+            color: #6c86a3;
             margin-top: 28px;
-            color: #64748b;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 24px 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
@@ -202,8 +283,8 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1>🔍 Аудит сайта — WINNER</h1>
-            <p>Вставьте URL, отметьте нужные проверки и получите честный отчёт</p>
+            <h1>✈️ WINNER Аудит</h1>
+            <p>Вставьте URL, выберите проверки — получите отчёт как у AirFlow Pilot</p>
         </div>
         <div class="card-body">
             <div class="url-group">
@@ -211,15 +292,15 @@
                 <input type="url" id="url" placeholder="https://jubileehub.net" value="https://jubileehub.net">
             </div>
 
-            <div class="checks-grid">
-                <label class="check-item"><input type="checkbox" id="chk-seo" checked> 🔍 SEO-теги</label>
+            <div class="checks-row">
+                <label class="check-item"><input type="checkbox" id="chk-seo" checked> 🔍 SEO</label>
                 <label class="check-item"><input type="checkbox" id="chk-speed"> ⚡ Скорость</label>
                 <label class="check-item"><input type="checkbox" id="chk-security"> 🔒 Безопасность</label>
                 <label class="check-item"><input type="checkbox" id="chk-competitors"> 🥊 Конкуренты</label>
             </div>
 
-            <div class="kw-group">
-                <label>📌 Ключевое слово (только для конкурентов)</label>
+            <div class="url-group">
+                <label>📌 Ключевое слово (для конкурентов)</label>
                 <input type="text" id="keyword" placeholder="jubilee">
             </div>
 
@@ -228,31 +309,52 @@
             <div id="resultArea" class="result"></div>
         </div>
     </div>
-    <div class="footer-note">⚡ WINNER engine — реальные данные через API. Адаптация под платформу.</div>
+    <div class="footer-note">⚡ WINNER — каждый пункт с цветом, коротко и ясно</div>
 </div>
 
 <script>
-    const WORKER_URL = 'https://pilot-chat.esem39.workers.dev'; // твой существующий worker
+    const WORKER = 'https://pilot-chat.esem39.workers.dev';
 
-    const runBtn = document.getElementById('runBtn');
-    const resultDiv = document.getElementById('resultArea');
-
-    async function fetchAudit(action, url, keyword) {
+    async function fetchAction(action, url, keyword) {
         const body = { action, url, keyword: keyword || '' };
-        const resp = await fetch(WORKER_URL, {
+        const resp = await fetch(WORKER, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        return await resp.json();
+        return resp.json();
     }
 
-    async function runFullAudit() {
+    function getColorClass(score) {
+        if (score >= 80) return 'green';
+        if (score >= 50) return 'yellow';
+        return 'red';
+    }
+
+    function getBgClass(score) {
+        if (score >= 80) return 'bg-green-light';
+        if (score >= 50) return 'bg-yellow-light';
+        return 'bg-red-light';
+    }
+
+    function renderMetric(c) {
+        const color = getColorClass(c.score);
+        const bgClass = getBgClass(c.score);
+        return `
+            <div class="metric-card ${bgClass}">
+                <div class="metric-header">
+                    <div class="metric-name">${c.label}</div>
+                    <div class="metric-score ${color}">${c.score}%</div>
+                </div>
+                <div class="progress"><div class="progress-fill ${color}" style="width:${c.score}%; background:${c.score>=80?'#10b981':c.score>=50?'#f59e0b':'#ef4444'}"></div></div>
+                <div class="metric-detail">${c.detail || ''}</div>
+            </div>
+        `;
+    }
+
+    async function runAudit() {
         const url = document.getElementById('url').value.trim();
-        if (!url) {
-            alert('Введите URL сайта');
-            return;
-        }
+        if (!url) { alert('Введите URL'); return; }
         const withSEO = document.getElementById('chk-seo').checked;
         const withSpeed = document.getElementById('chk-speed').checked;
         const withSecurity = document.getElementById('chk-security').checked;
@@ -260,133 +362,103 @@
         const keyword = document.getElementById('keyword').value.trim();
 
         if (!withSEO && !withSpeed && !withSecurity && !withCompetitors) {
-            alert('Выберите хотя бы один тип проверки');
+            alert('Выберите хотя бы одну проверку');
             return;
         }
 
+        const runBtn = document.getElementById('runBtn');
         runBtn.disabled = true;
-        runBtn.textContent = '⏳ Анализируем...';
-        resultDiv.innerHTML = `<div style="text-align:center; padding:40px;">🛰️ Сканируем сайт, подождите...</div>`;
+        runBtn.textContent = '⏳ Сканируем...';
+        const resultDiv = document.getElementById('resultArea');
+        resultDiv.innerHTML = '<div style="text-align:center; padding:40px;">🛰️ Анализируем сайт...</div>';
 
-        let seoData = null, speedData = null, securityData = null, competitorsData = null;
-
+        let seo = null, speed = null, security = null, competitors = null;
         try {
-            if (withSEO) seoData = await fetchAudit('seo', url, keyword);
-            if (withSpeed) speedData = await fetchAudit('technical', url, '');
-            if (withSecurity) securityData = await fetchAudit('security', url, '');
-            if (withCompetitors && keyword) competitorsData = await fetchAudit('competitors', url, keyword);
-        } catch (err) {
-            resultDiv.innerHTML = `<div class="alert-platform" style="background:#fee2e2;">❌ Ошибка: ${err.message}</div>`;
+            if (withSEO) seo = await fetchAction('seo', url, keyword);
+            if (withSpeed) speed = await fetchAction('technical', url, '');
+            if (withSecurity) security = await fetchAction('security', url, '');
+            if (withCompetitors && keyword) competitors = await fetchAction('competitors', url, keyword);
+        } catch(e) {
+            resultDiv.innerHTML = `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка соединения: ${e.message}</div>`;
             runBtn.disabled = false;
             runBtn.textContent = '🚀 Запустить аудит';
             return;
         }
 
-        // формируем отчёт
         let html = '';
 
-        // платформа (берём из SEO, если есть, иначе из технического)
-        let platformName = '';
-        let platformLimitations = [];
-        if (seoData && seoData.platformName) {
-            platformName = seoData.platformName;
-            platformLimitations = seoData.platformLimitations || [];
-        } else if (speedData && speedData.platformName) {
-            platformName = speedData.platformName;
-            platformLimitations = speedData.platformLimitations || [];
-        }
-
+        // Платформа
+        let platformName = seo?.platformName || speed?.platformName || security?.platformName;
+        let limitations = seo?.platformLimitations || speed?.platformLimitations || security?.platformLimitations || [];
         if (platformName) {
-            html += `<div class="alert-platform">
+            html += `<div class="platform-badge">
                         <strong>⚠️ Платформа: ${platformName}</strong><br>
-                        ${platformLimitations.length ? `Ограничения: ${platformLimitations.join(', ')}. Рекомендации адаптированы.` : ''}
+                        ${limitations.length ? `Ограничения: ${limitations.slice(0,3).join(', ')}` : ''}
                      </div>`;
         }
 
-        // --- SEO ---
-        if (withSEO && seoData && !seoData.error) {
-            const checks = seoData.checks || {};
-            const total = seoData.totalScore || 0;
-            const color = total >= 80 ? '#10b981' : (total >= 50 ? '#f59e0b' : '#ef4444');
-            html += `<div style="margin-bottom:24px;">
-                        <div class="score-badge" style="background:#eef2ff;">🔍 SEO · общая оценка <strong style="color:${color};">${total}</strong></div>
-                        <div class="metrics-grid">`;
-            for (let [key, c] of Object.entries(checks)) {
-                html += `<div class="metric"><div class="label">${c.label}</div><div class="value">${c.score}%</div><div style="font-size:11px; color:#475569;">${c.detail || ''}</div></div>`;
+        // SEO
+        if (withSEO && seo && !seo.error) {
+            html += `<div class="section-title">🔍 SEO · общая оценка <span class="score-big ${getColorClass(seo.totalScore)}">${seo.totalScore}</span></div>`;
+            for (let [k, c] of Object.entries(seo.checks || {})) {
+                html += renderMetric(c);
             }
-            html += `</div>`;
-            if (seoData.h2 && seoData.h2.length) {
-                html += `<div style="font-size:13px; margin-top:8px;"><strong>H2:</strong> ${seoData.h2.slice(0,5).join(' · ')}</div>`;
+            if (seo.analysis) {
+                html += `<div class="metric-card bg-yellow-light" style="margin-top:8px;"><div class="metric-name">📌 Рекомендации</div><div class="metric-detail">${seo.analysis.substring(0,350)}${seo.analysis.length>350?'…':''}</div></div>`;
             }
-            html += `<div class="analysis">📋 <strong>Анализ и рекомендации</strong><br>${seoData.analysis || '—'}</div>`;
-            html += `</div>`;
-        } else if (withSEO && seoData?.error) {
-            html += `<div class="alert-platform" style="background:#fee2e2;">❌ SEO ошибка: ${seoData.error}</div>`;
+        } else if (withSEO && seo?.error) {
+            html += `<div class="platform-badge" style="background:#fee2e2;">❌ SEO ошибка: ${seo.error}</div>`;
         }
 
-        // --- Скорость ---
-        if (withSpeed && speedData && !speedData.error) {
-            const checks = speedData.checks || {};
-            const total = speedData.totalScore || 0;
-            html += `<hr><div style="margin:16px 0 8px;"><div class="score-badge" style="background:#eef2ff;">⚡ Скорость · ${total}</div></div>
-                     <div class="metrics-grid">`;
-            for (let [key, c] of Object.entries(checks)) {
-                html += `<div class="metric"><div class="label">${c.label}</div><div class="value">${c.score}%</div><div style="font-size:11px;">${c.detail || ''}</div></div>`;
+        // Скорость
+        if (withSpeed && speed && !speed.error) {
+            html += `<hr><div class="section-title">⚡ Скорость · общая оценка <span class="score-big ${getColorClass(speed.totalScore)}">${speed.totalScore}</span></div>`;
+            for (let [k, c] of Object.entries(speed.checks || {})) {
+                html += renderMetric(c);
             }
-            html += `</div><div class="analysis">📌 ${speedData.analysis || 'Рекомендации по скорости'}</div>`;
-        } else if (withSpeed && speedData?.error) {
-            html += `<div class="alert-platform" style="background:#fee2e2;">❌ Ошибка скорости: ${speedData.error}</div>`;
+            if (speed.analysis) html += `<div class="metric-card bg-yellow-light"><div class="metric-name">💡 Совет</div><div class="metric-detail">${speed.analysis.substring(0,300)}</div></div>`;
+        } else if (withSpeed && speed?.error) {
+            html += `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка скорости: ${speed.error}</div>`;
         }
 
-        // --- Безопасность ---
-        if (withSecurity && securityData && !securityData.error) {
-            const checks = securityData.checks || {};
-            const total = securityData.totalScore || 0;
-            html += `<hr><div><div class="score-badge" style="background:#eef2ff;">🔒 Безопасность · ${total}</div></div>
-                     <div class="metrics-grid">`;
-            for (let [key, c] of Object.entries(checks)) {
-                html += `<div class="metric"><div class="label">${c.label}</div><div class="value">${c.score}%</div><div style="font-size:11px;">${c.detail || ''}</div></div>`;
+        // Безопасность
+        if (withSecurity && security && !security.error) {
+            html += `<hr><div class="section-title">🔒 Безопасность · общая оценка <span class="score-big ${getColorClass(security.totalScore)}">${security.totalScore}</span></div>`;
+            for (let [k, c] of Object.entries(security.checks || {})) {
+                html += renderMetric(c);
             }
-            html += `</div><div class="analysis">🛡️ ${securityData.analysis || 'Рекомендации по безопасности'}</div>`;
-        } else if (withSecurity && securityData?.error) {
-            html += `<div class="alert-platform" style="background:#fee2e2;">❌ Ошибка безопасности: ${securityData.error}</div>`;
+            if (security.analysis) html += `<div class="metric-card bg-yellow-light"><div class="metric-name">🛡️ Рекомендации</div><div class="metric-detail">${security.analysis.substring(0,300)}</div></div>`;
+        } else if (withSecurity && security?.error) {
+            html += `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка безопасности: ${security.error}</div>`;
         }
 
-        // --- Конкуренты ---
-        if (withCompetitors && keyword) {
-            if (competitorsData && !competitorsData.error) {
-                const results = competitorsData.results || [];
-                const ourPos = competitorsData.ourPosition;
-                html += `<hr><div><div class="score-badge" style="background:#eef2ff;">🥊 Конкуренты по запросу «${keyword}»</div>`;
-                if (ourPos) html += `<div style="margin-bottom:12px;">📍 Наш сайт: позиция #${ourPos}</div>`;
-                else html += `<div style="margin-bottom:12px;">📍 Наш сайт не в топ‑10</div>`;
-                html += `<div style="display:flex; flex-direction:column; gap:10px;">`;
-                for (let i=0; i<Math.min(results.length,8); i++) {
-                    const r = results[i];
-                    html += `<div style="background:#f8fafc; border-radius:16px; padding:10px 16px; border:1px solid #e2e8f0;">
-                                <div style="font-weight:700;">${r.position}. ${r.domain}</div>
-                                <div style="font-size:12px; color:#334155;">${r.title?.slice(0,90) || ''}</div>
-                             </div>`;
-                }
-                html += `</div>`;
-                if (competitorsData.analysis) {
-                    html += `<div class="analysis" style="margin-top:14px;">🧠 ${competitorsData.analysis}</div>`;
-                }
-            } else {
-                html += `<div class="alert-platform" style="background:#fee2e2;">❌ Не удалось получить конкурентов: ${competitorsData?.error || 'ошибка'}</div>`;
+        // Конкуренты
+        if (withCompetitors && keyword && competitors && !competitors.error) {
+            html += `<hr><div class="section-title">🥊 Конкуренты по запросу «${keyword}»</div>`;
+            if (competitors.ourPosition) html += `<div class="metric-card bg-green-light"><div class="metric-name">📍 Наш сайт</div><div class="metric-detail">Позиция #${competitors.ourPosition} в топ‑10</div></div>`;
+            else html += `<div class="metric-card bg-yellow-light"><div class="metric-name">📍 Наш сайт</div><div class="metric-detail">Не в топ‑10</div></div>`;
+            const results = competitors.results || [];
+            for (let i=0; i<Math.min(results.length, 7); i++) {
+                const r = results[i];
+                html += `<div class="competitor-item">
+                            <div class="competitor-rank">#${r.position}</div>
+                            <div><div class="competitor-domain">${r.domain}</div><div style="font-size:12px; color:#475569;">${r.title?.slice(0,70) || ''}</div></div>
+                         </div>`;
             }
+            if (competitors.analysis) {
+                html += `<div class="metric-card bg-yellow-light"><div class="metric-name">🧠 Стратегия</div><div class="metric-detail">${competitors.analysis.substring(0,250)}</div></div>`;
+            }
+        } else if (withCompetitors && keyword && competitors?.error) {
+            html += `<div class="platform-badge" style="background:#fee2e2;">❌ Конкуренты: ${competitors.error}</div>`;
         }
 
-        if (!html) {
-            html = `<div class="alert-platform">⚠️ Нет данных для выбранных проверок. Попробуйте позже.</div>`;
-        }
-
+        if (!html) html = `<div class="platform-badge">⚠️ Нет данных. Попробуйте позже.</div>`;
         resultDiv.innerHTML = html;
         runBtn.disabled = false;
         runBtn.textContent = '🚀 Запустить аудит';
     }
 
-    runBtn.addEventListener('click', runFullAudit);
+    document.getElementById('runBtn').addEventListener('click', runAudit);
 </script>
 </body>
 </html>
