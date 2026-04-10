@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINNER Аудит — инструкции по шагам</title>
+    <title>WINNER Аудит — честные инструкции</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #f0f4f9; font-family: 'Segoe UI', system-ui, sans-serif; padding: 32px 20px; color: #1e2a3e; }
+        body { background: #f0f4f9; font-family: 'Segoe UI', system-ui, sans-serif; padding: 32px 20px; }
         .container { max-width: 1300px; margin: 0 auto; }
         .card { background: white; border-radius: 32px; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1); margin-bottom: 32px; }
         .card-header { padding: 28px 32px 12px 32px; border-bottom: 1px solid #e9edf2; }
@@ -34,8 +34,6 @@
         .instruction-step { margin-bottom: 12px; font-size: 13px; white-space: pre-line; }
         .platform-badge { background: #fffbeb; border-left: 5px solid #f59e0b; padding: 12px 20px; border-radius: 24px; margin-bottom: 24px; }
         .green-bg { background: #ecfdf5; border-left-color: #10b981; }
-        .yellow-bg { background: #fffbeb; border-left-color: #f59e0b; }
-        .red-bg { background: #fef2f2; border-left-color: #ef4444; }
         .section-title { font-size: 22px; font-weight: 700; margin: 32px 0 16px 0; display: flex; gap: 12px; align-items: center; }
         .missing-img-list { font-size: 12px; margin-top: 8px; color: #b45309; word-break: break-all; }
     </style>
@@ -50,7 +48,7 @@
         <div class="card-body">
             <div class="input-group">
                 <label>🌐 URL сайта</label>
-                <input type="url" id="siteUrl" placeholder="https://jubileehub.net" value="https://jubileehub.net">
+                <input type="url" id="siteUrl" placeholder="https://gisher.me" value="https://gisher.me">
             </div>
             <div class="checks-flex">
                 <label class="check"><input type="checkbox" id="chkSeo" checked> 🔍 SEO</label>
@@ -69,7 +67,7 @@
 </div>
 
 <script>
-    const WORKER_URL = 'https://pilot-chat.esem39.workers.dev'; // замени на свой URL worker'а
+    const WORKER_URL = 'https://pilot-chat.esem39.workers.dev'; // замени на свой URL
 
     async function callWorker(action, url, keyword) {
         const resp = await fetch(WORKER_URL, {
@@ -84,12 +82,6 @@
         if (score >= 80) return '#10b981';
         if (score >= 50) return '#f59e0b';
         return '#ef4444';
-    }
-
-    function getBgClass(score) {
-        if (score >= 80) return 'green-bg';
-        if (score >= 50) return 'yellow-bg';
-        return 'red-bg';
     }
 
     function renderMetric(metric, key, extra = {}) {
@@ -127,15 +119,6 @@
         const url = document.getElementById('siteUrl').value.trim();
         if (!url) { alert('Введите URL'); return; }
         const withSeo = document.getElementById('chkSeo').checked;
-        const withSpeed = document.getElementById('chkSpeed').checked;
-        const withSecurity = document.getElementById('chkSecurity').checked;
-        const withComp = document.getElementById('chkCompetitors').checked;
-        const keyword = document.getElementById('keyword').value.trim();
-
-        if (!withSeo && !withSpeed && !withSecurity && !withComp) {
-            alert('Выберите хотя бы одну проверку');
-            return;
-        }
 
         const btn = document.getElementById('runBtn');
         btn.disabled = true;
@@ -145,10 +128,9 @@
 
         let seo = null;
         try {
-            if (withSeo) seo = await callWorker('seo', url, keyword);
-            // TODO: добавить speed, security, competitors по аналогии
+            if (withSeo) seo = await callWorker('seo', url, '');
         } catch(e) {
-            resultsDiv.innerHTML = `<div class="platform-badge red-bg">❌ Ошибка: ${e.message}</div>`;
+            resultsDiv.innerHTML = `<div class="platform-badge" style="background:#fee2e2;">❌ Ошибка: ${e.message}</div>`;
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i> Запустить аудит';
             return;
         }
@@ -168,12 +150,12 @@
                 html += `<div class="platform-badge green-bg"><i class="fas fa-robot"></i> AI-рекомендации: ${seo.analysis}</div>`;
             }
         } else {
-            html = `<div class="platform-badge red-bg">Не удалось получить данные SEO</div>`;
+            html = `<div class="platform-badge" style="background:#fee2e2;">Не удалось получить данные</div>`;
         }
 
         resultsDiv.innerHTML = html;
 
-        // Подключаем спойлеры и запрашиваем инструкции
+        // Подключаем кнопки и загружаем инструкции через отдельный вызов fix
         document.querySelectorAll('.btn-fix').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const key = btn.getAttribute('data-key');
@@ -187,13 +169,14 @@
                 if (spoiler.innerHTML.includes('Загрузка инструкции')) {
                     spoiler.innerHTML = '<div class="instruction-step">📡 Получаю инструкцию...</div>';
                     try {
+                        const platform = seo?.platformName || 'Кастомный хостинг';
                         const fixRes = await fetch(WORKER_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'fix', issue: key, fixUrl: url })
+                            body: JSON.stringify({ action: 'fix', issue: key, fixUrl: url, platform })
                         });
                         const fixData = await fixRes.json();
-                        const instruction = fixData.fix || 'Инструкция временно недоступна. Проверьте вручную.';
+                        const instruction = fixData.fix || 'Инструкция временно недоступна.';
                         spoiler.innerHTML = `<div class="instruction-step">${instruction.replace(/\n/g, '<br>')}</div>`;
                     } catch(err) {
                         spoiler.innerHTML = `<div class="instruction-step">❌ Ошибка загрузки инструкции</div>`;
