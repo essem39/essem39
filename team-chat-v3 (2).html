@@ -1258,29 +1258,29 @@ async function magicFix(issue, fixUrl){
     const data=await res.json();
 
     if(data.readyCode){
-      // New structured response
       const code=data.readyCode;
       const where=data.where||'';
       const note=data.note||'';
       const platform=data.platform||'';
+      const codeId='fix-code-'+Date.now();
       content.innerHTML=`
         <div style="margin-bottom:12px">
-          <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Готовый код:</div>
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;position:relative">
-            <pre style="font-size:12.5px;color:#1e293b;white-space:pre-wrap;font-family:monospace;margin:0;line-height:1.6;padding-right:80px">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
-            <button onclick="navigator.clipboard.writeText(${JSON.stringify(code)});this.textContent='✓ Скопировано!';this.style.background='#16a34a';setTimeout(()=>{this.textContent='📋 Копировать';this.style.background='#2563eb'},2000)"
-              style="position:absolute;top:8px;right:8px;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600">📋 Копировать</button>
+          <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Готовый текст / код:</div>
+          <div style="background:#f8fafc;border:1.5px solid #2563eb33;border-radius:8px;padding:14px">
+            <div id="${codeId}" style="font-size:13px;color:#1e293b;line-height:1.7;font-family:${code.startsWith('<')||code.includes(':')?"'Courier New',monospace":"inherit"};white-space:pre-wrap;word-break:break-word">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
           </div>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('${codeId}').textContent);this.textContent='✓ Скопировано!';this.style.background='#16a34a';setTimeout(()=>{this.textContent='📋 Копировать';this.style.background='#2563eb'},2000)"
+            style="margin-top:8px;width:100%;background:#2563eb;color:#fff;border:none;border-radius:7px;padding:8px;font-size:12px;cursor:pointer;font-weight:600;font-family:inherit">📋 Копировать</button>
         </div>
-        ${where?`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#eff6ff;border-radius:7px;margin-bottom:8px">
-          <span style="font-size:13px">📍</span>
-          <div style="font-size:12px;color:#1e40af"><strong>Куда вставить:</strong> ${where}</div>
+        ${where?`<div style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#eff6ff;border-radius:7px;margin-bottom:8px">
+          <span>📍</span>
+          <div style="font-size:12.5px;color:#1e40af"><strong>Куда:</strong> ${where}</div>
         </div>`:''}
-        ${note?`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fffbeb;border-radius:7px;margin-bottom:8px">
-          <span style="font-size:13px">💡</span>
+        ${note?`<div style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#fffbeb;border-radius:7px">
+          <span>💡</span>
           <div style="font-size:12px;color:#92400e">${note}</div>
         </div>`:''}
-        ${platform?`<div style="font-size:10.5px;color:#9ca3af;margin-top:6px">Платформа: ${platform}</div>`:''}
+        ${platform?`<div style="font-size:10.5px;color:#9ca3af;margin-top:8px">Платформа определена: ${platform}</div>`:''}
       `;
     } else {
       // Fallback
