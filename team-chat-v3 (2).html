@@ -1250,55 +1250,42 @@ async function magicFix(issue, fixUrl){
   const content=document.getElementById('fix-content');
   if(!modal||!content)return;
   modal.style.display='flex';
-  content.innerHTML='<div style="display:flex;gap:5px;padding:10px 0"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  content.innerHTML='<div style="display:flex;gap:5px;padding:20px 0;justify-content:center"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  const kw=document.getElementById('audit-kw')?.value?.trim()||'';
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'fix',issue,fixUrl})});
+      body:JSON.stringify({action:'fix',issue,fixUrl,keyword:kw})});
     const data=await res.json();
-    const text=data.fix||'Нет рекомендаций';
-    // Clean markdown bold/italic markers
-    const clean=t=>t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/`([^`]+)`/g,'$1').replace(/^#+\s*/gm,'').trim();
 
-    // Parse numbered steps and render as cards
-    const lines=text.split('\n').filter(l=>l.trim());
-    const steps=[];
-    let current=null;
-    lines.forEach(line=>{
-      const stripped=clean(line);
-      if(!stripped)return;
-      const m=line.match(/^(\d+)[.)]\s*(.+)/);
-      if(m){if(current)steps.push(current);current={num:m[1],text:clean(m[2]),details:[]};}
-      else if(current){current.details.push(stripped);}
-      else{steps.push({num:'',text:stripped,details:[]});}
-    });
-    if(current)steps.push(current);
-
-    const colors=['#2563eb','#16a34a','#d97706','#7c3aed','#dc2626'];
-    const bgColors=['#eff6ff','#f0fdf4','#fffbeb','#f5f3ff','#fef2f2'];
-
-    let html='';
-    if(steps.length<=1){
-      html=`<div style="font-size:13px;line-height:1.8;color:#374151">${clean(text).replace(/\n/g,'<br>')}</div>`;
-    } else {
-      steps.forEach((s,i)=>{
-        if(!s.text)return;
-        const c=colors[i%colors.length];
-        const bg=bgColors[i%bgColors.length];
-        html+=`<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:${bg};border-radius:10px;margin-bottom:8px;border:1px solid ${c}22">
-          ${s.num?`<div style="width:28px;height:28px;background:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">${s.num}</div>`:`<div style="width:8px;height:8px;background:${c};border-radius:50%;margin-top:6px;flex-shrink:0"></div>`}
-          <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:600;color:#111;line-height:1.5">${s.text}</div>
-            ${s.details.map(d=>{
-              const isCodeLine=d.startsWith('<')||d.includes('content=')||d.startsWith('meta ')||d.startsWith('title>');
-              return isCodeLine
-                ?`<pre style="background:#1e293b;color:#e2e8f0;border-radius:6px;padding:8px 12px;font-size:11px;margin:6px 0;overflow-x:auto;white-space:pre-wrap;font-family:monospace">${d}</pre>`
-                :`<div style="font-size:11.5px;color:#6b7280;margin-top:4px;line-height:1.6">${d}</div>`;
-            }).join('')}
+    if(data.readyCode){
+      // New structured response
+      const code=data.readyCode;
+      const where=data.where||'';
+      const note=data.note||'';
+      const platform=data.platform||'';
+      content.innerHTML=`
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Готовый код:</div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;position:relative">
+            <pre style="font-size:12.5px;color:#1e293b;white-space:pre-wrap;font-family:monospace;margin:0;line-height:1.6;padding-right:80px">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+            <button onclick="navigator.clipboard.writeText(${JSON.stringify(code)});this.textContent='✓ Скопировано!';this.style.background='#16a34a';setTimeout(()=>{this.textContent='📋 Копировать';this.style.background='#2563eb'},2000)"
+              style="position:absolute;top:8px;right:8px;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600">📋 Копировать</button>
           </div>
-        </div>`;
-      });
+        </div>
+        ${where?`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#eff6ff;border-radius:7px;margin-bottom:8px">
+          <span style="font-size:13px">📍</span>
+          <div style="font-size:12px;color:#1e40af"><strong>Куда вставить:</strong> ${where}</div>
+        </div>`:''}
+        ${note?`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fffbeb;border-radius:7px;margin-bottom:8px">
+          <span style="font-size:13px">💡</span>
+          <div style="font-size:12px;color:#92400e">${note}</div>
+        </div>`:''}
+        ${platform?`<div style="font-size:10.5px;color:#9ca3af;margin-top:6px">Платформа: ${platform}</div>`:''}
+      `;
+    } else {
+      // Fallback
+      content.innerHTML=`<div style="font-size:13px;color:#374151;line-height:1.7">${data.fix||'Нет данных'}</div>`;
     }
-    content.innerHTML=html;
   }catch(e){content.innerHTML='❌ '+e.message;}
 }
 
