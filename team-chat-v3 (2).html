@@ -1250,42 +1250,68 @@ async function magicFix(issue, fixUrl){
   const content=document.getElementById('fix-content');
   if(!modal||!content)return;
   modal.style.display='flex';
-  content.innerHTML='<div style="display:flex;gap:5px;padding:20px 0;justify-content:center"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-  const kw=document.getElementById('audit-kw')?.value?.trim()||'';
+  content.innerHTML='<div style="display:flex;gap:5px;padding:10px 0"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'fix',issue,fixUrl,keyword:kw})});
+      body:JSON.stringify({action:'fix',issue,fixUrl})});
     const data=await res.json();
-
+    // ✅ ФИХ: Worker возвращает readyCode+where, не data.fix
     if(data.readyCode){
-      const code=data.readyCode;
+      const platform=data.platform||'';
       const where=data.where||'';
       const note=data.note||'';
-      const platform=data.platform||'';
-      const codeId='fix-code-'+Date.now();
       content.innerHTML=`
-        <div style="margin-bottom:12px">
-          <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Готовый текст / код:</div>
-          <div style="background:#f8fafc;border:1.5px solid #2563eb33;border-radius:8px;padding:14px">
-            <div id="${codeId}" style="font-size:13px;color:#1e293b;line-height:1.7;font-family:${code.startsWith('<')||code.includes(':')?"'Courier New',monospace":"inherit"};white-space:pre-wrap;word-break:break-word">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-          </div>
-          <button onclick="navigator.clipboard.writeText(document.getElementById('${codeId}').textContent);this.textContent='✓ Скопировано!';this.style.background='#16a34a';setTimeout(()=>{this.textContent='📋 Копировать';this.style.background='#2563eb'},2000)"
-            style="margin-top:8px;width:100%;background:#2563eb;color:#fff;border:none;border-radius:7px;padding:8px;font-size:12px;cursor:pointer;font-weight:600;font-family:inherit">📋 Копировать</button>
+        <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Платформа: <b>${platform}</b></div>
+        ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#16a34a">📍 ${where}</div>`:''}
+        <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">Готовый код:</div>
+        <div style="position:relative">
+          <pre style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+          <button onclick="navigator.clipboard.writeText(${JSON.stringify(data.readyCode)}).then(()=>{this.textContent='✅ Скопировано';setTimeout(()=>this.textContent='📋 Копировать',1500)})"
+            style="position:absolute;top:8px;right:8px;background:#313244;border:none;color:#cdd6f4;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">📋 Копировать</button>
         </div>
-        ${where?`<div style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#eff6ff;border-radius:7px;margin-bottom:8px">
-          <span>📍</span>
-          <div style="font-size:12.5px;color:#1e40af"><strong>Куда:</strong> ${where}</div>
-        </div>`:''}
-        ${note?`<div style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#fffbeb;border-radius:7px">
-          <span>💡</span>
-          <div style="font-size:12px;color:#92400e">${note}</div>
-        </div>`:''}
-        ${platform?`<div style="font-size:10.5px;color:#9ca3af;margin-top:8px">Платформа определена: ${platform}</div>`:''}
+        ${note?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">${note}</div>`:''}
       `;
-    } else {
-      // Fallback
-      content.innerHTML=`<div style="font-size:13px;color:#374151;line-height:1.7">${data.fix||'Нет данных'}</div>`;
+      return;
     }
+    const text=data.analysis||data.error||'Нет рекомендаций';
+    const clean=t=>t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/`{1,3}/g,'').replace(/^#+\s*/gm,'').trim();
+
+    // Extract code blocks before splitting
+    const codeBlocks=[];
+    const textNoCode=text.replace(/```[\s\S]*?```/g,m=>{codeBlocks.push(m.replace(/```\w*\n?/g,'').replace(/```/g,'').trim());return`__CODE_${codeBlocks.length-1}__`;});
+
+    const lines=textNoCode.split('\n').map(l=>l.trim()).filter(l=>l&&l!=='--'&&l!=='-'&&l!=='—'&&l.length>2);
+    const steps=[];
+    let current=null;
+    lines.forEach(line=>{
+      const m=line.match(/^(\d+)[.)]\s*(.+)/);
+      if(m){if(current)steps.push(current);current={num:m[1],text:clean(m[2]),details:[]};}
+      else if(current){current.details.push(line);}
+      else{steps.push({num:'',text:clean(line),details:[]});}
+    });
+    if(current)steps.push(current);
+
+    const colors=['#2563eb','#16a34a','#d97706','#7c3aed','#dc2626'];
+    const bgColors=['#eff6ff','#f0fdf4','#fffbeb','#f5f3ff','#fef2f2'];
+
+    let html='';
+    steps.filter(s=>s.text&&s.text.length>3).forEach((s,i)=>{
+      const c=colors[i%colors.length];
+      const bg=bgColors[i%bgColors.length];
+      html+=`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:${bg};border-radius:9px;margin-bottom:7px">
+        ${s.num?`<div style="width:24px;height:24px;background:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">${s.num}</div>`:`<div style="width:8px;height:8px;background:${c};border-radius:50%;margin-top:6px;flex-shrink:0"></div>`}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:#111;line-height:1.5">${clean(s.text)}</div>
+          ${s.details.filter(d=>d&&d.length>2).map(d=>{
+            const codeMatch=d.match(/__CODE_(\d+)__/);
+            if(codeMatch){const code=codeBlocks[+codeMatch[1]];return`<div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;margin:6px 0;overflow-x:auto"><pre style="font-size:11.5px;color:#1e293b;white-space:pre-wrap;font-family:monospace;margin:0">${code}</pre></div>`;}
+            return`<div style="font-size:11.5px;color:#6b7280;margin-top:4px;line-height:1.6">${clean(d)}</div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    });
+
+    content.innerHTML=html||`<div style="font-size:13px;color:#374151">${clean(text)}</div>`;
   }catch(e){content.innerHTML='❌ '+e.message;}
 }
 
