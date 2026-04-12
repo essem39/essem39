@@ -983,9 +983,9 @@ function renderChecks(checks,fixUrl){
   const metricCard=([,c])=>`
     <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
       <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${c.label}</div>
-      <div style="font-size:22px;font-weight:800;color:${sc(c.score)};margin-bottom:2px">${c.score??'?'}<span style="font-size:11px;font-weight:500;color:#9ca3af">%</span></div>
+      <div style="font-size:22px;font-weight:800;color:${sc(c.score)};margin-bottom:2px">${c.score!=null?c.score:'—'}<span style="font-size:11px;font-weight:500;color:#9ca3af">${c.score!=null?'%':''}</span></div>
       <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-bottom:6px;overflow:hidden">
-        <div style="height:100%;width:${c.score??0}%;background:${sc(c.score)};border-radius:2px;transition:width .6s"></div>
+        <div style="height:100%;width:${c.score??0}%;background:${sc(c.score??0)};border-radius:2px;transition:width .6s"></div>
       </div>
       <div style="font-size:10.5px;color:#6b7280;line-height:1.4">${c.detail||''}</div>
     </div>`;
@@ -1265,12 +1265,24 @@ async function magicFix(issue, fixUrl){
         ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#16a34a">📍 ${where}</div>`:''}
         <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">Готовый код:</div>
         <div style="position:relative">
-          <pre style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
-          <button onclick="navigator.clipboard.writeText(${JSON.stringify(data.readyCode)}).then(()=>{this.textContent='✅ Скопировано';setTimeout(()=>this.textContent='📋 Копировать',1500)})"
+          <pre data-copy="${data.readyCode.replace(/"/g,'&quot;').replace(/\n/g,'&#10;')}" style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+          <button class="fix-copy-btn"
             style="position:absolute;top:8px;right:8px;background:#313244;border:none;color:#cdd6f4;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">📋 Копировать</button>
         </div>
         ${note?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">${note}</div>`:''}
       `;
+      // Attach copy handler
+      const copyBtn=content.querySelector('.fix-copy-btn');
+      if(copyBtn){
+        const pre=content.querySelector('pre[data-copy]');
+        copyBtn.onclick=()=>{
+          const txt=pre?.getAttribute('data-copy')||pre?.textContent||'';
+          navigator.clipboard.writeText(txt).then(()=>{
+            copyBtn.textContent='✅ Скопировано';
+            setTimeout(()=>copyBtn.textContent='📋 Копировать',1500);
+          });
+        };
+      }
       return;
     }
     const text=data.analysis||data.error||'Нет рекомендаций';
