@@ -973,8 +973,8 @@ function renderScoreRing(score,label,color){
   </div>`;
 }
 
-function renderChecks(checks,fixUrl){
-  if(!checks)return'';
+function renderChecks(checks,fixUrl,keyword){
+  if(!checks)return '';
   const entries=Object.entries(checks);
   const crit=entries.filter(([,c])=>c.score!=null&&c.score<50);
   const warn=entries.filter(([,c])=>c.score!=null&&c.score>=50&&c.score<80);
@@ -997,7 +997,7 @@ function renderChecks(checks,fixUrl){
         <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:2px">${c.label}</div>
         <div style="font-size:11px;color:#6b7280">${c.detail||''}</div>
       </div>
-      <button onclick="magicFix('${c.label.replace(/'/g,"\\'")}','${fixUrl}')"
+      <button onclick="magicFix('${c.label.replace(/'/g,"\\'")}','${fixUrl}','${(keyword||'').replace(/'/g,"\\'")}')"
         style="flex-shrink:0;background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;color:#374151;font-family:inherit;white-space:nowrap">
         ✨ Исправить
       </button>
@@ -1054,7 +1054,7 @@ function formatAnalysis(text){
   }).join('');
 }
 
-function renderSection(icon,title,score,checks,analysis,extra,fixUrl){
+function renderSection(icon,title,score,checks,analysis,extra,fixUrl,keyword){
   const color=sc(score);
   return`<div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f3f4f6">
@@ -1068,7 +1068,7 @@ function renderSection(icon,title,score,checks,analysis,extra,fixUrl){
       ${renderScoreRing(score,score+'/100',color)}
     </div>
     ${extra||''}
-    ${renderChecks(checks,fixUrl||'')}
+    ${renderChecks(checks,fixUrl||'',keyword||'')}
     ${analysis?`
     <div style="margin-top:14px;border-top:1px solid #f3f4f6;padding-top:2px">
       <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.arr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'"
@@ -1150,17 +1150,17 @@ async function runFullAudit(){
       seo.h2s?.length?`<div style="padding:8px 12px;background:#f9fafb;border-radius:8px;font-size:11px;margin-bottom:8px;border:1px solid #e5e7eb">
         <span style="color:#6b7280;font-weight:700">H2: </span>
         ${seo.h2s.map(h=>`<span style="background:#fff;border:1px solid #e5e7eb;border-radius:4px;padding:2px 7px;margin:2px;display:inline-block">${h.slice(0,40)}</span>`).join(' ')}
-      </div>`:null, url
+      </div>`:null, url, kw
     );
 
     if(tech) html+=renderSection('⚡','Скорость и техническое',tech.totalScore,tech.checks,tech.analysis,
       tech.techData?.opportunities?.length?`<div style="padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:11px;margin-bottom:8px">
         <div style="font-weight:700;color:#dc2626;margin-bottom:5px">🐢 Что замедляет сайт:</div>
         ${tech.techData.opportunities.map(o=>`<div style="margin-bottom:3px">• ${o.title}${o.savings?` <span style="color:#dc2626">${o.savings}</span>`:''}</div>`).join('')}
-      </div>`:null, url
+      </div>`:null, url, kw
     );
 
-    if(sec) html+=renderSection('🔒','Безопасность',sec.totalScore,sec.checks,sec.analysis,null,url);
+    if(sec) html+=renderSection('🔒','Безопасность',sec.totalScore,sec.checks,sec.analysis,null,url,kw);
 
     if(comp&&comp.results?.length){
       const ourDomain=new URL(url).hostname.replace('www.','');
@@ -1245,7 +1245,7 @@ async function runSingleAudit(type){
 // AUDIT (legacy - kept for compatibility)
 async function runAudit(){runFullAudit();}
 
-async function magicFix(issue, fixUrl){
+async function magicFix(issue, fixUrl, keyword){
   const modal=document.getElementById('fix-modal');
   const content=document.getElementById('fix-content');
   if(!modal||!content)return;
@@ -1253,7 +1253,7 @@ async function magicFix(issue, fixUrl){
   content.innerHTML='<div style="display:flex;gap:5px;padding:10px 0"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'fix',issue,fixUrl})});
+      body:JSON.stringify({action:'fix',issue,fixUrl,keyword:keyword||''})});
     const data=await res.json();
     // ✅ ФИХ: Worker возвращает readyCode+where, не data.fix
     if(data.readyCode){
