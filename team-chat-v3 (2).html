@@ -980,27 +980,34 @@ function renderChecks(checks,fixUrl,keyword){
   const warn=entries.filter(([,c])=>c.score!=null&&c.score>=50&&c.score<80);
   const good=entries.filter(([,c])=>c.score!=null&&c.score>=80);
 
-  // Вычисляем «связанные» чеки для карточек desc и alts
   const checksObj=Object.fromEntries(entries);
   const metricCard=([key,c])=>{
-    // Если карточка Description — проверяем есть ли проблема с ключевым словом в desc
     let extraWarning='';
     let borderColor='#e5e7eb';
+    let displayScore=c.score;
+    let displayColor=sc(c.score);
+
+    // Description: если ключевое слово отсутствует — снижаем балл до 50% и показываем предупреждение
     if(key==='desc' && checksObj.kwInDesc && checksObj.kwInDesc.score===0){
-      borderColor='#fbbf24';
-      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${checksObj.kwInDesc.detail}</div>`;
+      borderColor='#f59e0b';
+      displayScore=50;
+      displayColor='#d97706';
+      const missing=checksObj.kwInDesc.detail||'Отсутствует в Description';
+      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${missing}</div>`;
     }
-    // Если карточка ALT — проверяем kwInAlt
+    // ALT: если ключевое слово отсутствует в ALT
     if(key==='alts' && checksObj.kwInAlt && checksObj.kwInAlt.score<100){
-      borderColor='#fbbf24';
+      borderColor='#f59e0b';
+      displayScore=Math.min(c.score,70);
+      displayColor='#d97706';
       extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${checksObj.kwInAlt.detail}</div>`;
     }
     return`
     <div style="background:#fff;border:1px solid ${borderColor};border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
       <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${c.label}</div>
-      <div style="font-size:22px;font-weight:800;color:${sc(c.score)};margin-bottom:2px">${c.score!=null?c.score:'—'}<span style="font-size:11px;font-weight:500;color:#9ca3af">${c.score!=null?'%':''}</span></div>
+      <div style="font-size:22px;font-weight:800;color:${displayColor};margin-bottom:2px">${displayScore!=null?displayScore:'—'}<span style="font-size:11px;font-weight:500;color:#9ca3af">${displayScore!=null?'%':''}</span></div>
       <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-bottom:6px;overflow:hidden">
-        <div style="height:100%;width:${c.score??0}%;background:${sc(c.score??0)};border-radius:2px;transition:width .6s"></div>
+        <div style="height:100%;width:${displayScore??0}%;background:${displayColor};border-radius:2px;transition:width .6s"></div>
       </div>
       <div style="font-size:10.5px;color:#6b7280;line-height:1.4">${c.detail||''}</div>
       ${extraWarning}
