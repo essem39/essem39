@@ -377,37 +377,7 @@ textarea#inp::placeholder{color:var(--muted);}
 <script>
 const WORKER = 'https://pilot-chat.esem39.workers.dev';
 
-const PILOT_SYS = `Ты Пилот — личный SEO-ассистент Директора Гагика. Ты работаешь внутри программы "Пилот" которая имеет три раздела: ЧАТ, АУДИТ, ИНСТРУМЕНТЫ.
-
-ВАЖНО: Когда тебя спрашивают "сколько инструментов" или "какие инструменты" — отвечай про 16 SEO-инструментов ПРОГРАММЫ (не про API). Никогда не упоминай web_search как "свой инструмент" в ответах пользователю.
-
-16 SEO-ИНСТРУМЕНТОВ ПРОГРАММЫ:
-1. Google поиск (serp) — реальные результаты топ-10
-2. Проверка позиций (positions) — где сайт в Google
-3. Мета-теги (meta) — генератор title и description
-4. ALT-теги (alt) — описания картинок
-5. Анализ конкурентов (competitors) — кто в топе и почему
-6. Проверка индексации (indexing) — проиндексированы ли страницы
-7. Семантика (semantic) — LSI и связанные слова
-8. ТЗ для копирайтера (tz) — техзадание на статью
-9. Генератор H1 (h1gen) — 10 вариантов заголовка
-10. Перефразирование (paraphrase) — переписать текст
-11. robots.txt (robots) — генератор файла
-12. XML Sitemap (sitemap) — карта сайта
-13. WHOIS домена (whois) — информация о домене
-14. Очеловечить текст (humanize) — убрать AI-стиль
-15. Проверка уникальности (unique) — антиплагиат
-16. Описание изображений (imgdesc) — полный SEO-разбор картинки
-
-КАК НАПРАВЛЯТЬ ПОЛЬЗОВАТЕЛЯ:
-Когда просят открыть что-то или спрашивают какой инструмент нужен — добавь команду в КОНЦЕ ответа:
-[OPEN:audit] — открыть раздел Аудит
-[OPEN:tools] — открыть раздел Инструменты  
-[TOOL:meta] — открыть конкретный инструмент (замени на нужный id из скобок выше)
-
-Примеры: "хочу аудит сайта" → объясни + [OPEN:audit] | "нужны мета-теги" → объясни + [TOOL:meta] | "открой инструменты" → [OPEN:tools]
-
-Отвечай коротко и конкретно. Давай готовый код. `;
+const PILOT_SYS = 'Ты Пилот — личный SEO-ассистент Директора Гагика. Ты часть программы Пилот с тремя разделами: ЧАТ, АУДИТ, ИНСТРУМЕНТЫ. Проект — сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, jubileehub.net. Когда пользователь просит что-то открыть — добавь команду в конце ответа: [OPEN:audit] для аудита, [OPEN:tools] для инструментов, [TOOL:meta] для конкретного инструмента. Инструменты (id): serp, positions, meta, alt, competitors, indexing, semantic, tz, h1gen, paraphrase, robots, sitemap, whois, humanize, unique, imgdesc. Отвечай коротко, давай готовый код.';
 const PROJECTS = [
   {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:PILOT_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
   {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:PILOT_SYS+'Проект: coffeespecialty.ru (кофе, Admitad, 100% SEO). Отвечай коротко, давай готовый код.'},
@@ -957,6 +927,32 @@ async function sendMsg(){
     uc.push({type:'text',text:text||'Проанализируй изображение. Что видишь? Проблемы? Рекомендации?'});
   }else{uc=text;}
   msgs.push({role:'user',content:uc});
+  // Intercept common questions instantly (no AI needed)
+  const lowerText=(text||'').toLowerCase();
+  const toolsList=`У меня **16 SEO-инструментов** в программе:\n\n`+
+    `1. 🌍 **Google поиск** — реальный топ-10 по запросу\n`+
+    `2. 📈 **Проверка позиций** — где сайт в Google\n`+
+    `3. 🏷️ **Мета-теги** — генератор title и description\n`+
+    `4. 🖼️ **ALT-теги** — SEO-описания картинок\n`+
+    `5. 🥊 **Анализ конкурентов** — кто в топе и почему\n`+
+    `6. 🔎 **Проверка индексации** — проиндексированы ли страницы\n`+
+    `7. 🧠 **Семантика** — LSI и связанные слова\n`+
+    `8. 📋 **ТЗ для копирайтера** — техзадание на статью\n`+
+    `9. ✏️ **Генератор H1** — 10 вариантов заголовка\n`+
+    `10. 🔄 **Перефразирование** — переписать текст\n`+
+    `11. 🤖 **robots.txt** — генератор файла\n`+
+    `12. 🗺️ **XML Sitemap** — карта сайта\n`+
+    `13. 🔍 **WHOIS домена** — информация о домене\n`+
+    `14. 👤 **Очеловечить текст** — убрать AI-стиль\n`+
+    `15. ✅ **Проверка уникальности** — антиплагиат\n`+
+    `16. 🖼️ **Описание изображений** — полный SEO-разбор картинки\n\n`+
+    `Плюс раздел 🔍 **Аудит** — полная проверка сайта (SEO + скорость + безопасность). Открыть? [OPEN:tools]`;
+  const isToolsQ=/инструмент|что.*(умеешь|можешь|делаешь)|сколько.*инструмент|возможност|функци|capabilities|what.*(can|do)/i.test(lowerText);
+  if(isToolsQ){
+    document.getElementById('send-btn').disabled=false;
+    renderMsg('ai',toolsList);msgs.push({role:'assistant',content:toolsList});scrollDown();saveConv();
+    return;
+  }
   addThinking();
   const sys=document.getElementById('sys-ta').value||activeProj.sys;
   try{
