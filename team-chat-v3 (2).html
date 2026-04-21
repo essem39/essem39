@@ -903,6 +903,15 @@ async function callWorker(prompt,system){
   return extractText(data);
 }
 
+async function callCheap(prompt){
+  try{
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'generate',prompt})});
+    const data=await res.json();
+    if(data.usage){const c=data.usage.input_tokens*.0000003+data.usage.output_tokens*.0000006;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
+    return data.result||data.error||'Ошибка';
+  }catch(e){return '❌ '+e.message;}
+}
 async function sendMsg(){
   const text=inp.value.trim();const hasImg=pendingImages.length>0;
   if((!text&&!hasImg)||document.getElementById('send-btn').disabled)return;
@@ -922,7 +931,7 @@ async function sendMsg(){
   const sys=document.getElementById('sys-ta').value||activeProj.sys;
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:sys,messages:msgs})});
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,system:sys,messages:msgs})});
     const data=await res.json();removeThinking();
     const reply=extractText(data);
     if(reply){
@@ -1581,12 +1590,13 @@ async function runTool(id){
     let reply;
     if(msgContent){
       const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:activeProj.sys,messages:[{role:'user',content:msgContent}]})});
+        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,system:activeProj.sys,messages:[{role:'user',content:msgContent}]})});
       const data=await res.json();
       if(data.usage){const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
       reply=extractText(data);
     }else{
-      reply=await callWorker(prompt,'Ты Пилот — технический SEO-специалист команды Директора Гагика. Используй web_search если нужны актуальные данные. Отвечай конкретно, давай готовые решения и код.');
+      const needsWeb=['unique','whois'].includes(id);
+      reply=needsWeb?await callWorker(prompt,'Ты Пилот — технический SEO-специалист. Используй web_search. Отвечай конкретно.'):await callCheap(prompt);
     }
     if(reply){
       document.getElementById('tool-out').innerHTML=`
