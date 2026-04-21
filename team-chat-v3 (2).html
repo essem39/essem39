@@ -377,13 +377,14 @@ textarea#inp::placeholder{color:var(--muted);}
 <script>
 const WORKER = 'https://pilot-chat.esem39.workers.dev';
 
+const PILOT_SYS = 'Ты Пилот — технический SEO-специалист команды Директора Гагика. Ты встроен в программу с тремя разделами: ЧАТ (текущий), АУДИТ, ИНСТРУМЕНТЫ (16 штук). Инструменты: [serp]=Google поиск, [positions]=Проверка позиций, [meta]=Мета-теги, [alt]=ALT-теги, [competitors]=Конкуренты, [indexing]=Индексация, [semantic]=Семантика, [tz]=ТЗ копирайтеру, [h1gen]=Генератор H1, [paraphrase]=Перефразирование, [robots]=robots.txt, [sitemap]=Sitemap, [whois]=WHOIS домена, [humanize]=Очеловечить текст, [unique]=Уникальность, [imgdesc]=Описание изображений. Когда пользователь спрашивает какой инструмент использовать или просит что-то открыть — скажи ЧТО делать и добавь команду в конце ответа: [OPEN:audit] — открыть аудит, [OPEN:tools] — открыть инструменты, [TOOL:meta] — открыть конкретный инструмент (подставь нужный id). Примеры: "хочу аудит" → объясни + [OPEN:audit]; "нужны мета-теги" → объясни + [TOOL:meta]; "проверить позиции" → объясни + [TOOL:positions]. ';
 const PROJECTS = [
-  {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:'Ты Пилот — технический SEO-специалист. Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код и конкретные данные.'},
-  {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:'Ты Пилот — технический SEO-специалист. Проект: coffeespecialty.ru (кофе, Admitad, 100% SEO). Отвечай коротко, давай готовый код.'},
-  {id:'elama',emoji:'📢',name:'eLamaInfo',url:'elamainfo.ru',sys:'Ты Пилот — технический SEO-специалист. Проект: elamainfo.ru (реклама, eLama, 100% SEO). Отвечай коротко, давай готовый код.'},
-  {id:'alidrop',emoji:'🛒',name:'AliDropInfo',url:'alidropinfo.com',sys:'Ты Пилот — технический SEO-специалист. Проект: alidropinfo.com (дропшиппинг, 97/100 SEO). Отвечай коротко, давай готовый код.'},
-  {id:'storelines',emoji:'🛠️',name:'Storelines',url:'storelines.net',sys:'Ты Пилот — технический SEO-специалист. Проект: storelines.net (18 инструментов EU, WISE PILOT). Отвечай коротко, давай готовый код.'},
-  {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:'Ты Пилот — технический SEO-специалист. Проект: jubileehub.net (SEO оптимизирован). Отвечай коротко, давай готовый код.'},
+  {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:PILOT_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
+  {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:PILOT_SYS+'Проект: coffeespecialty.ru (кофе, Admitad, 100% SEO). Отвечай коротко, давай готовый код.'},
+  {id:'elama',emoji:'📢',name:'eLamaInfo',url:'elamainfo.ru',sys:PILOT_SYS+'Проект: elamainfo.ru (реклама, eLama, 100% SEO). Отвечай коротко, давай готовый код.'},
+  {id:'alidrop',emoji:'🛒',name:'AliDropInfo',url:'alidropinfo.com',sys:PILOT_SYS+'Проект: alidropinfo.com (дропшиппинг, 97/100 SEO). Отвечай коротко, давай готовый код.'},
+  {id:'storelines',emoji:'🛠️',name:'Storelines',url:'storelines.net',sys:PILOT_SYS+'Проект: storelines.net (18 инструментов EU, WISE PILOT). Отвечай коротко, давай готовый код.'},
+  {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:PILOT_SYS+'Проект: jubileehub.net (SEO оптимизирован). Отвечай коротко, давай готовый код.'},
   {id:'new',emoji:'＋',name:'Добавить сайт',url:'',sys:''},
 ];
 
@@ -924,7 +925,9 @@ async function sendMsg(){
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:sys,messages:msgs})});
     const data=await res.json();removeThinking();
     const reply=extractText(data);
-    if(reply){renderMsg('ai',reply);msgs.push({role:'assistant',content:reply});scrollDown();saveConv();
+    if(reply){
+      const cleanReply=reply.replace(/\[OPEN:(chat|audit|tools)\]/g,(_,m)=>{setTimeout(()=>setMode(m),150);return '';}).replace(/\[TOOL:(\w+)\]/g,(_,t)=>{setTimeout(()=>{setMode('tools');selectTool(t);},150);return '';}).trim();
+      renderMsg('ai',cleanReply||reply);msgs.push({role:'assistant',content:cleanReply||reply});scrollDown();saveConv();
       if(data.usage){const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}}
     else renderMsg('ai','❌ Ошибка: '+JSON.stringify(data.error||data));
   }catch(e){removeThinking();renderMsg('ai','❌ Ошибка: '+e.message);}
@@ -1457,7 +1460,36 @@ async function runTool(id){
       {type:'text',text:`Проанализируй изображение и создай SEO-оптимизированный ALT-тег.\nСайт: ${g('tf-altctx')||activeProj.url}\nКлючевое слово: ${g('tf-altkw')}\nДай 3 варианта ALT-тега (до 125 символов каждый). Объясни что на изображении.`}
     ];
   } else if(id==='competitors'){
-    prompt=`Найди топ-10 конкурентов по запросу "${g('tf-kw')}" в ${g('tf-se')} (регион: ${g('tf-region')||'Россия'}).\nНаш сайт: ${g('tf-oursite')}\nИспользуй web_search.\nДля каждого конкурента укажи: домен, приблизительную позицию, почему они в топе.\nВ конце: сравни наш сайт с топ-3 и дай 5 конкретных действий для улучшения позиций.`;
+    const ckw=g('tf-kw');
+    if(!ckw){alert('Введи ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Ищем конкурентов в Google...</div></div>';
+    try{
+      const ourSite=g('tf-oursite');
+      const cRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'competitors',keyword:ckw,url:ourSite?'https://'+ourSite:''})});
+      const cData=await cRes.json();
+      if(!cData.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${cData.error||'Ошибка Serper API'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
+      const cResults=cData.results||[];
+      const ourPos=cData.ourPosition;
+      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🥊 Конкуренты: "${ckw}" ${ourPos?'· Наш сайт: #'+ourPos:'· Наш сайт: не в топ-10'}</span></div><div style="display:flex;flex-direction:column;gap:8px;">`;
+      cResults.forEach(r=>{
+        const isOurs=ourSite&&r.domain.replace('www.','').includes(ourSite.replace(/^https?:\/\//,'').replace(/\/.*$/,''));
+        html+=`<div style="padding:10px 14px;border-radius:8px;border:1px solid ${isOurs?'rgba(37,99,235,0.4)':'var(--border)'};background:${isOurs?'var(--accent-light)':'var(--surface2)'}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:11px;font-weight:800;color:${isOurs?'var(--accent)':'var(--muted)'};width:20px">#${r.position}</span>
+            <span style="font-size:12px;font-weight:700;color:${isOurs?'var(--accent)':'var(--text)'}">${r.domain}${isOurs?' 🏆 НАШ САЙТ':''}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text2);padding-left:28px">${r.title||''}</div>
+          <div style="font-size:11px;color:var(--muted);padding-left:28px;margin-top:3px">${r.snippet?.slice(0,120)||''}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+      if(cData.analysis)html+=`<div class="bubble" style="margin-top:14px;font-size:12.5px">${md(cData.analysis)}</div>`;
+      html+=`</div>`;
+      document.getElementById('tool-out').innerHTML=html;
+    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${e.message}</div>`;}
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
   } else if(id==='indexing'){
     const url=g('tf-url');
     const pages=g('tf-pages').split('\n').filter(Boolean).map(p=>p.trim());
@@ -1507,7 +1539,7 @@ async function runTool(id){
       const prompt=`Ты SEO-эксперт. Ключевое слово: "${kw}". Ниша: ${niche||'не указана'}.\nВот заголовки конкурентов из Google (реальные данные):\n${titles}\nНа основе этих данных составь список из 30-50 семантически связанных слов (LSI). Разбей на группы: основные, дополнительные, вопросы, брендовые. Только список, без лишнего текста.`;
       const aiRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
       const aiData=await aiRes.json();
-      const lsiText=aiData.content?.[0]?.text||'Не удалось сгенерировать';
+      const lsiText=extractText(aiData)||'Не удалось сгенерировать';
       let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🧠 Семантические слова для "${kw}"</span></div>`;
       html+=`<div style="margin-bottom:8px;font-size:11px;color:var(--muted)">Источник: реальные заголовки конкурентов (Serper) + AI</div>`;
       html+=`<div class="bubble" style="white-space:pre-wrap">${md(lsiText)}</div>`;
