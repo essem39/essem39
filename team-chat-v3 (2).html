@@ -1635,6 +1635,65 @@ async function runTool(id){
       {type:'image',source:{type:'base64',media_type:altImgData.type,data:altImgData.base64}},
       {type:'text',text:`Проанализируй изображение и создай для него SEO-описания.\nСайт: ${g('tf-altctx')||activeProj.url}\nКлючевое слово: ${g('tf-altkw')||'не указано'}\n\nСоздай:\n${needs.join('\n')}\n\nДополнительно: опиши что на изображении (2-3 предложения) чтобы я мог использовать в тексте.`}
     ];
+  } else if(id==='pagespeed'){
+    const psurl=document.getElementById('tf-psurl')?.value||'https://'+activeProj.url+'/';
+    if(!psurl){alert('Введи URL');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем скорость через Google PageSpeed...</div></div>';
+    try{
+      const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'technical',url:psurl})});
+      const data=await res.json();
+      if(!data.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${data.error||'Ошибка'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
+      const d2=data.data||{};
+      const mob=d2.speedMobile,desk=d2.speedDesktop;
+      const clr=s=>s>=90?'var(--success)':s>=50?'var(--gold)':'var(--danger)';
+      let html=`<div class="tool-result">
+        <div class="tool-result-head"><span class="tool-result-title">⚡ PageSpeed: ${psurl}</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div style="text-align:center;padding:20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px">📱 Мобильный</div>
+            <div style="font-size:48px;font-weight:900;color:${mob!=null?clr(mob):'var(--muted)'}">${mob!=null?mob:'—'}</div>
+            <div style="font-size:11px;color:var(--muted)">/100</div>
+          </div>
+          <div style="text-align:center;padding:20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px">💻 Десктоп</div>
+            <div style="font-size:48px;font-weight:900;color:${desk!=null?clr(desk):'var(--muted)'}">${desk!=null?desk:'—'}</div>
+            <div style="font-size:11px;color:var(--muted)">/100</div>
+          </div>
+        </div>`;
+      if(d2.lcp||d2.cls||d2.tbt){
+        html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+          ${d2.lcp?`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div style="font-size:10px;color:var(--muted)">LCP</div><div style="font-weight:700">${d2.lcp}</div></div>`:''}
+          ${d2.cls?`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div style="font-size:10px;color:var(--muted)">CLS</div><div style="font-weight:700">${d2.cls}</div></div>`:''}
+          ${d2.tbt?`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div style="font-size:10px;color:var(--muted)">TBT</div><div style="font-weight:700">${d2.tbt}</div></div>`:''}
+        </div>`;
+      }
+      if(d2.aiAnalysis){html+=`<div class="bubble" style="font-size:12.5px">${md(d2.aiAnalysis)}</div>`;}
+      html+=`<div style="margin-top:12px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Источник: Google PageSpeed Insights API · DeepSeek анализ</div></div>`;
+      document.getElementById('tool-out').innerHTML=html;
+    }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${e.message}</div>`;}
+    btn.disabled=false;btn.innerHTML=origText;
+    return;
+  } else if(id==='metadesc'){
+    const mdurl=document.getElementById('tf-mdurl')?.value||'';
+    const mdkw=document.getElementById('tf-mdkw')?.value||'';
+    const mdctx=document.getElementById('tf-mdctx')?.value||'';
+    if(!mdurl&&!mdkw){alert('Введи URL или ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    prompt=`Ты SEO-эксперт. Создай ТОЛЬКО Meta Description для страницы.
+URL/тема: ${mdurl||'не указан'}
+Ключевое слово: ${mdkw||'не указано'}
+Контекст: ${mdctx||'не указан'}
+
+Требования:
+- Длина строго 150-160 символов
+- Начни с ключевого слова или синонима
+- Добавь конкретное УТП (цена, срок, преимущество)
+- Заверши призывом к действию
+- НЕ повторяй Title дословно
+
+Дай 3 варианта Meta Description.
+Для каждого укажи количество символов.
+В конце — готовый HTML тег для лучшего варианта.`;
   } else if(id==='whois'){
     prompt=`Узнай информацию о домене ${g('tf-domain')}.\nИспользуй web_search для поиска Whois данных.\nПокажи: дата регистрации, истечение, регистратор, DNS серверы, возраст домена, статус.\nОцени домен для SEO (возраст, история).`;
   }
@@ -1649,7 +1708,7 @@ async function runTool(id){
       reply=extractText(data);
     }else{
       const needsWeb=['unique','whois'].includes(id);
-      reply=needsWeb?await callWorker(prompt,'Ты Пилот — технический SEO-специалист. Используй web_search. Отвечай конкретно.'):await callCheap(prompt);
+      reply=needsWeb?await callWorker(prompt,'Ты Пилот — технический SEO-специалист команды. Всегда отвечай ТОЛЬКО на русском языке. Используй web_search. Отвечай конкретно, давай готовый код.'):await callCheap('Отвечай только на русском языке.\n\n'+prompt);
     }
     if(reply){
       document.getElementById('tool-out').innerHTML=`
