@@ -355,6 +355,8 @@ textarea#inp::placeholder{color:var(--muted);}
         <div class="tool-item" onclick="selectTool('h1gen')" id="ti-h1gen"><span class="ti">✍️</span>Генератор H1</div>
         <div class="tool-item" onclick="selectTool('paraphrase')" id="ti-paraphrase"><span class="ti">🔄</span>Перефразировать текст</div>
         <div class="tool-cat-label" style="margin-top:6px">🔧 Технические</div>
+        <div class="tool-item" onclick="selectTool('pagespeed')" id="ti-pagespeed"><span class="ti">⚡</span>Скорость сайта</div>
+        <div class="tool-item" onclick="selectTool('metadesc')" id="ti-metadesc"><span class="ti">📝</span>Meta Description</div>
         <div class="tool-item" onclick="selectTool('robots')" id="ti-robots"><span class="ti">🤖</span>Генерация robots.txt</div>
         <div class="tool-item" onclick="selectTool('sitemap')" id="ti-sitemap"><span class="ti">🗺️</span>XML Sitemap</div>
         <div class="tool-item" onclick="selectTool('whois')" id="ti-whois"><span class="ti">🌐</span>Whois домена</div>
@@ -663,6 +665,30 @@ const TOOLS = {
       </div>
       <div id="tool-out"></div>`
   },
+  pagespeed:{
+    icon:'⚡',title:'Скорость сайта (PageSpeed)',desc:'Проверь скорость загрузки мобильная / десктоп через Google PageSpeed Insights',
+    render:()=>`
+      <div class="tool-form">
+        <div class="tf-label">URL страницы</div>
+        <input class="tf-input" id="tf-psurl" placeholder="https://airflowtravel.net/" value="https://${activeProj.url}/">
+        <button class="run-btn" id="tool-run-btn" onclick="runTool('pagespeed')">⚡ Проверить скорость</button>
+      </div>
+      <div id="tool-out"></div>`
+  },
+  metadesc:{
+    icon:'📝',title:'Meta Description',desc:'Создай идеальный Meta Description для страницы (150-160 символов)',
+    render:()=>`
+      <div class="tool-form">
+        <div class="tf-label">URL или тема страницы</div>
+        <input class="tf-input" id="tf-mdurl" placeholder="https://airflowtravel.net/parking.html">
+        <div class="tf-label">Ключевое слово</div>
+        <input class="tf-input" id="tf-mdkw" placeholder="охраняемый паркинг аэропорт">
+        <div class="tf-label">Язык</div>
+        <select class="tf-input" id="tf-mdlang" style="margin-bottom:0"><option value="ru">Русский</option><option value="en">English</option></select>
+        <button class="run-btn" id="tool-run-btn" onclick="runTool('metadesc')" style="margin-top:10px">📝 Сгенерировать</button>
+      </div>
+      <div id="tool-out"></div>`
+  },
   whois:{
     icon:'🌐',title:'Whois домена',desc:'Узнай информацию о домене: возраст, регистратор, DNS, статус',
     render:()=>`
@@ -905,8 +931,9 @@ async function callWorker(prompt,system){
 
 async function callCheap(prompt){
   try{
+    const sysPrompt='Ты Пилот — профессиональный SEO-ассистент команды. Отвечай только на русском языке. Давай конкретные, готовые к использованию результаты без лишних объяснений.';
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'generate',prompt})});
+      body:JSON.stringify({action:'generate',prompt,system:sysPrompt})});
     const data=await res.json();
     if(data.usage){const c=data.usage.input_tokens*.0000003+data.usage.output_tokens*.0000006;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
     return data.result||data.error||'Ошибка';
