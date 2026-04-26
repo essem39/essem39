@@ -1644,7 +1644,7 @@ async function runTool(id){
         body:JSON.stringify({action:'technical',url:psurl})});
       const data=await res.json();
       if(!data.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${data.error||'Ошибка'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
-      const d2=data||{};
+      const d2=data.techData||data||{};
       const mob=d2.speedMobile,desk=d2.speedDesktop;
       const clr=s=>s>=90?'var(--success)':s>=50?'var(--gold)':'var(--danger)';
       let html=`<div class="tool-result">
@@ -1661,6 +1661,11 @@ async function runTool(id){
             <div style="font-size:11px;color:var(--muted)">/100</div>
           </div>
         </div>`;
+      if(!mob&&!desk){
+        let errMsg='⚠️ Google PageSpeed API не вернул данные. Возможно квота исчерпана — попробуй завтра.';
+        if(d2.ttfb) errMsg+=` TTFB сервера: ${d2.ttfb}мс.`;
+        html+=`<div style="padding:12px;background:var(--surface2);border-radius:8px;color:var(--muted);font-size:12px">${errMsg}</div>`;
+      }
       if(d2.lcp||d2.cls||d2.tbt){
         html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
           ${d2.lcp?`<div style="padding:8px 12px;background:var(--surface2);border-radius:8px"><div style="font-size:10px;color:var(--muted)">LCP</div><div style="font-weight:700">${d2.lcp}</div></div>`:''}
