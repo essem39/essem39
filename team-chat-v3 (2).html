@@ -1641,7 +1641,7 @@ async function runTool(id){
     document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем скорость через Google PageSpeed...</div></div>';
     try{
       const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'technical',url:psurl})});
+        body:JSON.stringify({action:'pagespeed',url:psurl})});
       const data=await res.json();
       if(!data.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${data.error||'Ошибка'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
       const d2=data.techData||data||{};
