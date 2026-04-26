@@ -937,7 +937,12 @@ async function callCheap(prompt){
     const data=await res.json();
     if(data.usage){const c=data.usage.input_tokens*.0000003+data.usage.output_tokens*.0000006;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
     return data.result||data.error||'Ошибка';
-  }catch(e){return '❌ '+e.message;}
+  }catch(e){
+    if(e.message.includes('504') || e.message.includes('timeout') || e.message.includes('Failed to fetch')){
+      return '❌ Превышено время ожидания. Попробуй с более коротким текстом (до 2000 символов)';
+    }
+    return '❌ Ошибка: '+e.message;
+  }
 }
 async function sendMsg(){
   const text=inp.value.trim();const hasImg=pendingImages.length>0;
@@ -1615,7 +1620,20 @@ async function runTool(id){
   } else if(id==='h1gen'){
     prompt=`Создай 10 вариантов H1 заголовка.\nТема/ключевое слово: ${g('tf-topic')}\nТип страницы: ${g('tf-pagetype')}\nТон: ${g('tf-tone')}\n\nКаждый H1: до 60 символов, содержит ключевое слово, привлекает внимание, понятен пользователю.\nДля каждого варианта объясни преимущество (1 строка).`;
   } else if(id==='paraphrase'){
-    prompt=`Перефразируй текст.\nСтиль: ${g('tf-style')}\nКлючевое слово для вставки: ${g('tf-kw')||'нет'}\n\nИсходный текст:\n${g('tf-text')}\n\nДай 2 варианта перефразирования. Текст должен быть уникальным, читаемым, сохранять смысл.`;
+    const rawText = g('tf-text');
+    if(!rawText.trim()){alert('Введи текст для перефразирования');btn.disabled=false;btn.innerHTML=origText;return;}
+    const trimmedText = rawText.length > 3000 ? rawText.substring(0, 3000) + '...' : rawText;
+    if(rawText.length > 3000){
+      document.getElementById('tool-out').innerHTML='<div class="tool-result" style="color:var(--gold)">⚠️ Текст обрезан до 3000 символов для обработки</div>';
+    }
+    prompt=`Перефразируй текст. Дай 2 варианта. Каждый вариант должен быть уникальным, читаемым, сохранять смысл оригинала. Меняй структуру предложений, синонимы, порядок слов.
+Стиль: ${g('tf-style')}
+Ключевое слово: ${g('tf-kw')||'нет'}
+
+Исходный текст:
+${trimmedText}
+
+Формат: Вариант 1: ... Вариант 2: ...`;
   } else if(id==='robots'){
     prompt=`Создай правильный robots.txt для сайта.\nДомен: ${g('tf-domain')}\nТип сайта: ${g('tf-sitetype')}\nЗакрыть: ${g('tf-disallow')||'нет'}\nSitemap: ${g('tf-sitemap')||'https://'+g('tf-domain')+'/sitemap.xml'}\n\nДай готовый robots.txt с комментариями. Объясни каждое правило.`;
   } else if(id==='sitemap'){
