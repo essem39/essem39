@@ -932,14 +932,18 @@ async function callWorker(prompt,system){
 async function callCheap(prompt){
   try{
     const sysPrompt='Ты Пилот — профессиональный SEO-ассистент команды. Отвечай только на русском языке. Давай конкретные, готовые к использованию результаты без лишних объяснений.';
+    const controller=new AbortController();
+    const timeoutId=setTimeout(()=>controller.abort(),28000);
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+      signal:controller.signal,
       body:JSON.stringify({action:'generate',prompt,system:sysPrompt})});
+    clearTimeout(timeoutId);
     const data=await res.json();
     if(data.usage){const c=data.usage.input_tokens*.0000003+data.usage.output_tokens*.0000006;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
     return data.result||data.error||'Ошибка';
   }catch(e){
-    if(e.message.includes('504') || e.message.includes('timeout') || e.message.includes('Failed to fetch')){
-      return '❌ Превышено время ожидания. Попробуй с более коротким текстом (до 2000 символов)';
+    if(e.name==='AbortError' || e.message.includes('504') || e.message.includes('timeout') || e.message.includes('Failed to fetch')){
+      return '❌ Превышено время ожидания (28 сек). Попробуй ещё раз или сократи текст до 1000 символов.';
     }
     return '❌ Ошибка: '+e.message;
   }
