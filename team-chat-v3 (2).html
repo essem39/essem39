@@ -1644,7 +1644,7 @@ async function runTool(id){
         body:JSON.stringify({action:'technical',url:psurl})});
       const data=await res.json();
       if(!data.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${data.error||'Ошибка'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
-      const d2=data.data||{};
+      const d2=data||{};
       const mob=d2.speedMobile,desk=d2.speedDesktop;
       const clr=s=>s>=90?'var(--success)':s>=50?'var(--gold)':'var(--danger)';
       let html=`<div class="tool-result">
