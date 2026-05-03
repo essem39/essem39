@@ -102,11 +102,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .msg-role{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
 .msg.user .msg-role{text-align:right;color:rgba(245,158,11,.7);}
 .msg.ai .msg-role{color:rgba(37,99,235,.7);}
-.bubble{font-size:13px;line-height:1.75;color:var(--text);overflow-wrap:anywhere;word-break:break-word;max-width:100%;}
+.bubble{font-size:13px;line-height:1.75;color:var(--text);}
 .msg.user .bubble{background:var(--accent-light);border:1px solid rgba(37,99,235,.15);border-radius:12px 4px 12px 12px;padding:9px 13px;display:inline-block;max-width:100%;float:right;clear:both;}
 .bubble strong{color:var(--text);font-weight:700;}
 .bubble code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(37,99,235,.08);color:var(--accent2);padding:2px 5px;border-radius:4px;}
-.bubble pre{background:#1e293b;border:1px solid #334155;border-radius:9px;padding:12px 14px;overflow-x:auto;overflow-wrap:anywhere;word-break:break-all;white-space:pre-wrap;margin:8px 0;position:relative;}
+.bubble pre{background:#1e293b;border:1px solid #334155;border-radius:9px;padding:12px 14px;overflow-x:auto;margin:8px 0;position:relative;}
 .bubble pre code{background:none;color:#e2e8f0;padding:0;font-size:11.5px;line-height:1.6;}
 .copy-btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:2px 7px;color:#94a3b8;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
 .copy-btn:hover{background:rgba(255,255,255,.2);color:#fff;}
@@ -976,7 +976,7 @@ async function sendMsg(){
     let imgFiles=imgSend.filter(i=>!i.isText);
     imgFiles.forEach(i=>{if(i.type&&i.type.startsWith('image/'))uc.push({type:'image',source:{type:'base64',media_type:i.type,data:i.base64}});});
     let combinedText=text||'';
-    textFiles.forEach(i=>{combinedText+=`\n\n📄 Файл: ${i.name}\n\`\`\`\n${i.textContent.slice(0,4000)}\n\`\`\``;});
+    textFiles.forEach(i=>{combinedText+=`\n\n📄 Файл: ${i.name}\n\`\`\`\n${i.textContent.slice(0,15000)}\n\`\`\``;});
     uc.push({type:'text',text:combinedText||(imgFiles.length?'Проанализируй изображение. Что видишь? Проблемы? Рекомендации?':'Проанализируй этот файл.')});
     if(!imgFiles.length&&textFiles.length){uc=combinedText;}
   }else{uc=text;}
@@ -1541,7 +1541,11 @@ async function runTool(id){
     btn.disabled=false;btn.innerHTML=origText;
     return;
   } else if(id==='meta'){
-    prompt=`Сгенерируй оптимальные мета-теги для страницы.\nURL/тема: ${g('tf-url')}\nКлючевое слово: ${g('tf-kw')}\nДоп. контекст: ${g('tf-ctx')}\n\nСоздай:\n1. Title (50-60 символов) — 3 варианта\n2. Description (150-160 символов) — 3 варианта\n3. Keywords — 10-15 слов\n4. Готовый HTML код мета-тегов`;
+    const metaUrl=g('tf-url'); const metaKw=g('tf-kw'); const metaCtx=g('tf-ctx');
+    const metaLang = metaCtx.toLowerCase().includes('english') || /\.(com|net|org|io)/.test(metaUrl) && !/ru|рус|рф/.test(metaCtx.toLowerCase()) && (metaKw.match(/[a-zA-Z]/g)||[]).length > (metaKw.match(/[а-яё]/gi)||[]).length ? 'en' : 'ru';
+    prompt = metaLang==='en'
+      ? `Generate optimal meta tags for this page.\nURL/Topic: ${metaUrl}\nKeyword: ${metaKw}\nContext: ${metaCtx}\n\nCreate:\n1. Title (50-60 chars) — 3 variants\n2. Description (150-160 chars) — 3 variants\n3. Keywords — 10-15 words\n4. Ready HTML code for meta tags`
+      : `Сгенерируй оптимальные мета-теги для страницы.\nURL/тема: ${metaUrl}\nКлючевое слово: ${metaKw}\nДоп. контекст: ${metaCtx}\n\nСоздай:\n1. Title (50-60 символов) — 3 варианта\n2. Description (150-160 символов) — 3 варианта\n3. Keywords — 10-15 слов\n4. Готовый HTML код мета-тегов`;
   } else if(id==='alt'){
     if(!altImgData){alert('Загрузи изображение');btn.disabled=false;btn.innerHTML=origText;document.getElementById('tool-out').innerHTML='';return;}
     msgContent=[
@@ -1755,7 +1759,7 @@ URL/тема: ${mdurl||'не указан'}
 Для каждого укажи количество символов.
 В конце — готовый HTML тег для лучшего варианта.`;
   } else if(id==='whois'){
-    prompt=`Узнай информацию о домене ${g('tf-domain')}.\nИспользуй web_search для поиска Whois данных.\nПокажи: дата регистрации, истечение, регистратор, DNS серверы, возраст домена, статус.\nОцени домен для SEO (возраст, история).`;
+    const wDomain=g('tf-domain'); prompt=`Search WHOIS data for domain: ${wDomain}\nUse web_search to find: site:lookup.icann.org OR site:whois.domaintools.com OR site:who.is for "${wDomain}"\nShow: registration date, expiry date, registrar, DNS servers, domain age, status.\nIMPORTANT: Report EXACT dates found in WHOIS records. Do not estimate or approximate the domain age.`;
   }
 
   try{
@@ -1768,7 +1772,8 @@ URL/тема: ${mdurl||'не указан'}
       reply=extractText(data);
     }else{
       const needsWeb=['unique','whois'].includes(id);
-      reply=needsWeb?await callWorker(prompt,'Ты Пилот — технический SEO-специалист команды. Всегда отвечай ТОЛЬКО на русском языке. Используй web_search. Отвечай конкретно, давай готовый код.'):await callCheap('Отвечай только на русском языке.\n\n'+prompt);
+      const toolLang = ['meta','tz','h1gen','lsi','desc-gen'].includes(id) ? (typeof metaLang!=='undefined'?metaLang:'ru') : 'ru';
+      reply=needsWeb?await callWorker(prompt,'Ты Пилот — технический SEO-специалист команды. Отвечай на языке сайта. Используй web_search. Давай конкретные, готовые к использованию результаты.'):await callCheap(prompt, toolLang);
     }
     if(reply){
       document.getElementById('tool-out').innerHTML=`
