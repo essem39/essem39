@@ -855,8 +855,18 @@ function getTime(){return new Date().toLocaleTimeString('ru',{hour:'2-digit',min
 function handleFiles(files){
   Array.from(files).forEach(f=>{
     const r=new FileReader();
-    r.onload=e=>{const d=e.target.result;pendingImages.push({base64:d.split(',')[1],type:f.type||'image/png',name:f.name,preview:d});updateImgStrip();};
-    r.readAsDataURL(f);
+    const isText=f.type.includes('html')||f.type.includes('text')||f.type.includes('javascript')||/\.(html|htm|css|js|txt|json)$/i.test(f.name);
+    if(isText){
+      r.onload=e=>{
+        const content=e.target.result;
+        pendingImages.push({isText:true,textContent:content,name:f.name,preview:null});
+        updateImgStrip();
+      };
+      r.readAsText(f);
+    }else{
+      r.onload=e=>{const d=e.target.result;pendingImages.push({base64:d.split(',')[1],type:f.type||'image/png',name:f.name,preview:d});updateImgStrip();};
+      r.readAsDataURL(f);
+    }
   });
   document.getElementById('file-inp').value='';
 }
@@ -864,7 +874,10 @@ function updateImgStrip(){
   const s=document.getElementById('img-strip');
   if(!pendingImages.length){s.classList.remove('show');s.innerHTML='';return;}
   s.classList.add('show');
-  s.innerHTML=pendingImages.map((img,i)=>`<div class="img-thumb"><img src="${img.preview}"><button class="img-thumb-del" onclick="removePendingImg(${i})">✕</button></div>`).join('');
+  s.innerHTML=pendingImages.map((img,i)=>img.isText
+    ?`<div class="img-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:10px;padding:4px;gap:2px;"><span style="font-size:20px">📄</span><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${img.name}</span><button class="img-thumb-del" onclick="removePendingImg(${i})">✕</button></div>`
+    :`<div class="img-thumb"><img src="${img.preview}"><button class="img-thumb-del" onclick="removePendingImg(${i})">✕</button></div>`
+  ).join('');
 }
 function removePendingImg(i){pendingImages.splice(i,1);updateImgStrip();}
 
@@ -959,8 +972,13 @@ async function sendMsg(){
   let uc;
   if(imgSend.length){
     uc=[];
-    imgSend.forEach(i=>{if(i.type.startsWith('image/'))uc.push({type:'image',source:{type:'base64',media_type:i.type,data:i.base64}});});
-    uc.push({type:'text',text:text||'Проанализируй изображение. Что видишь? Проблемы? Рекомендации?'});
+    let textFiles=imgSend.filter(i=>i.isText);
+    let imgFiles=imgSend.filter(i=>!i.isText);
+    imgFiles.forEach(i=>{if(i.type&&i.type.startsWith('image/'))uc.push({type:'image',source:{type:'base64',media_type:i.type,data:i.base64}});});
+    let combinedText=text||'';
+    textFiles.forEach(i=>{combinedText+=`\n\n📄 Файл: ${i.name}\n\`\`\`\n${i.textContent.slice(0,15000)}\n\`\`\``;});
+    uc.push({type:'text',text:combinedText||(imgFiles.length?'Проанализируй изображение. Что видишь? Проблемы? Рекомендации?':'Проанализируй этот файл.')});
+    if(!imgFiles.length&&textFiles.length){uc=combinedText;}
   }else{uc=text;}
   msgs.push({role:'user',content:uc});
   // Intercept common questions instantly (no AI needed)
