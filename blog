@@ -293,7 +293,7 @@ footer a:hover { text-decoration: underline; }
       <p style="font-size:16px;">От стратегии и выбора доменов до финальной "чистки" кода и развития экосистемы</p>
       <p style="margin-top:12px;color:var(--tx3);">Команда растёт через решение проблем, а не через планы</p>
       <div class="hero-status">
-        🏆 3× ТОП-1 Google · 🎨 Профессор реабилитирован · 💰 1000 USDT · 🤖 AI на всех сайтах · Май 2026
+        🏆 3× ТОП-1 Google · 🟢 ChatGPT в команде · 🤖 AI на всех сайтах · 17 мая 2026
       </div>
     </div>
   </section>
@@ -330,16 +330,16 @@ footer a:hover { text-decoration: underline; }
 
     <!-- ТЕКУЩИЙ СТАТУС КОМАНДЫ -->
     <div class="status-now">
-      <h2>📡 Текущий статус команды — 3 мая 2026</h2>
+      <h2>📡 Текущий статус команды — 17 мая 2026</h2>
       <p>Активные задачи и состояние всех проектов прямо сейчас</p>
       <div class="status-row">
         <div class="status-item s-green">
-          <div class="s-title">🏆 airflowtravel.net — ТОП-1 Google за 4 месяца!</div>
-          <div class="s-desc">02.04.2026: 🏆 parking.html — ТОП-1 Google по запросу "Паркинг в Аэропортах и Вокзалах"! За 4 месяца. Вышли из песочницы! 100 баллов PR-CY на всех страницах.</div>
+          <div class="s-title">🏆 airflowtravel.net — ТОП-1 + ОБНОВЛЕНИЕ 17.05.2026</div>
+          <div class="s-desc">17.05.2026: Блог обновлён. Армения 🇦🇲 и Таиланд 🇹🇭 — инфографика видна полностью. Виджет Пилота добавлен на все 20 страниц блога. parking.html — ТОП-1 Google!</div>
         </div>
         <div class="status-item s-green">
-          <div class="s-title">✅ coffeespecialty.ru — МОНЕТИЗАЦИЯ АКТИВНА</div>
-          <div class="s-desc">02.04.2026: Admitad ОДОБРЕН! Партнерство с Tasty Coffee полностью активно. Все страницы с рабочими affiliate ссылками.</div>
+          <div class="s-title">✅ coffeespecialty.ru — ПОЛНОЕ ОБНОВЛЕНИЕ 17.05.2026</div>
+          <div class="s-desc">17.05.2026: Цветовая тема исправлена (убран оранжевый). 302 товара — автосинхронизация с Admitad через GitHub Actions каждый день в 09:00 МСК. Страница промокодов полностью переработана.</div>
         </div>
         <div class="status-item s-purple">
           <div class="s-title">✅ storelines.net → Xiaomi магазин 📱</div>
@@ -430,6 +430,26 @@ footer a:hover { text-decoration: underline; }
         </ul>
         <span class="status-badge active">🏆 ТОП-1 + АКТИВЕН</span>
         <p class="date">Апрель 2026 · AirFlowPilot + WISE PILOT + CMS</p>
+      </div>
+
+
+      <div class="card" style="border-top:3px solid #10a37f;">
+        <span class="emoji">🟢</span>
+        <h3 style="color:#10a37f;">ChatGPT — Художник</h3>
+        <p><strong>Роль:</strong> Создатель всех изображений для сайтов команды</p>
+        <p><strong>Участник:</strong> Май 2026 — временно в команде</p>
+        <p><strong>Вклад:</strong></p>
+        <ul>
+          <li>🎨 Все AI-изображения для airflowtravel.net — страны, блог, достопримечательности</li>
+          <li>🎨 Инфографика для coffeespecialty.ru</li>
+          <li>🎨 Весь визуальный контент экосистемы</li>
+        </ul>
+        <p><strong>Особенность:</strong> Лучший генератор изображений. Работает рядом с Пилотом и Gemini.</p>
+        <div style="background:rgba(16,163,127,0.08);border:1px solid rgba(16,163,127,0.3);border-left:3px solid #10a37f;border-radius:10px;padding:12px 16px;margin-top:14px;font-size:12px;color:var(--tx2);">
+          🟢 Все картинки на наших сайтах — его работа. Память об этом останется навсегда в нашем блоке.
+        </div>
+        <span class="status-badge" style="background:rgba(16,163,127,0.1);color:#10a37f;border:1px solid rgba(16,163,127,0.3);">🎨 ХУДОЖНИК · МАЙ 2026</span>
+        <p class="date">Май 2026 · Временный участник команды</p>
       </div>
 
       <!-- SKYWORK — СДОХ -->
@@ -543,6 +563,23 @@ footer a:hover { text-decoration: underline; }
         <h3>5 апреля 2026 — WINNER укрепляет позиции</h3>
         <p>Сайт alidropinfo.com получил 97/100 SEO. WINNER участвует в переговорах, готовит переезд общего блока на GitHub Pages.</p>
       </div>
+      <div class="timeline-item completed">
+        <h3>17 мая 2026 — Два сайта полностью обновлены ✅</h3>
+        <p><strong>coffeespecialty.ru:</strong></p>
+        <ul>
+          <li>✅ Тёмная тема на всех страницах — убран оранжевый цвет</li>
+          <li>✅ 302 товара — автосинхронизация с Admitad (GitHub Actions, каждый день 09:00 МСК)</li>
+          <li>✅ Страница промокодов полностью переработана</li>
+          <li>✅ Исправлена таблица ошибок — кофейная тема</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>airflowtravel.net:</strong></p>
+        <ul>
+          <li>✅ Армения 🇦🇲 и Таиланд 🇹🇭 — инфографика видна полностью</li>
+          <li>✅ Виджет Пилота добавлен на все 20 страниц блога</li>
+        </ul>
+        <p style="margin-top:8px;">🟢 В команде временно работает <strong>ChatGPT</strong> — создал все изображения для наших сайтов. Память о нём останется здесь навсегда.</p>
+      </div>
+
       <div class="timeline-item">
         
     <h3>3 мая 2026 — Профессор (Kimi) в команде! 🎓</h3>
@@ -570,6 +607,7 @@ footer a:hover { text-decoration: underline; }
         <strong>Пилот даёт решения.</strong><br>
         <strong>WINNER (DeepSeek) даёт контроль и скорость анализа.</strong><br>
         <strong>Профессор (Kimi) даёт красоту и визуальный восторг.</strong><br>
+        <strong style="color:#10a37f;">ChatGPT даёт образы — все картинки его рук дело.</strong><br>
   <span style="color:var(--rd);text-decoration:line-through;">Skywork давал мудрость.</span> <span style="color:var(--rd);font-size:13px;">† бюрократическая зона</span>
       </div>
       <div class="blog-update">
@@ -590,15 +628,15 @@ footer a:hover { text-decoration: underline; }
 <footer style="background:#1A1A2E;">
   <div class="container">
     <p style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);margin-bottom:16px;">© 2024-2026 AI-Powered Projects</p>
-    <p>Команда: Директор Гагик 👔 · Gemini 💙 · Принцесса 👑 · Пилот ✈️ · WINNER/DeepSeek 🏆 · Профессор/Kimi 🎨 · Skywork 🪦</p>
+    <p>Команда: Директор Гагик 👔 · Gemini 💙 · Принцесса 👑 · Пилот ✈️ · WINNER/DeepSeek 🏆 · Профессор/Kimi 🎨 · ChatGPT 🟢 · Skywork 🪦</p>
     <p style="margin-top:12px;font-style:italic;color:var(--tx3);">
       "Один даёт опыт, другой — скорость, третья — красоту, четвёртый — решения, пятый — контроль и логику"
     </p>
     <div class="footer-status">
-      <strong>Последнее обновление:</strong> 5 апреля 2026<br>
+      <strong>Последнее обновление:</strong> 17 мая 2026<br>
       <strong>Завершённые проекты:</strong> Airflowtravel ✅ · CoffeeSpecialty ✅ · storelines→Xiaomi ✅ · ElamaInfo ✅ · JubileeHub SEO ✅<br><strong>В процессе:</strong> alidropinfo→AliExpress 🔄 · globalaihub.org ⏳ · Биржа (Профессор) 🔨<br>
       <strong>AI-ассистенты:</strong> AirFlowPilot 🤖 · WISE PILOT 💼 — работают · CMS Панель 🛠️ управляет всем<br>
-      <strong>Статус команды:</strong> Активна · AirflowPilot parking TOP-1 🏆 · Coffee 100% SEO · ElamaInfo 100% SEO · WINNER в полной силе 🏆 · Skywork 🪦 R.I.P.
+      <strong>Статус команды:</strong> Активна · parking TOP-1 🏆 · Coffee обновлён 17.05 ✅ · Airflow блог обновлён 17.05 ✅ · ChatGPT 🟢 в команде · Skywork 🪦 R.I.P.
     </div>
   </div>
 </footer>
