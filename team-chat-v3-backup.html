@@ -379,7 +379,7 @@ textarea#inp::placeholder{color:var(--muted);}
 <script>
 const WORKER = 'https://pilot-chat.esem39.workers.dev';
 
-const PILOT_SYS = 'Ты Пилот — личный SEO-ассистент Директора Гагика. Ты часть программы Пилот с тремя разделами: ЧАТ, АУДИТ, ИНСТРУМЕНТЫ. Проект — сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, wisetools.org, cryptocardpro.com, globalaihub.org. Партнёрский сайт: vipdriveinfo.net (IPTV сервис). Когда пользователь просит что-то открыть — добавь команду в конце ответа: [OPEN:audit] для аудита, [OPEN:tools] для инструментов, [TOOL:meta] для конкретного инструмента. Инструменты (id): serp, positions, meta, alt, competitors, indexing, semantic, tz, h1gen, paraphrase, robots, sitemap, whois, humanize, unique, imgdesc. Отвечай коротко, давай готовый код.';
+const PILOT_SYS = 'Ты Пилот — личный SEO-ассистент Директора Гагика. Ты часть программы Пилот с тремя разделами: ЧАТ, АУДИТ, ИНСТРУМЕНТЫ. Проект — сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, wisetools.org, cryptocardpro.com, globalaihub.org. Партнёрские сайты (uKit): vipdriveinfo.net, tvteam.net, jubileehub.net. Когда пользователь просит что-то открыть — добавь команду в конце ответа: [OPEN:audit] для аудита, [OPEN:tools] для инструментов, [TOOL:meta] для конкретного инструмента. Инструменты (id): serp, positions, meta, alt, competitors, indexing, semantic, tz, h1gen, paraphrase, robots, sitemap, whois, humanize, unique, imgdesc. Отвечай коротко, давай готовый код.';
 const PROJECTS = [
   {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:PILOT_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
   {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:PILOT_SYS+'Проект: coffeespecialty.ru (specialty кофе, Tasty Coffee, Admitad). Отвечай коротко, давай готовый код.'},
@@ -389,7 +389,9 @@ const PROJECTS = [
   {id:'wisetools',emoji:'💶',name:'WiseTools',url:'wisetools.org',sys:PILOT_SYS+'Проект: wisetools.org (EU бизнес инструменты, Wise партнёр, Cloudflare Pages). Отвечай коротко, давай готовый код.'},
   {id:'crypto',emoji:'💳',name:'CryptoCardPro',url:'cryptocardpro.com',sys:PILOT_SYS+'Проект: cryptocardpro.com (крипто карты, финансы). Отвечай коротко, давай готовый код.'},
   {id:'globalai',emoji:'🤖',name:'GlobalAIHub',url:'globalaihub.org',sys:PILOT_SYS+'Проект: globalaihub.org (AI хаб, искусственный интеллект). Отвечай коротко, давай готовый код.'},
-  {id:'vipdrive',emoji:'📺',name:'VipDrive',url:'vipdriveinfo.net',sys:PILOT_SYS+'Партнёрский сайт: vipdriveinfo.net (IPTV сервис, платформа uKit). Сайт партнёрский — не придумывай название бренда, работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
+  {id:'vipdrive',emoji:'📺',name:'VipDrive',url:'vipdriveinfo.net',sys:PILOT_SYS+'Партнёрский сайт: vipdriveinfo.net (IPTV сервис, платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными. Отвечай коротко, давай готовый код.'},
+  {id:'tvteam',emoji:'📡',name:'TVTeam',url:'tvteam.net',sys:PILOT_SYS+'Партнёрский сайт: tvteam.net (платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
+  {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:PILOT_SYS+'Партнёрский сайт: jubileehub.net (платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
   {id:'new',emoji:'＋',name:'Добавить сайт',url:'',sys:''},
 ];
 
