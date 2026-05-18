@@ -1070,14 +1070,21 @@ function renderChecks(checks,fixUrl,keyword){
     let borderColor='#e5e7eb';
     let displayScore=c.score;
     let displayColor=sc(c.score);
+    // H1: если ключ отсутствует — показать 70% с предупреждением
+    if(key==='h1' && checksObj.kwInH1 && checksObj.kwInH1.score===0 && c.score>=100){
+      borderColor='#f59e0b';
+      displayScore=70;
+      displayColor='#d97706';
+      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${checksObj.kwInH1.detail}</div>`;
+    }
 
     // Description: если ключевое слово отсутствует — снижаем балл до 50% и показываем предупреждение
     if(key==='desc' && checksObj.kwInDesc && checksObj.kwInDesc.score===0){
-      borderColor='#dc2626';
-      displayScore=0;
-      displayColor='#dc2626';
+      borderColor='#f59e0b';
+      displayScore=70;
+      displayColor='#d97706';
       const missing=checksObj.kwInDesc.detail||'Отсутствует в Description';
-      extraWarning=`<div style="font-size:10px;color:#dc2626;margin-top:4px;font-weight:600">❌ ${missing}</div>`;
+      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${missing}</div>`;
     }
     // ALT: если ключевое слово отсутствует в ALT
     if(key==='alts' && checksObj.kwInAlt && checksObj.kwInAlt.score<100){
