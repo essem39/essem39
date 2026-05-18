@@ -1015,9 +1015,9 @@ function auditFetch(action,url,kw){
   return fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({action,url,keyword:kw||''})}).then(r=>r.json());
 }
-const sc=s=>s==null?'#9ca3af':s>=80?'#16a34a':s>=50?'#d97706':'#dc2626';
-const scBg=s=>s==null?'#f3f4f6':s>=80?'#f0fdf4':s>=50?'#fffbeb':'#fef2f2';
-const scoreLabel=s=>s==null?'Н/Д':s>=80?'Хорошо':s>=50?'Внимание':'Критично';
+const sc=s=>s==null?'#9ca3af':s>=90?'#16a34a':s>=70?'#d97706':'#dc2626';
+const scBg=s=>s==null?'#f3f4f6':s>=90?'#f0fdf4':s>=70?'#fffbeb':'#fef2f2';
+const scoreLabel=s=>s==null?'Н/Д':s>=90?'Отлично':s>=70?'Внимание':'Критично';
 
 // Fix modal — create once in body
 function ensureModal(){
