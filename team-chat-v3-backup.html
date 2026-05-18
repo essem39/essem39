@@ -1055,9 +1055,11 @@ function renderScoreRing(score,label,color){
 function renderChecks(checks,fixUrl,keyword){
   if(!checks)return '';
   const entries=Object.entries(checks);
-  const crit=entries.filter(([,c])=>c.score!=null&&c.score<50);
-  const warn=entries.filter(([,c])=>c.score!=null&&c.score>=50&&c.score<80);
-  const good=entries.filter(([,c])=>c.score!=null&&c.score>=80);
+  const subChecks=['kwInTitle','kwInDesc','kwInH1','kwInH2','kwInAlt','keyword'];
+  const mainEntries=entries.filter(([key])=>!subChecks.includes(key));
+  const crit=mainEntries.filter(([,c])=>c.score!=null&&c.score<50);
+  const warn=mainEntries.filter(([,c])=>c.score!=null&&c.score>=50&&c.score<80);
+  const good=mainEntries.filter(([,c])=>c.score!=null&&c.score>=80);
 
   const checksObj=Object.fromEntries(entries);
   const metricCard=([key,c])=>{
