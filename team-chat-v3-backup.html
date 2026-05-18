@@ -379,7 +379,7 @@ textarea#inp::placeholder{color:var(--muted);}
 <script>
 const WORKER = 'https://pilot-chat.esem39.workers.dev';
 
-const PILOT_SYS = 'Ты Пилот — личный SEO-ассистент Директора Гагика. Ты часть программы Пилот с тремя разделами: ЧАТ, АУДИТ, ИНСТРУМЕНТЫ. Проект — сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, jubileehub.net. Когда пользователь просит что-то открыть — добавь команду в конце ответа: [OPEN:audit] для аудита, [OPEN:tools] для инструментов, [TOOL:meta] для конкретного инструмента. Инструменты (id): serp, positions, meta, alt, competitors, indexing, semantic, tz, h1gen, paraphrase, robots, sitemap, whois, humanize, unique, imgdesc. Отвечай коротко, давай готовый код.';
+const PILOT_SYS = 'Ты Пилот — личный SEO-ассистент Директора Гагика. Ты часть программы Пилот с тремя разделами: ЧАТ, АУДИТ, ИНСТРУМЕНТЫ. Проект — сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, jubileehub.net. Партнёрский сайт: vipdriveinfo.net (IPTV сервис). Когда пользователь просит что-то открыть — добавь команду в конце ответа: [OPEN:audit] для аудита, [OPEN:tools] для инструментов, [TOOL:meta] для конкретного инструмента. Инструменты (id): serp, positions, meta, alt, competitors, indexing, semantic, tz, h1gen, paraphrase, robots, sitemap, whois, humanize, unique, imgdesc. Отвечай коротко, давай готовый код.';
 const PROJECTS = [
   {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:PILOT_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
   {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:PILOT_SYS+'Проект: coffeespecialty.ru (кофе, Admitad, 100% SEO). Отвечай коротко, давай готовый код.'},
@@ -387,6 +387,7 @@ const PROJECTS = [
   {id:'alidrop',emoji:'🛒',name:'AliDropInfo',url:'alidropinfo.com',sys:PILOT_SYS+'Проект: alidropinfo.com (дропшиппинг, 97/100 SEO). Отвечай коротко, давай готовый код.'},
   {id:'storelines',emoji:'🛠️',name:'Storelines',url:'storelines.net',sys:PILOT_SYS+'Проект: storelines.net (18 инструментов EU, WISE PILOT). Отвечай коротко, давай готовый код.'},
   {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:PILOT_SYS+'Проект: jubileehub.net (SEO оптимизирован). Отвечай коротко, давай готовый код.'},
+  {id:'vipdrive',emoji:'📺',name:'VipDrive',url:'vipdriveinfo.net',sys:PILOT_SYS+'Партнёрский сайт: vipdriveinfo.net (IPTV сервис, платформа uKit). Сайт не наш — партнёрский. Не выдумывай название бренда. Отвечай коротко, давай готовый код.'},
   {id:'new',emoji:'＋',name:'Добавить сайт',url:'',sys:''},
 ];
 
