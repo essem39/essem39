@@ -1079,7 +1079,7 @@ function renderChecks(checks,fixUrl,keyword){
     }
 
     // Description: если ключевое слово отсутствует — снижаем балл до 50% и показываем предупреждение
-    if(key==='desc' && checksObj.kwInDesc && checksObj.kwInDesc.score===0){
+    if(key==='desc' && checksObj.kwInDesc && checksObj.kwInDesc.score===0 && c.score>=100){
       borderColor='#f59e0b';
       displayScore=70;
       displayColor='#d97706';
