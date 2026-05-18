@@ -1057,9 +1057,15 @@ function renderChecks(checks,fixUrl,keyword){
   const entries=Object.entries(checks);
   const subChecks=['kwInTitle','kwInDesc','kwInH1','kwInH2','kwInAlt','keyword'];
   const mainEntries=entries.filter(([key])=>!subChecks.includes(key));
-  const crit=mainEntries.filter(([,c])=>c.score!=null&&c.score<50);
-  const warn=mainEntries.filter(([,c])=>c.score!=null&&c.score>=50&&c.score<80);
-  const good=mainEntries.filter(([,c])=>c.score!=null&&c.score>=80);
+  // Если ключ отсутствует в desc/h1 — принудительно в критические
+  const kwInDesc=checksObj.kwInDesc;
+  const kwInH1=checksObj.kwInH1;
+  const forceCrit=new Set();
+  if(kwInDesc&&kwInDesc.score===0) forceCrit.add('desc');
+  if(kwInH1&&kwInH1.score===0) forceCrit.add('h1');
+  const crit=mainEntries.filter(([key,c])=>forceCrit.has(key)||(c.score!=null&&c.score<50));
+  const warn=mainEntries.filter(([key,c])=>!forceCrit.has(key)&&c.score!=null&&c.score>=50&&c.score<80);
+  const good=mainEntries.filter(([key,c])=>!forceCrit.has(key)&&c.score!=null&&c.score>=80);
 
   const checksObj=Object.fromEntries(entries);
   const metricCard=([key,c])=>{
