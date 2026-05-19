@@ -1094,7 +1094,7 @@ function renderChecks(checks,fixUrl,keyword){
       extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${checksObj.kwInAlt.detail}</div>`;
     }
     return`
-    <div style="background:#fff;border:1px solid ${borderColor};border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
+    <div id="card-${key}" style="background:#fff;border:1px solid ${borderColor};border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
       <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${c.label}</div>
       <div style="font-size:22px;font-weight:800;color:${displayColor};margin-bottom:2px">${displayScore!=null?displayScore:'—'}<span style="font-size:11px;font-weight:500;color:#9ca3af">${displayScore!=null?'%':''}</span></div>
       <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-bottom:6px;overflow:hidden">
@@ -1244,8 +1244,24 @@ async function runFullAudit(){
           byType.technical.techData.speedMobile=psData.speedMobile;
           byType.technical.techData.speedDesktop=psData.speedDesktop;
           if(byType.technical.checks){
-            if(byType.technical.checks.mobile) byType.technical.checks.mobile={score:psData.speedMobile,label:'Скорость Mobile',detail:psData.speedMobile!=null?psData.speedMobile+'/100'+(psData.speedMobile<50?' — критично':psData.speedMobile<80?' — есть резервы':' ✅'):'Нет данных'};
-            if(byType.technical.checks.desktop) byType.technical.checks.desktop={score:psData.speedDesktop,label:'Скорость Desktop',detail:psData.speedDesktop!=null?psData.speedDesktop+'/100'+(psData.speedDesktop<50?' — критично':psData.speedDesktop<80?' — есть резервы':' ✅'):'Нет данных'};
+            byType.technical.checks.mobile={score:psData.speedMobile,label:'Скорость Mobile',detail:psData.speedMobile!=null?psData.speedMobile+'/100'+(psData.speedMobile<50?' — критично':psData.speedMobile<80?' — есть резервы':' ✅'):'Нет данных'};
+            byType.technical.checks.desktop={score:psData.speedDesktop,label:'Скорость Desktop',detail:psData.speedDesktop!=null?psData.speedDesktop+'/100'+(psData.speedDesktop<50?' — критично':psData.speedDesktop<80?' — есть резервы':' ✅'):'Нет данных'};
+            // Обновляем карточки скорости в DOM без перерендера всей страницы
+            // Обновляем карточки по ID
+            ['mobile','desktop'].forEach(function(k){
+              const el=document.getElementById('card-'+k);
+              if(!el) return;
+              const val=k==='mobile'?psData.speedMobile:psData.speedDesktop;
+              if(val==null) return;
+              const clr=val>=90?'var(--success)':val>=50?'var(--gold)':'var(--danger)';
+              const icon=k==='mobile'?'📱 Мобильный':'💻 Десктоп';
+              const det=val+'/100'+(val<50?' — критично':val<80?' — есть резервы':' ✅');
+              const pct=Math.round(val);
+              const bar='<div style="height:3px;background:#f3f4f6;border-radius:2px;margin-top:6px"><div style="height:100%;width:'+pct+'%;background:'+clr+';border-radius:2px;transition:width .6s"></div></div>';
+              el.innerHTML='<div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">'+icon+'</div>'
+                +'<div style="font-size:28px;font-weight:900;color:'+clr+'">'+pct+'<span style="font-size:14px">%</span></div>'
+                +'<div style="font-size:11px;color:#6b7280;margin-top:4px">'+det+'</div>'+bar;
+            });
           }
         }
       }catch(e){}
