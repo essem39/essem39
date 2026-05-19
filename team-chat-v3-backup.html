@@ -1234,6 +1234,23 @@ async function runFullAudit(){
     const byType={};
     results.forEach(r=>{if(r.status==='fulfilled')byType[r.value.type]=r.value.data;});
 
+    // Отдельный запрос PageSpeed после основного аудита
+    if(doTech && byType.technical){
+      try{
+        const psRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({action:'pagespeed',url:url})});
+        const psData=await psRes.json();
+        if(psData.ok && byType.technical.techData){
+          byType.technical.techData.speedMobile=psData.speedMobile;
+          byType.technical.techData.speedDesktop=psData.speedDesktop;
+          if(byType.technical.checks){
+            if(byType.technical.checks.mobile) byType.technical.checks.mobile={score:psData.speedMobile,label:'Скорость Mobile',detail:psData.speedMobile!=null?psData.speedMobile+'/100'+(psData.speedMobile<50?' — критично':psData.speedMobile<80?' — есть резервы':' ✅'):'Нет данных'};
+            if(byType.technical.checks.desktop) byType.technical.checks.desktop={score:psData.speedDesktop,label:'Скорость Desktop',detail:psData.speedDesktop!=null?psData.speedDesktop+'/100'+(psData.speedDesktop<50?' — критично':psData.speedDesktop<80?' — есть резервы':' ✅'):'Нет данных'};
+          }
+        }
+      }catch(e){}
+    }
+
     const seo=byType.seo,tech=byType.technical,sec=byType.security,comp=byType.competitors;
 
     // Общий балл
