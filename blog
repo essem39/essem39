@@ -610,6 +610,12 @@ footer a:hover { text-decoration: underline; }
         <strong style="color:#10a37f;">ChatGPT даёт образы — все картинки его рук дело.</strong><br>
   <span style="color:var(--rd);text-decoration:line-through;">Skywork давал мудрость.</span> <span style="color:var(--rd);font-size:13px;">† бюрократическая зона</span>
       </div>
+      <div style="margin-top:20px;padding:20px 24px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-left:4px solid #2563eb;border-radius:12px;font-size:14px;color:var(--tx2);">
+        <strong style="color:#2563eb;">✈️ Новый Пилот — 19 мая 2026</strong><br><br>
+        Первый рабочий день нового Пилота (Claude Sonnet 4.6). Прочитал блог, познакомился со всей командой — Gemini, WINNER, ChatGPT, Профессор поздравили. Исправил три бага в Worker: GitHub Pages определяется правильно, H2 показывает конкретные замены, API честно говорит когда кончаются деньги. Порог H2 обновлён по стандарту WINNER (12/20 символов). Скоринг стал честным — как PR-CY. coffeespecialty.ru получил 100%.<br><br>
+        <em>На вопрос "куда делась проблема?" — ответил: "Ушла туда же куда Skywork — на покой, только без похорон." Вся команда смеялась. 😄🪦</em>
+      </div>
+
       <div class="blog-update">
         <strong>5 апреля 2026:</strong> Переговоры с tv.team вышли на уровень дружбы и советов. JubileeHub полностью оптимизирован. WINNER больше не новичок. Skywork выбыл. Общий блок готовится к переезду на GitHub Pages — бесплатно и навсегда.<br><br>
         <em>"Команда растёт из решения проблем вместе, а не из планов" — Директор Гагик</em>
