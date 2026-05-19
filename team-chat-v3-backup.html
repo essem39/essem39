@@ -1105,17 +1105,14 @@ function renderChecks(checks,fixUrl,keyword){
     </div>`;
   };
 
-  const issueRow=(tag,color,bgColor)=>([,c])=>`
+  const issueRow=(tag,color,bgColor)=>([key,c])=>`
     <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:${bgColor};border-radius:8px;border-left:3px solid ${color}">
       <span style="font-size:10px;font-weight:700;color:${color};white-space:nowrap;padding-top:1px">${tag}</span>
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:2px">${c.label}</div>
         <div style="font-size:11px;color:#6b7280">${c.detail||''}</div>
       </div>
-      <button onclick="magicFix('${c.label.replace(/'/g,"\\'")}','${fixUrl}','${(keyword||'').replace(/'/g,"\\'")}')"
-        style="flex-shrink:0;background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;color:#374151;font-family:inherit;white-space:nowrap">
-        ✨ Исправить
-      </button>
+      ${renderFixBtn(key,c,fixUrl,keyword||'')}
     </div>`;
 
   return`
@@ -1389,6 +1386,37 @@ function buildH2Table(issue, readyCode) {
   }
   t += '</tbody></table></div>';
   return t;
+}
+
+
+function h2FixButtons(detail, fixUrl, keyword) {
+  var shorts = [];
+  var re = /"([^"]+)"\s*\(\d+\s*симв\.\)/g;
+  var m;
+  while ((m = re.exec(detail)) !== null) { shorts.push(m[1]); }
+  if (!shorts.length) return '';
+  var st = 'background:#fff;border:1px solid #2563eb;border-radius:6px;padding:4px 9px;font-size:10px;cursor:pointer;color:#2563eb;font-family:inherit;white-space:nowrap;display:block;width:100%;text-align:left;margin-bottom:3px';
+  var html = '<div style="flex-shrink:0;min-width:140px">';
+  for (var i = 0; i < shorts.length; i++) {
+    var iss = shorts[i] + ' (' + shorts[i].length + ' симв.)';
+    var safe = iss.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    var safeUrl = fixUrl.replace(/'/g,"\\'");
+    var safeKw = (keyword||'').replace(/'/g,"\\'");
+    html += '<button style="' + st + '" onclick="magicFix(\'' + safe + '\',\'' + safeUrl + '\',\'' + safeKw + '\')">✨ ' + (i+1) + '. ' + shorts[i] + '</button>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderFixBtn(key, c, fixUrl, keyword) {
+  if (key === 'h2' && c.detail) {
+    var h2b = h2FixButtons(c.detail, fixUrl, keyword||'');
+    if (h2b) return h2b;
+  }
+  var lbl = c.label.replace(/'/g,"\\'");
+  var url = fixUrl.replace(/'/g,"\\'");
+  var kw = (keyword||'').replace(/'/g,"\\'");
+  return '<button onclick="magicFix(\'' + lbl + '\',\'' + url + '\',\'' + kw + '\')" style="flex-shrink:0;background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;color:#374151;font-family:inherit;white-space:nowrap">✨ Исправить</button>';
 }
 
 async function magicFix(issue, fixUrl, keyword){
