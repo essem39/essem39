@@ -1106,7 +1106,7 @@ function renderChecks(checks,fixUrl,keyword){
   };
 
   const issueRow=(tag,color,bgColor)=>([key,c])=>`
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:${bgColor};border-radius:8px;border-left:3px solid ${color}">
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:${bgColor};border-radius:8px;border-left:3px solid ${color};overflow:hidden">
       <span style="font-size:10px;font-weight:700;color:${color};white-space:nowrap;padding-top:1px">${tag}</span>
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:2px">${c.label}</div>
@@ -1395,8 +1395,8 @@ function h2FixButtons(detail, fixUrl, keyword) {
   var m;
   while ((m = re.exec(detail)) !== null) { shorts.push(m[1]); }
   if (!shorts.length) return '';
-  var st = 'background:#fff;border:1px solid #2563eb;border-radius:6px;padding:4px 9px;font-size:10px;cursor:pointer;color:#2563eb;font-family:inherit;white-space:nowrap;display:block;width:100%;text-align:left;margin-bottom:3px';
-  var html = '<div style="flex-shrink:0;min-width:140px">';
+  var st = 'background:#fff;border:1px solid #2563eb;border-radius:6px;padding:4px 9px;font-size:10px;cursor:pointer;color:#2563eb;font-family:inherit;word-break:break-word;display:block;width:100%;text-align:left;margin-bottom:3px';
+  var html = '<div style="flex-shrink:0;width:100%;max-width:100%">';
   for (var i = 0; i < shorts.length; i++) {
     var iss = shorts[i] + ' (' + shorts[i].length + ' симв.)';
     var safe = iss.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
