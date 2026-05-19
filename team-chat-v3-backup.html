@@ -1375,18 +1375,76 @@ async function magicFix(issue, fixUrl, keyword){
       const platform=data.platform||'';
       const where=data.where||'';
       const note=data.note||'';
+
+      // Парсим H2 теги из readyCode для таблицы старое→новое
+      const isH2Fix = data.readyCode.includes('<h2>') || data.readyCode.includes('<h2 ');
+      const isH1Fix = data.readyCode.includes('<h1>') || data.readyCode.includes('<h1 ');
+      const isTitleFix = data.readyCode.includes('<title>');
+      const isDescFix = data.readyCode.includes('<meta name=') && data.readyCode.includes('description');
+
+      // Золотой стандарт
+      const goldStd = isH2Fix ? {min:20,max:60,label:'H2'} :
+                      isH1Fix ? {min:30,max:50,label:'H1'} :
+                      isTitleFix ? {min:50,max:55,label:'Title'} :
+                      isDescFix ? {min:140,max:154,label:'Description'} : null;
+
+      // Извлекаем старые значения из issue
+      const oldValues = [];
+      const issueOldMatches = issue.match(/"([^"]+)"\s*\(\d+\s*симв\.\)/g)||[];
+      issueOldMatches.forEach(m=>{const t=m.match(/"([^"]+)"/);if(t)oldValues.push(t[1]);});
+
+      // Извлекаем новые H2 из readyCode
+      const newTags = [];
+      if(isH2Fix){
+        const matches = data.readyCode.matchAll(/<h2[^>]*>([^<]+)<\/h2>/gi);
+        for(const m of matches) newTags.push(m[1].trim());
+      }
+
+      // Строим таблицу замен если есть старые и новые
+      let replaceTable = '';
+      if(oldValues.length && newTags.length){
+        const rows = oldValues.map((old,i)=>{
+          const nw = newTags[i]||newTags[0];
+          const oldLen = old.length;
+          const newLen = nw.length;
+          const oldOk = goldStd && oldLen>=goldStd.min && oldLen<=goldStd.max;
+          const newOk = goldStd && newLen>=goldStd.min && newLen<=goldStd.max;
+          return `<div style="display:grid;grid-template-columns:1fr 24px 1fr;gap:6px;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;margin-bottom:6px">
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:3px">❌ Было (${oldLen} симв.)</div>
+              <div style="font-size:12px;color:#374151;font-weight:600">${old}</div>
+            </div>
+            <div style="text-align:center;font-size:18px;color:#2563eb">→</div>
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;margin-bottom:3px">${newOk?'✅':'⚠️'} Стало (${newLen} симв.)</div>
+              <div style="font-size:12px;color:#111;font-weight:700">${nw}</div>
+            </div>
+          </div>`;
+        }).join('');
+        replaceTable = `<div style="margin:10px 0">
+          <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">
+            📊 Замены (${goldStd?'Золотой стандарт '+goldStd.label+': '+goldStd.min+'-'+goldStd.max+' симв.':''})
+          </div>
+          ${rows}
+        </div>`;
+      }
+
       content.innerHTML=`
-        <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Платформа: <b>${platform}</b></div>
-        ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#16a34a">📍 ${where}</div>`:''}
-        <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">Готовый код:</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f3f4f6">
+          <span style="font-size:13px">🖥️</span>
+          <div style="font-size:12px;color:#374151"><b>Платформа:</b> ${platform}</div>
+        </div>
+        ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#16a34a;font-weight:600">📍 ${where}</div>`:''}
+        ${replaceTable}
+        <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">Готовый код — скопируй и вставь:</div>
         <div style="position:relative">
-          <pre data-copy="${data.readyCode.replace(/"/g,'&quot;').replace(/\n/g,'&#10;')}" style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+          <pre data-copy="${data.readyCode.replace(/"/g,'&quot;').replace(/
+/g,'&#10;')}" style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
           <button class="fix-copy-btn"
             style="position:absolute;top:8px;right:8px;background:#313244;border:none;color:#cdd6f4;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">📋 Копировать</button>
         </div>
-        ${note?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">${note}</div>`:''}
+        ${note?`<div style="margin-top:8px;font-size:11px;color:#16a34a;font-weight:600">${note}</div>`:''}
       `;
-      // Attach copy handler
       const copyBtn=content.querySelector('.fix-copy-btn');
       if(copyBtn){
         const pre=content.querySelector('pre[data-copy]');
@@ -1816,3 +1874,4 @@ init();
 </script>
 </body>
 </html>
+
