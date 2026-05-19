@@ -1360,6 +1360,38 @@ async function runSingleAudit(type){
 // AUDIT (legacy - kept for compatibility)
 async function runAudit(){runFullAudit();}
 
+
+function buildH2Table(issue, readyCode) {
+  var oldH2s = [];
+  var newH2s = [];
+  var m;
+  var re1 = /"([^"]+)"\s*\(\d+\s*симв\.\)/g;
+  while ((m = re1.exec(issue)) !== null) { oldH2s.push(m[1]); }
+  var re2 = /<h2[^>]*>([^<]+)<\/h2>/gi;
+  while ((m = re2.exec(readyCode)) !== null) { newH2s.push(m[1].trim()); }
+  if (!oldH2s.length || !newH2s.length) return '';
+  var t = '<div style="margin:10px 0;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">';
+  t += '<div style="padding:7px 12px;background:#f8fafc;font-size:11px;font-weight:700;color:#374151;border-bottom:1px solid #e2e8f0">';
+  t += '📋 Замени в CMS (Золотой стандарт H2: 20-60 симв.)</div>';
+  for (var i = 0; i < oldH2s.length; i++) {
+    var ov = oldH2s[i];
+    var nv = newH2s[i] || newH2s[0];
+    t += '<div style="display:grid;grid-template-columns:1fr 20px 1fr;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid #f1f5f9">';
+    t += '<div>';
+    t += '<div style="font-size:10px;color:#dc2626;font-weight:700;margin-bottom:2px">❌ БЫЛО (' + ov.length + ' симв.)</div>';
+    t += '<div style="font-size:12px;font-weight:600;color:#374151">' + ov + '</div>';
+    t += '</div>';
+    t += '<div style="text-align:center;color:#2563eb;font-weight:700">→</div>';
+    t += '<div>';
+    t += '<div style="font-size:10px;color:#16a34a;font-weight:700;margin-bottom:2px">✅ СТАЛО (' + nv.length + ' симв.)</div>';
+    t += '<div style="font-size:12px;font-weight:700;color:#111">' + nv + '</div>';
+    t += '</div>';
+    t += '</div>';
+  }
+  t += '</div>';
+  return t;
+}
+
 async function magicFix(issue, fixUrl, keyword){
   const modal=document.getElementById('fix-modal');
   const content=document.getElementById('fix-content');
@@ -1378,6 +1410,7 @@ async function magicFix(issue, fixUrl, keyword){
       content.innerHTML=`
         <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Платформа: <b>${platform}</b></div>
         ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#16a34a">📍 ${where}</div>`:''}
+        ${buildH2Table(issue, data.readyCode)}
         <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">Готовый код:</div>
         <div style="position:relative">
           <pre data-copy="${data.readyCode.replace(/"/g,'&quot;').replace(/\n/g,'&#10;')}" style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
