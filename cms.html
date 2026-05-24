@@ -320,7 +320,9 @@ function hideAddSite(){
 
 function addSite(){
   const name = document.getElementById('new-site-name').value.trim();
-  const repo = document.getElementById('new-site-repo').value.trim();
+  let repo = document.getElementById('new-site-repo').value.trim();
+  // Автоочистка: убираем https://github.com/ если вставили полную ссылку
+  repo = repo.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
   const url  = document.getElementById('new-site-url').value.trim();
   const icon = document.getElementById('new-site-icon').value.trim()||'🌐';
   if(!name||!repo||!url){alert('Заполни все поля!');return;}
