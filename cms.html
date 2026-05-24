@@ -528,7 +528,21 @@ function defData(site){
 
 async function loadRepoFiles(site){
   const contents=await ghFetch(`repos/${site.repo}/contents`);
-  repoFiles[site.id]=Array.isArray(contents)?contents:[];
+  if(!Array.isArray(contents)){repoFiles[site.id]=[];return;}
+  // Корневые HTML файлы
+  let allFiles = contents.filter(f=>f.name.endsWith('.html')&&f.type==='file');
+  // Подпапки — ищем index.html внутри каждой
+  const dirs = contents.filter(f=>f.type==='dir'&&!f.name.startsWith('.'));
+  await Promise.all(dirs.map(async dir=>{
+    try{
+      const sub=await ghFetch(`repos/${site.repo}/contents/${dir.name}`);
+      if(Array.isArray(sub)){
+        sub.filter(f=>f.name.endsWith('.html')&&f.type==='file')
+           .forEach(f=>allFiles.push({...f, name:`${dir.name}/${f.name}`}));
+      }
+    }catch(e){}
+  }));
+  repoFiles[site.id]=allFiles;
 }
 
 function getHtmlFiles(siteId){
