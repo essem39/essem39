@@ -1695,36 +1695,50 @@ async function runTool(id){
   } else if(id==='indexing'){
     const url=g('tf-url');
     const pages=g('tf-pages').split('\n').filter(Boolean).map(p=>p.trim());
-    const baseUrl=url.replace(/\/$/,'');
-    let domain;
-    try{domain=new URL(baseUrl).hostname;}catch(e){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
-    if(!domain){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
-    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем индексацию...</div></div>';
+    if(!url){alert('Введи URL сайта');btn.disabled=false;btn.innerHTML=origText;return;}
+    try{new URL(url);}catch(e){alert('Введи корректный URL');btn.disabled=false;btn.innerHTML=origText;return;}
+    document.getElementById('tool-out').innerHTML='<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center">Проверяем sitemap, robots.txt и доступность страниц...</div></div>';
     try{
-      const siteRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:`site:${domain}`,num:20})});
-      const siteData=await siteRes.json();
-      const indexedCount=siteData.results?.length||0;
-      const topPages=siteData.results?.map(r=>({url:r.url,title:r.title}))||[];
-      const pageResults=[];
-      for(let p of pages){
-        let fullUrl=p.startsWith('http')?p:baseUrl+p;
-        const pageRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:`site:${fullUrl}`,num:1})});
-        const pageData=await pageRes.json();
-        pageResults.push({url:fullUrl,indexed:(pageData.results?.length||0)>0});
-      }
-      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🔎 Индексация: ${domain}</span></div>`;
-      html+=`<div style="margin-bottom:12px"><strong>📊 Найдено в Google (site:${domain})</strong> — примерно ${indexedCount} страниц (первые 20)</div>`;
-      if(topPages.length){
-        html+=`<div style="margin-bottom:16px"><strong>Примеры проиндексированных страниц:</strong><ul style="margin-top:6px;font-size:12px;">`;
-        topPages.slice(0,10).forEach(p=>{html+=`<li><a href="${p.url}" target="_blank" style="color:var(--accent)">${p.title||p.url}</a></li>`;});
-        html+=`</ul></div>`;
-      }else{html+=`<div style="margin-bottom:16px;color:var(--danger)">⚠️ Сайт не найден в индексе Google.</div>`;}
-      if(pageResults.length){
-        html+=`<div><strong>🔍 Проверка отдельных страниц:</strong><div style="margin-top:6px;">`;
-        pageResults.forEach(pr=>{html+=`<div style="padding:4px 0;font-size:12px;">${pr.url} — ${pr.indexed?'✅ проиндексирована':'❌ не найдена'}</div>`;});
+      const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'indexing',url,pages})});
+      const d=await res.json();
+      if(!d.ok){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ ${d.error||'Ошибка'}</div>`;btn.disabled=false;btn.innerHTML=origText;return;}
+      const hp=d.homepage||{};
+      const verdictMap={
+        ok:{color:'var(--success)',icon:'✅',text:'Сайт готов к индексации'},
+        homepage_down:{color:'var(--danger)',icon:'❌',text:'Главная страница недоступна — Google не может зайти'},
+        blocked_by_robots:{color:'var(--danger)',icon:'🚫',text:'robots.txt блокирует индексацию полностью (Disallow: /)'},
+        homepage_noindex:{color:'var(--danger)',icon:'🚫',text:'На главной meta robots="noindex" — Google не индексирует'},
+        no_sitemap:{color:'var(--gold)',icon:'⚠️',text:'sitemap.xml не найден — Google сложнее обходить сайт'}
+      };
+      const v=verdictMap[d.verdict]||verdictMap.ok;
+      let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🔎 Индексация: ${d.domain}</span></div>`;
+      html+=`<div style="padding:12px 14px;background:var(--surface2);border-left:4px solid ${v.color};border-radius:8px;margin-bottom:14px;font-size:13px;font-weight:600;color:${v.color}">${v.icon} ${v.text}</div>`;
+      html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">`;
+      html+=`<div style="padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--muted);margin-bottom:4px">SITEMAP.XML</div><div style="font-size:22px;font-weight:800;color:${d.sitemapFound?'var(--success)':'var(--danger)'}">${d.sitemapFound?d.sitemapCount:'—'}</div><div style="font-size:11px;color:var(--muted)">${d.sitemapFound?'страниц объявлено':'sitemap не найден'}</div></div>`;
+      html+=`<div style="padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--muted);margin-bottom:4px">ROBOTS.TXT</div><div style="font-size:14px;font-weight:700;color:${d.robotsBlocked?'var(--danger)':(d.robotsExists?'var(--success)':'var(--gold)')}">${d.robotsBlocked?'🚫 БЛОКИРУЕТ':(d.robotsExists?'✅ Открыт':'⚠️ Нет файла')}</div><div style="font-size:11px;color:var(--muted)">${d.robotsBlocked?'Disallow: / для всех':(d.robotsExists?'индексация разрешена':'желательно создать')}</div></div>`;
+      html+=`</div>`;
+      // homepage detail
+      html+=`<div style="padding:10px 12px;background:var(--surface2);border-radius:8px;margin-bottom:12px;font-size:12px">`;
+      html+=`<strong>🏠 Главная (${d.origin})</strong><br>`;
+      html+=`HTTP: <b>${hp.status||'—'}</b> · noindex: <b>${hp.noindex?'ДА 🚫':'нет'}</b> · canonical: <b>${hp.hasCanonical?'есть ✅':'нет ⚠️'}</b>`;
+      html+=`</div>`;
+      // per-page table
+      if(d.perPage&&d.perPage.length){
+        html+=`<div style="margin-bottom:12px"><strong>🔍 Проверка страниц (${d.perPage.length}):</strong><div style="margin-top:8px;border:1px solid var(--border);border-radius:8px;overflow:hidden">`;
+        d.perPage.forEach(p=>{
+          const flag=p.indexable?'✅':(p.noindex?'🚫':(!p.accessible?'❌':'⚠️'));
+          const reason=p.noindex?'noindex':(!p.accessible?'HTTP '+p.status:'OK');
+          html+=`<div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;display:flex;align-items:center;gap:10px;background:${p.indexable?'transparent':'rgba(220,38,38,0.04)'}"><span style="font-size:16px">${flag}</span><span style="flex:1;font-family:monospace;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.url}</span><span style="font-size:11px;color:var(--muted);font-weight:600">${reason}</span></div>`;
+        });
         html+=`</div></div>`;
       }
-      html+=`<div style="margin-top:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Данные реальные через Serper API (site: запросы).</div></div>`;
+      // sitemap sample
+      if(d.sitemapSample&&d.sitemapSample.length){
+        html+=`<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;color:var(--accent);font-weight:600">📋 Первые ${d.sitemapSample.length} URL из sitemap</summary><ul style="margin-top:8px;font-size:11px;color:var(--text2);padding-left:18px">`;
+        d.sitemapSample.forEach(u=>{html+=`<li><a href="${u}" target="_blank" style="color:var(--accent)">${u}</a></li>`;});
+        html+=`</ul></details>`;
+      }
+      html+=`<div style="margin-top:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Источник: реальный HTTP-обход sitemap.xml, robots.txt и страниц как Googlebot.</div></div>`;
       document.getElementById('tool-out').innerHTML=html;
     }catch(e){document.getElementById('tool-out').innerHTML=`<div class="tool-result">❌ Ошибка: ${e.message}</div>`;}
     btn.disabled=false;btn.innerHTML=origText;
