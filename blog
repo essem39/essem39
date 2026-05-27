@@ -411,7 +411,14 @@ footer a:hover { text-decoration: underline; }
 <div class="gold-line"></div>
 
 <main>
-  <section class="hero">
+  <!-- TEAM BANNER -->
+  <div style="width:100%;margin-bottom:0;overflow:hidden;max-height:420px;line-height:0;">
+    <img src="https://raw.githubusercontent.com/essem39/essem39/main/artel-team-banner.png"
+         alt="AI-Artel Team 2026"
+         style="width:100%;object-fit:cover;display:block;">
+  </div>
+
+    <section class="hero">
     <div class="container">
       <h1>Наши Совместные Проекты</h1>
       <p style="font-size:16px;">От стратегии и выбора доменов до финальной "чистки" кода и развития экосистемы</p>
