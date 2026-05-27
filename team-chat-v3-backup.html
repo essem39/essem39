@@ -333,35 +333,19 @@ textarea#inp::placeholder{color:var(--muted);}
           <button class="icon-btn" title="Прикрепить" onclick="document.getElementById('file-inp').click()">📎</button>
           <button class="icon-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
           <select id="model-select" class="model-select" title="Выбор AI модели" onchange="onModelChange()">
-            <optgroup label="🟣 Claude (Anthropic)">
-              <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-              <option value="claude-opus-4-7">Claude Opus 4.7</option>
-              <option value="claude-haiku-4-5-20251001">Claude Haiku</option>
-            </optgroup>
-            <optgroup label="🟢 GPT (OpenAI)">
-              <option value="gpt-5.5">GPT-5.5 ⭐</option>
-              <option value="gpt-5">GPT-5</option>
-              <option value="gpt-4.1">GPT-4.1</option>
-              <option value="gpt-4o">GPT-4o</option>
-              <option value="o4-mini">O4-Mini</option>
-            </optgroup>
-            <optgroup label="🔵 Gemini (Google)">
-              <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-              <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-            </optgroup>
-            <optgroup label="🔴 DeepSeek">
-              <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
-              <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
-              <option value="deepseek-ai/DeepSeek-V3.2">DeepSeek V3.2</option>
-            </optgroup>
-            <optgroup label="🟡 Другие">
-              <option value="kimi-k2.6">Kimi K2.6</option>
-              <option value="grok-4.3">Grok 4.3</option>
-              <option value="grok-3-mini">Grok 3 Mini</option>
-            </optgroup>
-            <optgroup label="🤖 Авто">
-              <option value="route-llm">🤖 Авто (RouteLLM)</option>
-            </optgroup>
+            <option value="claude-sonnet-4-6">Claude Sonnet</option>
+            <option value="claude-opus-4-7">Claude Opus</option>
+            <option value="claude-haiku-4-5-20251001">Claude Haiku</option>
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4.1">GPT-4.1</option>
+            <option value="o4-mini">O4-Mini</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+            <option value="deepseek-v3">DeepSeek V3</option>
+            <option value="deepseek-r1">DeepSeek R1</option>
+            <option value="grok-3">Grok-3</option>
+            <option value="kimi-k2">Kimi K2</option>
+            <option value="route-llm">🤖 Авто (RouteLLM)</option>
           </select>
           <button class="send-btn" id="send-btn" onclick="sendMsg()">➤</button>
         </div>
@@ -836,14 +820,6 @@ const TOOLS = {
       <div class="tool-form">
         <div class="tf-label">Описание изображения</div>
         <textarea class="tf-textarea" id="tf-imgprompt" placeholder="Например: Современный минималистичный баннер для сайта авиабилетов с самолётом на фоне неба..." style="min-height:80px"></textarea>
-        <div class="tf-label" style="margin-top:10px">📎 Загрузить фото (необязательно)</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-          <label for="tf-imgupload" style="cursor:pointer;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--accent);display:inline-block">📎 Выбрать фото</label>
-          <input type="file" id="tf-imgupload" accept="image/*" style="display:none" onchange="document.getElementById('tf-imgname').textContent=this.files[0]?this.files[0].name:'не выбрано'">
-          <span id="tf-imgname" style="font-size:11px;color:var(--muted)">не выбрано</span>
-          <button onclick="document.getElementById('tf-imgupload').value='';document.getElementById('tf-imgname').textContent='не выбрано'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px">✕</button>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:2px">Загрузи фото → AI создаст изображение на его основе или добавит элементы вокруг тебя</div>
         <div class="tf-row" style="margin-bottom:10px">
           <div>
             <div class="tf-label">Стиль</div>
@@ -1046,14 +1022,25 @@ function updateImgStrip(){
 }
 function removePendingImg(i){pendingImages.splice(i,1);updateImgStrip();}
 
+function getModelLabel(){
+  const m=document.getElementById('model-select')?.value||'';
+  if(!m||m.startsWith('claude-')) return {name:'Пилот',emoji:'✈️'};
+  if(m.startsWith('gemini')) return {name:'Любимчик',emoji:'💛'};
+  if(m.includes('deepseek')||m.includes('DeepSeek')) return {name:'WINNER',emoji:'🏆'};
+  if(m.includes('kimi')) return {name:'Профессор',emoji:'🎓'};
+  if(m.startsWith('gpt')||m.startsWith('o4')) return {name:'Лентяй',emoji:'☕'};
+  if(m.startsWith('grok')) return {name:'Grok',emoji:'🔥'};
+  if(m==='route-llm') return {name:'Авто',emoji:'🤖'};
+  return {name:'AI',emoji:'🤖'};
+}
 function renderMsg(role,content,imgPreviews){
   const w=document.getElementById('welcome');if(w)w.remove();
   const inner=document.getElementById('msgs-inner');
   const d=document.createElement('div');d.className='msg '+(role==='user'?'user':'ai');
-  const av=document.createElement('div');av.className='av '+(role==='user'?'u':'a');av.textContent=role==='user'?'👔':'✈️';
+  const av=document.createElement('div');av.className='av '+(role==='user'?'u':'a');av.textContent=role==='user'?'👔':getModelLabel().emoji;
   const body=document.createElement('div');body.className='msg-body';
   const rl=document.createElement('div');rl.className='msg-role';
-  rl.textContent=role==='user'?`Директор · ${getTime()}`:`Пилот · ${getTime()}`;
+  const ml=getModelLabel();rl.textContent=role==='user'?`Директор · ${getTime()}`:`${ml.name} · ${getTime()}`;
   const bub=document.createElement('div');bub.className='bubble';
   if(imgPreviews?.length) imgPreviews.forEach(src=>{const im=document.createElement('img');im.src=src;im.className='img-preview';bub.appendChild(im);});
   if(role==='user'){const s=document.createElement('span');s.textContent=content;bub.appendChild(s);}
@@ -2061,21 +2048,10 @@ URL/тема: ${mdurl||'не указан'}
     const imgStyle=g('tf-imgstyle');
     const imgSize=g('tf-imgsize')||'1024x1024';
     const fullPrompt = imgStyle ? `${imgPrompt}, ${imgStyle} style` : imgPrompt;
-    // Читаем загруженное фото если есть
-    const imgFile = document.getElementById('tf-imgupload')?.files?.[0] || null;
-    let imgBase64 = null;
-    if(imgFile){
-      imgBase64 = await new Promise((res,rej)=>{
-        const reader = new FileReader();
-        reader.onload = e => res(e.target.result.split(',')[1]);
-        reader.onerror = rej;
-        reader.readAsDataURL(imgFile);
-      });
-    }
     document.getElementById('tool-out').innerHTML=`<div class="tool-result"><div class="progress-bar"><div class="progress-fill"></div></div><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">🖼️ Генерирую изображение... Это может занять 10-30 секунд.</div></div>`;
     try{
       const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'imagegen',prompt:fullPrompt,size:imgSize,imageBase64:imgBase64,imageMime:imgFile?imgFile.type:'image/png'})});
+        body:JSON.stringify({action:'imagegen',prompt:fullPrompt,size:imgSize})});
       const data=await res.json();
       if(data.ok && data.imageUrl){
         let html=`<div class="tool-result">
