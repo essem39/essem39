@@ -1050,10 +1050,10 @@ function renderMsg(role,content,imgPreviews){
   const w=document.getElementById('welcome');if(w)w.remove();
   const inner=document.getElementById('msgs-inner');
   const d=document.createElement('div');d.className='msg '+(role==='user'?'user':'ai');
-  const av=document.createElement('div');av.className='av '+(role==='user'?'u':'a');av.textContent=role==='user'?'👔':getModelLabel().emoji;
+  const av=document.createElement('div');av.className='av '+(role==='user'?'u':'a');av.textContent=role==='user'?'👔':'✈️';
   const body=document.createElement('div');body.className='msg-body';
   const rl=document.createElement('div');rl.className='msg-role';
-  const ml=getModelLabel();rl.textContent=role==='user'?`Директор · ${getTime()}`:`${ml.name} · ${getTime()}`;
+  rl.textContent=role==='user'?`Директор · ${getTime()}`:`Пилот · ${getTime()}`;
   const bub=document.createElement('div');bub.className='bubble';
   if(imgPreviews?.length) imgPreviews.forEach(src=>{const im=document.createElement('img');im.src=src;im.className='img-preview';bub.appendChild(im);});
   if(role==='user'){const s=document.createElement('span');s.textContent=content;bub.appendChild(s);}
