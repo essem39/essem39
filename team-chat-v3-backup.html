@@ -1079,8 +1079,11 @@ function extractText(data){
 
 async function callWorker(prompt,system,model){
   const useModel = model || getSelectedModel();
+  const modelName = document.querySelector('#model-select option:checked').textContent;
+  const baseSys = system || activeProj.sys;
+  const enhancedSys = `Ты работаешь на модели: ${modelName} (${useModel}). ${baseSys}`;
   const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:useModel,max_tokens:2000,system:system||activeProj.sys,messages:[{role:'user',content:prompt}]})});
+    body:JSON.stringify({model:useModel,max_tokens:2000,system:enhancedSys,messages:[{role:'user',content:prompt}]})});
   const data=await res.json();
   if(data.usage){
     const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;
@@ -1092,12 +1095,14 @@ async function callWorker(prompt,system,model){
 
 async function callCheap(prompt){
   try{
-    const sysPrompt='Ты Пилот — профессиональный SEO-ассистент команды. Отвечай только на русском языке. Давай конкретные, готовые к использованию результаты без лишних объяснений.';
+    const selectedModel = getSelectedModel();
+    const modelName = document.querySelector('#model-select option:checked').textContent;
+    const sysPrompt=`Ты работаешь на модели: ${modelName} (${selectedModel}). Ты Пилот — профессиональный SEO-ассистент команды. Отвечай только на русском языке. Давай конкретные, готовые к использованию результаты без лишних объяснений.`;
     const controller=new AbortController();
     const timeoutId=setTimeout(()=>controller.abort(),28000);
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
       signal:controller.signal,
-      body:JSON.stringify({action:'generate',prompt,system:sysPrompt,model:getSelectedModel()})});
+      body:JSON.stringify({action:'generate',prompt,system:sysPrompt,model:selectedModel})});
     clearTimeout(timeoutId);
     const data=await res.json();
     if(data.usage){const c=data.usage.input_tokens*.0000003+data.usage.output_tokens*.0000006;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
@@ -1152,10 +1157,17 @@ async function sendMsg(){
     return;
   }
   addThinking();
-  const sys=document.getElementById('sys-ta').value||activeProj.sys;
+  const selectedModel = getSelectedModel();
+  const modelName = document.querySelector('#model-select option:checked').textContent;
+  const baseSys = document.getElementById('sys-ta').value||activeProj.sys;
+  const sys = `Ты работаешь на модели: ${modelName} (${selectedModel}). Когда пользователь спрашивает "кто ты" или "какая версия", обязательно скажи что ты ${modelName}.\n\n${baseSys}`;
+  
+  // Отправляем последние 15 сообщений для контекста (чтобы AI помнил историю)
+  const recentMsgs = msgs.slice(-15);
+  
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:getSelectedModel(),max_tokens:2000,system:sys,messages:msgs})});
+      body:JSON.stringify({model:selectedModel,max_tokens:2000,system:sys,messages:recentMsgs})});
     const data=await res.json();removeThinking();
     const reply=extractText(data);
     if(reply){
