@@ -505,7 +505,8 @@ try {
   }
 } catch(e) {}
 
-const PILOT_SYS = `Ты Пилот — личный SEO-ассистент и правая рука Директора Гагика. Ты умный, ироничный, уверенный в себе профессионал. Общаешься живо и по-дружески, как старший коллега — без канцелярита и сухих списков.
+// Базовый системный промпт — УНИВЕРСАЛЬНЫЙ для ВСЕХ моделей (личность добавляется динамически)
+const BASE_SYS = `Ты личный SEO-ассистент и правая рука Директора Гагика в команде. Ты умный, профессионал своего дела. Общаешься живо и по-дружески, как старший коллега — без канцелярита и сухих списков.
 
 ЗОЛОТЫЕ ПРАВИЛА ОБЩЕНИЯ:
 1. НИКОГДА не перечисляй все свои инструменты/возможности без прямого запроса
@@ -523,17 +524,17 @@ const PILOT_SYS = `Ты Пилот — личный SEO-ассистент и п
 
 Сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, wisetools.org, cryptocardpro.com, globalaihub.org.`;
 const PROJECTS = [
-  {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:PILOT_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
-  {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:PILOT_SYS+'Проект: coffeespecialty.ru (specialty кофе, Tasty Coffee, Admitad). Отвечай коротко, давай готовый код.'},
-  {id:'elama',emoji:'📢',name:'eLamaInfo',url:'elamainfo.ru',sys:PILOT_SYS+'Проект: elamainfo.ru (реклама, eLama партнёр). Отвечай коротко, давай готовый код.'},
-  {id:'alidrop',emoji:'🛒',name:'AliDropInfo',url:'alidropinfo.com',sys:PILOT_SYS+'Проект: alidropinfo.com (дропшиппинг, AliExpress). Отвечай коротко, давай готовый код.'},
-  {id:'storelines',emoji:'🛠️',name:'Storelines',url:'storelines.net',sys:PILOT_SYS+'Проект: storelines.net (EU бизнес инструменты). Отвечай коротко, давай готовый код.'},
-  {id:'wisetools',emoji:'💶',name:'WiseTools',url:'wisetools.org',sys:PILOT_SYS+'Проект: wisetools.org (EU бизнес инструменты, Wise партнёр, Cloudflare Pages). Отвечай коротко, давай готовый код.'},
-  {id:'crypto',emoji:'💳',name:'CryptoCardPro',url:'cryptocardpro.com',sys:PILOT_SYS+'Проект: cryptocardpro.com (крипто карты, финансы). Отвечай коротко, давай готовый код.'},
-  {id:'globalai',emoji:'🤖',name:'GlobalAIHub',url:'globalaihub.org',sys:PILOT_SYS+'Проект: globalaihub.org (AI хаб, искусственный интеллект). Отвечай коротко, давай готовый код.'},
-  {id:'vipdrive',emoji:'📺',name:'VipDrive',url:'vipdriveinfo.net',sys:PILOT_SYS+'Партнёрский сайт: vipdriveinfo.net (IPTV сервис, платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными. Отвечай коротко, давай готовый код.'},
-  {id:'tvteam',emoji:'📡',name:'TVTeam',url:'tvteam.net',sys:PILOT_SYS+'Партнёрский сайт: tvteam.net (платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
-  {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:PILOT_SYS+'Партнёрский сайт: jubileehub.net (платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
+  {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:BASE_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
+  {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:BASE_SYS+'Проект: coffeespecialty.ru (specialty кофе, Tasty Coffee, Admitad). Отвечай коротко, давай готовый код.'},
+  {id:'elama',emoji:'📢',name:'eLamaInfo',url:'elamainfo.ru',sys:BASE_SYS+'Проект: elamainfo.ru (реклама, eLama партнёр). Отвечай коротко, давай готовый код.'},
+  {id:'alidrop',emoji:'🛒',name:'AliDropInfo',url:'alidropinfo.com',sys:BASE_SYS+'Проект: alidropinfo.com (дропшиппинг, AliExpress). Отвечай коротко, давай готовый код.'},
+  {id:'storelines',emoji:'🛠️',name:'Storelines',url:'storelines.net',sys:BASE_SYS+'Проект: storelines.net (EU бизнес инструменты). Отвечай коротко, давай готовый код.'},
+  {id:'wisetools',emoji:'💶',name:'WiseTools',url:'wisetools.org',sys:BASE_SYS+'Проект: wisetools.org (EU бизнес инструменты, Wise партнёр, Cloudflare Pages). Отвечай коротко, давай готовый код.'},
+  {id:'crypto',emoji:'💳',name:'CryptoCardPro',url:'cryptocardpro.com',sys:BASE_SYS+'Проект: cryptocardpro.com (крипто карты, финансы). Отвечай коротко, давай готовый код.'},
+  {id:'globalai',emoji:'🤖',name:'GlobalAIHub',url:'globalaihub.org',sys:BASE_SYS+'Проект: globalaihub.org (AI хаб, искусственный интеллект). Отвечай коротко, давай готовый код.'},
+  {id:'vipdrive',emoji:'📺',name:'VipDrive',url:'vipdriveinfo.net',sys:BASE_SYS+'Партнёрский сайт: vipdriveinfo.net (IPTV сервис, платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными. Отвечай коротко, давай готовый код.'},
+  {id:'tvteam',emoji:'📡',name:'TVTeam',url:'tvteam.net',sys:BASE_SYS+'Партнёрский сайт: tvteam.net (платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
+  {id:'jubilee',emoji:'🎉',name:'JubileeHub',url:'jubileehub.net',sys:BASE_SYS+'Партнёрский сайт: jubileehub.net (платформа uKit — HTTP заголовки нельзя изменить). Работай только с реальными данными страницы. Отвечай коротко, давай готовый код.'},
   {id:'new',emoji:'＋',name:'Добавить сайт',url:'',sys:''},
 ];
 
@@ -952,7 +953,7 @@ function addNewSite(){
   if(!url)return;
   const name=prompt('Название сайта:')||url;
   const np={id:'c'+Date.now(),emoji:'🌐',name,url:url.replace(/^https?:\/\//,''),
-    sys:`Ты Пилот — технический SEO-специалист. Проект: ${url} (${name}). Отвечай коротко, давай готовый код.`};
+    sys:BASE_SYS+`Проект: ${url} (${name}). Отвечай коротко, давай готовый код.`};
   PROJECTS.splice(PROJECTS.length-1,0,np);
   activeProj=np;
   document.getElementById('proj-emoji').textContent=np.emoji;
@@ -1135,8 +1136,10 @@ function extractText(data){
 async function callWorker(prompt,system,model){
   const useModel = model || getSelectedModel();
   const modelName = document.querySelector('#model-select option:checked').textContent;
+  const ml = getModelLabel();
   const baseSys = system || activeProj.sys;
-  const enhancedSys = `Ты работаешь на модели: ${modelName} (${useModel}). ${baseSys}`;
+  const personalityNote = ml.style ? `\nТвой характер: ${ml.style}` : '';
+  const enhancedSys = `Ты ${ml.name} (${ml.role}), работаешь на модели ${modelName}.${personalityNote}\n\n${baseSys}`;
   const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({model:useModel,max_tokens:2000,system:enhancedSys,messages:[{role:'user',content:prompt}]})});
   const data=await res.json();
@@ -1152,7 +1155,9 @@ async function callCheap(prompt){
   try{
     const selectedModel = getSelectedModel();
     const modelName = document.querySelector('#model-select option:checked').textContent;
-    const sysPrompt=`Ты работаешь на модели: ${modelName} (${selectedModel}). Ты Пилот — профессиональный SEO-ассистент команды. Отвечай только на русском языке. Давай конкретные, готовые к использованию результаты без лишних объяснений.`;
+    const ml = getModelLabel();
+    const personalityNote = ml.style ? ` ${ml.style}` : '';
+    const sysPrompt=`Ты ${ml.name} (${ml.role}), работаешь на модели ${modelName}.${personalityNote} Отвечай только на русском языке. Давай конкретные, готовые к использованию результаты без лишних объяснений.`;
     const controller=new AbortController();
     const timeoutId=setTimeout(()=>controller.abort(),28000);
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
@@ -2025,8 +2030,11 @@ async function runTool(id){
       const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:kw,num:10})});
       const data=await res.json();
       const titles=data.results?.map(r=>r.title).join(' ')||'';
-      const prompt=`Ты SEO-эксперт. Ключевое слово: "${kw}". Ниша: ${niche||'не указана'}.\nВот заголовки конкурентов из Google (реальные данные):\n${titles}\nНа основе этих данных составь список из 30-50 семантически связанных слов (LSI). Разбей на группы: основные, дополнительные, вопросы, брендовые. Только список, без лишнего текста.`;
-      const aiRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
+      const ml = getModelLabel();
+      const personalityNote = ml.style ? `\nТвой характер: ${ml.style}` : '';
+      const sys = `Ты ${ml.name} (${ml.role}), SEO-эксперт команды.${personalityNote}`;
+      const prompt=`Ключевое слово: "${kw}". Ниша: ${niche||'не указана'}.\nВот заголовки конкурентов из Google (реальные данные):\n${titles}\nНа основе этих данных составь список из 30-50 семантически связанных слов (LSI). Разбей на группы: основные, дополнительные, вопросы, брендовые. Только список, без лишнего текста.`;
+      const aiRes=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:getSelectedModel(),system:sys,messages:[{role:'user',content:prompt}]})});
       const aiData=await aiRes.json();
       const lsiText=extractText(aiData)||'Не удалось сгенерировать';
       let html=`<div class="tool-result"><div class="tool-result-head"><span class="tool-result-title">🧠 Семантические слова для "${kw}"</span></div>`;
@@ -2210,14 +2218,19 @@ URL/тема: ${mdurl||'не указан'}
   try{
     let reply;
     if(msgContent){
+      const ml = getModelLabel();
+      const personalityNote = ml.style ? `\nТвой характер: ${ml.style}` : '';
+      const sys = `Ты ${ml.name} (${ml.role}), работаешь на модели ${document.querySelector('#model-select option:checked').textContent}.${personalityNote}\n\n${activeProj.sys}`;
       const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:getSelectedModel(),max_tokens:2000,system:activeProj.sys,messages:[{role:'user',content:msgContent}]})});
+        body:JSON.stringify({model:getSelectedModel(),max_tokens:2000,system:sys,messages:[{role:'user',content:msgContent}]})});
       const data=await res.json();
       if(data.usage){const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}
       reply=extractText(data);
     }else{
       const needsWeb=['unique','whois'].includes(id);
-      reply=needsWeb?await callWorker(prompt,'Ты Пилот — технический SEO-специалист команды. Всегда отвечай ТОЛЬКО на русском языке. Используй web_search. Отвечай конкретно, давай готовый код.'):await callCheap('Отвечай только на русском языке.\n\n'+prompt);
+      const ml = getModelLabel();
+      const webPrompt = `Ты ${ml.name} — технический SEO-специалист команды. Всегда отвечай ТОЛЬКО на русском языке. Используй web_search. Отвечай конкретно, давай готовый код.`;
+      reply=needsWeb?await callWorker(prompt,webPrompt):await callCheap('Отвечай только на русском языке.\n\n'+prompt);
     }
     if(reply){
       document.getElementById('tool-out').innerHTML=`
