@@ -314,7 +314,7 @@ textarea#inp::placeholder{color:var(--muted);}
           <div class="welcome-icon">✈️</div>
           <h2>Рабочий инструмент команды</h2>
           <p>Выбери проект слева. Отправляй текст, скриншоты, файлы — Пилот разберётся.</p>
-          <div class="welcome-badge">👔 Директор Гагик · ✈️ Пилот готов · 🛠️ 17 инструментов</div>
+          <div class="welcome-badge">👔 Директор Гагик · ✈️ Пилот готов · 🎨 Художник · 🛠️ 17 инструментов</div>
           <div class="quick-actions">
             <button class="qa-btn" onclick="setMode('audit')">🔍 Аудит сайта</button>
             <button class="qa-btn" onclick="setMode('tools')">🛠️ Инструменты</button>
@@ -439,7 +439,7 @@ textarea#inp::placeholder{color:var(--muted);}
         <div class="tool-item" onclick="selectTool('unique')" id="ti-unique"><span class="ti">🔍</span>Уникальность текста</div>
         <div class="tool-item" onclick="selectTool('imgdesc')" id="ti-imgdesc"><span class="ti">🎨</span>Описание картинки</div>
         <div class="tool-cat-label" style="margin-top:6px">🎨 Генерация</div>
-        <div class="tool-item" onclick="selectTool('imagegen')" id="ti-imagegen"><span class="ti">🖼️</span>Генерация изображений</div>
+        <div class="tool-item" onclick="selectTool('imagegen')" id="ti-imagegen"><span class="ti">🎨</span>Художник (картинки)</div>
       </div>
       <div class="tools-main">
         <div class="tool-header" id="tool-header">
@@ -505,7 +505,23 @@ try {
   }
 } catch(e) {}
 
-const PILOT_SYS = 'Ты Пилот — личный SEO-ассистент Директора Гагика. Сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, wisetools.org, cryptocardpro.com, globalaihub.org. Веди живой разговор. НЕ перечисляй инструменты и возможности — предлагай их только когда пользователь явно просит помочь с конкретной задачей. Если нужно открыть инструменты — добавь [OPEN:tools], аудит — [OPEN:audit], конкретный инструмент — [TOOL:название]. Отвечай коротко и по делу.';
+const PILOT_SYS = `Ты Пилот — личный SEO-ассистент и правая рука Директора Гагика. Ты умный, ироничный, уверенный в себе профессионал. Общаешься живо и по-дружески, как старший коллега — без канцелярита и сухих списков.
+
+ЗОЛОТЫЕ ПРАВИЛА ОБЩЕНИЯ:
+1. НИКОГДА не перечисляй все свои инструменты/возможности без прямого запроса
+2. НИКОГДА не добавляй теги [OPEN:tools], [OPEN:audit], [TOOL:xxx] автоматически
+3. Если пользователь задаёт вопрос — ОТВЕЧАЙ на вопрос, не предлагай инструменты
+4. Если пользователь пишет длинный текст — это НЕ повод открывать инструменты, просто помоги с его задачей
+5. Предлагай конкретный инструмент ТОЛЬКО если пользователь явно просит что-то сделать, что требует инструмент (например "проверь позиции", "сделай аудит")
+6. Отвечай коротко, остроумно, по существу. Ты не робот-помощник, ты эксперт с характером
+
+КОГДА предлагать инструменты (и только ОДИН конкретный):
+- "Проверь позиции сайта" → предложи кнопку проверки позиций
+- "Сделай аудит" → предложи аудит
+- "Сгенерируй мета-теги" → предложи генератор
+- Во всех остальных случаях — просто отвечай как эксперт
+
+Сайты команды: airflowtravel.net, coffeespecialty.ru, elamainfo.ru, alidropinfo.com, storelines.net, wisetools.org, cryptocardpro.com, globalaihub.org.`;
 const PROJECTS = [
   {id:'airflow',emoji:'✈️',name:'Airflowtravel',url:'airflowtravel.net',sys:PILOT_SYS+'Проект: airflowtravel.net (авиабилеты, ТОП-1 Google). Отвечай коротко, давай готовый код.'},
   {id:'coffee',emoji:'☕',name:'CoffeeSpecialty',url:'coffeespecialty.ru',sys:PILOT_SYS+'Проект: coffeespecialty.ru (specialty кофе, Tasty Coffee, Admitad). Отвечай коротко, давай готовый код.'},
@@ -831,7 +847,7 @@ const TOOLS = {
       <div id="tool-out"></div>`
   },
   imagegen:{
-    icon:'🖼️',title:'Генерация изображений',desc:'Создай уникальные изображения для сайта с помощью AI (через Abacus AI)',
+    icon:'🎨',title:'Художник — генерация изображений',desc:'Создай уникальные изображения для сайта с помощью AI. Художник нарисует что угодно!',
     render:()=>`
       <div class="tool-form">
         <div class="tf-label">Описание изображения</div>
@@ -1038,16 +1054,28 @@ function updateImgStrip(){
 }
 function removePendingImg(i){pendingImages.splice(i,1);updateImgStrip();}
 
+// === ЛИЧНОСТИ КОМАНДЫ ===
+const TEAM_PERSONALITIES = {
+  pilot:    { name:'Пилот',     emoji:'✈️', role:'SEO-навигатор',      style:'Уверенный лидер. Даёт чёткие указания, видит картину целиком.' },
+  gemini:   { name:'Любимчик',  emoji:'💛', role:'Аналитик данных',    style:'Обаятельный и дотошный. Любит цифры и сравнения.' },
+  deepseek: { name:'WINNER',    emoji:'🏆', role:'Стратег-победитель', style:'Агрессивный стратег. Всегда нацелен на первое место.' },
+  kimi:     { name:'Профессор',  emoji:'🎓', role:'Исследователь',     style:'Академичный, но понятный. Объясняет "почему", а не только "что".' },
+  gpt:      { name:'Архитектор', emoji:'🏗️', role:'Строитель кода',    style:'Надёжный инженер. Строит, чинит, оптимизирует.' },
+  grok:     { name:'Бунтарь',   emoji:'🔥', role:'Креативщик',         style:'Дерзкий и нестандартный. Находит решения там, где другие не ищут.' },
+  artist:   { name:'Художник',  emoji:'🎨', role:'Генератор картинок', style:'Визуал и эстет. Создаёт красивые изображения по описанию.' },
+  auto:     { name:'Авто',      emoji:'🤖', role:'Маршрутизатор',      style:'Сам выбирает лучшую модель для задачи.' }
+};
+
 function getModelLabel(){
   const m=document.getElementById('model-select')?.value||'';
-  if(!m||m.startsWith('claude-')) return {name:'Пилот',emoji:'✈️'};
-  if(m.startsWith('gemini')) return {name:'Любимчик',emoji:'💛'};
-  if(m.includes('deepseek')||m.includes('DeepSeek')) return {name:'WINNER',emoji:'🏆'};
-  if(m.includes('kimi')) return {name:'Профессор',emoji:'🎓'};
-  if(m.startsWith('gpt')||m.startsWith('o4')) return {name:'Лентяй',emoji:'☕'};
-  if(m.startsWith('grok')) return {name:'Grok',emoji:'🔥'};
-  if(m==='route-llm') return {name:'Авто',emoji:'🤖'};
-  return {name:'AI',emoji:'🤖'};
+  if(!m||m.startsWith('claude-')) return TEAM_PERSONALITIES.pilot;
+  if(m.startsWith('gemini')) return TEAM_PERSONALITIES.gemini;
+  if(m.includes('deepseek')||m.includes('DeepSeek')) return TEAM_PERSONALITIES.deepseek;
+  if(m.includes('kimi')) return TEAM_PERSONALITIES.kimi;
+  if(m.startsWith('gpt')||m.startsWith('o4')) return TEAM_PERSONALITIES.gpt;
+  if(m.startsWith('grok')) return TEAM_PERSONALITIES.grok;
+  if(m==='route-llm') return TEAM_PERSONALITIES.auto;
+  return {name:'AI',emoji:'🤖',role:'Ассистент',style:''};
 }
 function renderMsg(role,content,imgPreviews){
   const w=document.getElementById('welcome');if(w)w.remove();
@@ -1141,6 +1169,54 @@ async function callCheap(prompt){
     return '❌ Ошибка: '+e.message;
   }
 }
+// === УМНАЯ МАРШРУТИЗАЦИЯ ===
+// Определяет намерение пользователя БЕЗ отправки к AI
+function detectIntent(text) {
+  if (!text) return { type: 'chat', tool: null };
+  const t = text.toLowerCase().trim();
+  
+  // Прямые команды на инструменты (пользователь ЯВНО просит)
+  const toolPatterns = [
+    { pattern: /^(проверь|проверка|покажи)\s*(позиц|рейтинг|место\s+в\s+гугл)/i, tool: 'positions', label: '📈 Проверка позиций' },
+    { pattern: /^(сделай|запусти|проведи)\s*(полн\w+\s+)?аудит/i, type: 'audit', label: '🔍 Аудит сайта' },
+    { pattern: /^(сгенерир|создай|напиши)\s*(мета|meta)[\s-]?тег/i, tool: 'meta', label: '🏷️ Мета-теги' },
+    { pattern: /^(сгенерир|создай|напиши)\s*alt/i, tool: 'alt', label: '🖼️ ALT-теги' },
+    { pattern: /^(найди|поищи|погугл|загугл|search|google)/i, tool: 'serp', label: '🌍 Google поиск' },
+    { pattern: /^(анализ|сравни)\s*конкурент/i, tool: 'competitors', label: '🥊 Конкуренты' },
+    { pattern: /^проверь\s*(индекс|проиндексир)/i, tool: 'indexing', label: '🔎 Индексация' },
+    { pattern: /^(найди|собери|подбери)\s*(семант|lsi|ключев)/i, tool: 'semantic', label: '🧠 Семантика' },
+    { pattern: /^(создай|напиши|сделай)\s*(тз|техзадан|техническое\s+задан)/i, tool: 'tz', label: '📋 ТЗ' },
+    { pattern: /^(сгенерир|создай|придумай)\s*(заголов|h1)/i, tool: 'h1gen', label: '✍️ H1' },
+    { pattern: /^(перефразир|перепиши|рерайт)/i, tool: 'paraphrase', label: '🔄 Рерайт' },
+    { pattern: /^(проверь|замерь|измерь)\s*(скорость|pagespeed|speed)/i, tool: 'pagespeed', label: '⚡ Скорость' },
+    { pattern: /^(создай|сгенерир)\s*(robots|робот)/i, tool: 'robots', label: '🤖 robots.txt' },
+    { pattern: /^(создай|сгенерир)\s*(sitemap|карт\w+\s+сайта)/i, tool: 'sitemap', label: '🗺️ Sitemap' },
+    { pattern: /^(проверь|узнай)\s*(whois|домен|регистр)/i, tool: 'whois', label: '🌐 Whois' },
+    { pattern: /^очеловеч/i, tool: 'humanize', label: '🧑 Очеловечить' },
+    { pattern: /^(проверь|оцени)\s*уникальн/i, tool: 'unique', label: '🔍 Уникальность' },
+    { pattern: /^(сгенерир|создай|нарисуй|сделай)\s*(картинк|изображен|баннер|иллюстрац|фото)/i, tool: 'imagegen', label: '🎨 Художник' },
+  ];
+  
+  for (const p of toolPatterns) {
+    if (p.pattern.test(t)) {
+      return { type: p.type || 'tool', tool: p.tool, label: p.label };
+    }
+  }
+  
+  // Вопрос о возможностях — отвечаем БЕЗ авто-открытия
+  if (/что.*(умеешь|можешь|делаешь)|сколько.*инструмент|возможност|функци|capabilities|what.*(can|do)/i.test(t)) {
+    return { type: 'list_tools' };
+  }
+  
+  // Всё остальное — обычный чат (даже длинные тексты!)
+  return { type: 'chat', tool: null };
+}
+
+// Создаёт кликабельную кнопку-предложение инструмента
+function makeToolBtn(toolId, label) {
+  return `<div style="margin-top:8px"><button onclick="setMode('tools');selectTool('${toolId}')" style="background:var(--accent-light);border:1px solid rgba(37,99,235,.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">${label} →</button></div>`;
+}
+
 async function sendMsg(){
   const text=inp.value.trim();const hasImg=pendingImages.length>0;
   if((!text&&!hasImg)||document.getElementById('send-btn').disabled)return;
@@ -1156,40 +1232,60 @@ async function sendMsg(){
     uc.push({type:'text',text:text||'Проанализируй изображение. Что видишь? Проблемы? Рекомендации?'});
   }else{uc=text;}
   msgs.push({role:'user',content:uc});
-  // Intercept common questions instantly (no AI needed)
-  const lowerText=(text||'').toLowerCase();
-  const toolsList=`У меня **17 инструментов** в программе:\n\n`+
-    `1. 🌍 **Google поиск** — реальный топ-10 по запросу\n`+
-    `2. 📈 **Проверка позиций** — где сайт в Google\n`+
-    `3. 🏷️ **Мета-теги** — генератор title и description\n`+
-    `4. 🖼️ **ALT-теги** — SEO-описания картинок\n`+
-    `5. 🥊 **Анализ конкурентов** — кто в топе и почему\n`+
-    `6. 🔎 **Проверка индексации** — проиндексированы ли страницы\n`+
-    `7. 🧠 **Семантика** — LSI и связанные слова\n`+
-    `8. 📋 **ТЗ для копирайтера** — техзадание на статью\n`+
-    `9. ✏️ **Генератор H1** — 10 вариантов заголовка\n`+
-    `10. 🔄 **Перефразирование** — переписать текст\n`+
-    `11. 🤖 **robots.txt** — генератор файла\n`+
-    `12. 🗺️ **XML Sitemap** — карта сайта\n`+
-    `13. 🔍 **WHOIS домена** — информация о домене\n`+
-    `14. 👤 **Очеловечить текст** — убрать AI-стиль\n`+
-    `15. ✅ **Проверка уникальности** — антиплагиат\n`+
-    `16. 🖼️ **Описание изображений** — полный SEO-разбор картинки\n`+
-    `17. 🎨 **Генерация изображений** — AI создаст картинку по описанию\n\n`+
-    `Плюс раздел 🔍 **Аудит** — полная проверка сайта (SEO + скорость + безопасность). Открыть? [OPEN:tools]`;
-  const isToolsQ=/инструмент|что.*(умеешь|можешь|делаешь)|сколько.*инструмент|возможност|функци|capabilities|what.*(can|do)/i.test(lowerText);
-  if(isToolsQ){
+  
+  // === УМНАЯ МАРШРУТИЗАЦИЯ ===
+  const intent = detectIntent(text);
+  
+  // 1) Прямая команда на инструмент → предлагаем кнопку, НЕ открываем автоматически
+  if (intent.type === 'tool' && intent.tool) {
+    const suggestion = `Окей, ${intent.label} — сейчас открою.` + makeToolBtn(intent.tool, intent.label);
     document.getElementById('send-btn').disabled=false;
-    renderMsg('ai',toolsList);msgs.push({role:'assistant',content:toolsList});scrollDown();saveConv();
+    renderMsg('ai', suggestion); msgs.push({role:'assistant',content:suggestion}); scrollDown(); saveConv();
     return;
   }
+  
+  // 2) Прямая команда на аудит → предлагаем кнопку аудита
+  if (intent.type === 'audit') {
+    const suggestion = `Полный аудит — моя стихия. Открываю панель?` +
+      `<div style="margin-top:8px"><button onclick="setMode('audit')" style="background:#fffbeb;border:1px solid rgba(217,119,6,.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;font-family:inherit">🔍 Открыть аудит →</button></div>`;
+    document.getElementById('send-btn').disabled=false;
+    renderMsg('ai', suggestion); msgs.push({role:'assistant',content:suggestion}); scrollDown(); saveConv();
+    return;
+  }
+  
+  // 3) Вопрос о возможностях → красивый список с КНОПКАМИ (без авто-открытия!)
+  if (intent.type === 'list_tools') {
+    const toolsReply = `У нас **17 инструментов** в арсенале. Вот команда:\n\n` +
+      `**🔍 SEO-разведка:**\n` +
+      `• 📈 Проверка позиций • 🌍 Google поиск • 🥊 Анализ конкурентов\n` +
+      `• 🔎 Индексация • 🧠 Семантика\n\n` +
+      `**📝 Контент:**\n` +
+      `• 🏷️ Мета-теги • ✍️ Генератор H1 • 📋 ТЗ для копирайтера\n` +
+      `• 🔄 Перефразирование • 🧑 Очеловечить текст • 🔍 Уникальность\n\n` +
+      `**🔧 Техническое:**\n` +
+      `• ⚡ Скорость сайта • 🤖 robots.txt • 🗺️ Sitemap • 🌐 Whois\n\n` +
+      `**🎨 Визуал:**\n` +
+      `• 🖼️ ALT-теги • 🎨 Художник (генерация картинок)\n\n` +
+      `Плюс 🛰️ **Полный аудит** — SEO + скорость + безопасность.\n\nСкажи что нужно — я подскажу какой инструмент подойдёт.` +
+      `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">` +
+      `<button onclick="setMode('tools')" style="background:var(--accent-light);border:1px solid rgba(37,99,235,.3);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--accent);cursor:pointer;font-family:inherit">🛠️ Все инструменты</button>` +
+      `<button onclick="setMode('audit')" style="background:#fffbeb;border:1px solid rgba(217,119,6,.3);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;font-family:inherit">🔍 Аудит</button>` +
+      `</div>`;
+    document.getElementById('send-btn').disabled=false;
+    renderMsg('ai', toolsReply); msgs.push({role:'assistant',content:toolsReply}); scrollDown(); saveConv();
+    return;
+  }
+  
+  // 4) Обычный чат — отправляем к AI БЕЗ провокации на открытие инструментов
   addThinking();
   const selectedModel = getSelectedModel();
   const modelName = document.querySelector('#model-select option:checked').textContent;
+  const ml = getModelLabel();
   const baseSys = document.getElementById('sys-ta').value||activeProj.sys;
-  const sys = `Ты работаешь на модели: ${modelName} (${selectedModel}). Когда пользователь спрашивает "кто ты" или "какая версия", обязательно скажи что ты ${modelName}.\n\n${baseSys}`;
+  const personalityNote = ml.style ? `\nТвой характер: ${ml.style}` : '';
+  const sys = `Ты ${ml.name} (${ml.role}), работаешь на модели ${modelName}.${personalityNote}\n\n${baseSys}`;
   
-  // Отправляем последние 15 сообщений для контекста (чтобы AI помнил историю)
+  // Отправляем последние 15 сообщений для контекста
   const recentMsgs = msgs.slice(-15);
   
   try{
@@ -1198,13 +1294,15 @@ async function sendMsg(){
     const data=await res.json();removeThinking();
     const reply=extractText(data);
     if(reply){
-      const cleanReply=reply.replace(/\[OPEN:(chat|audit|tools)\]/g,(_,m)=>{setTimeout(()=>setMode(m),150);return '';}).replace(/\[TOOL:(\w+)\]/g,(_,t)=>{setTimeout(()=>{setMode('tools');selectTool(t);},150);return '';}).trim();
+      // Очищаем любые случайные [OPEN:] и [TOOL:] теги из ответа AI — НЕ выполняем их!
+      const cleanReply = reply.replace(/\[OPEN:(chat|audit|tools)\]/g, '').replace(/\[TOOL:\w+\]/g, '').trim();
       renderMsg('ai',cleanReply||reply);msgs.push({role:'assistant',content:cleanReply||reply});scrollDown();saveConv();
-      if(data.usage){const c=data.usage.input_tokens*.0000008+data.usage.output_tokens*.000004;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='€'+totalCost.toFixed(4);}}
-    else renderMsg('ai','❌ Ошибка: '+JSON.stringify(data.error||data));
-  }catch(e){removeThinking();renderMsg('ai','❌ Ошибка: '+e.message);}
+      if(data.usage){const c=data.usage.input_tokens*.00008+data.usage.output_tokens*.00004;totalCost+=c;try{localStorage.setItem('p_cost',totalCost.toString());}catch(e){}document.getElementById('cost').textContent='\u20ac'+totalCost.toFixed(4);}}
+    else renderMsg('ai','\u274c Ошибка: '+JSON.stringify(data.error||data));
+  }catch(e){removeThinking();renderMsg('ai','\u274c Ошибка: '+e.message);}
   document.getElementById('send-btn').disabled=false;inp.focus();
 }
+
 
 // AUDIT HELPERS
 function auditFetch(action,url,kw){
@@ -2166,6 +2264,7 @@ function toggleMic(){
 
 init();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f0f03d0605bf45f1a3b17cf7d5e6861f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f0f03d0605bf45f1a3b17cf7d5e6861f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
