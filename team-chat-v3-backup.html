@@ -1772,11 +1772,7 @@ function renderChecks(checks,fixUrl,keyword){
     const suggestionHtml = c.suggestion ? `<div style="font-size:10px;margin-top:4px;padding:6px 8px;background:#eff6ff;border-radius:6px;border:1px solid #bfdbfe">${fmtDetail(c.suggestion)}</div>` : '';
 
     // Fix button — registered in global registry, placed in HEADER (always visible)
-    let fixButtonHeader = '';
-    if(needsFixBtn){
-      const fid = _regFix(fixContext, fixUrl, keyword||'', key);
-      fixButtonHeader = `<button class="acc-fix-btn fix-btn-reg" data-fix-id="${fid}" style="font-size:10px;padding:3px 8px;margin-right:4px;white-space:nowrap">✨ Исправить</button>`;
-    }
+    let fixButtonHeader = ''; // кнопка в карточке убрана — только в критических ошибках
 
     return`
     <div id="card-${key}" class="acc-card" style="border-color:${borderColor}" onclick="toggleAccCard(this,event)">
