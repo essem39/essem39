@@ -77,6 +77,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .ml-auto{margin-left:auto;display:flex;gap:6px;align-items:center;}
 .status-dot{width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes micPulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.3);opacity:.6;}}
 .status-txt{font-size:10.5px;color:var(--success);font-weight:600;}
 
 /* System panel */
@@ -251,6 +252,36 @@ textarea#inp::placeholder{color:var(--muted);}
 .imggen-prompt-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
 .imggen-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:3px 10px;font-size:10.5px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
 .imggen-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
+/* ==== ACCORDION CARDS ==== */
+.acc-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden;transition:border-color .25s,box-shadow .25s;}
+.acc-card:hover{border-color:#d1d5db;box-shadow:0 2px 6px rgba(0,0,0,.09);}
+.acc-card.open{box-shadow:0 4px 14px rgba(0,0,0,.1);}
+.acc-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .2s;}
+.acc-header:hover{background:#f9fafb;}
+.acc-header-info{flex:1;min-width:0;}
+.acc-arrow{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#f3f4f6;transition:transform .3s ease, background .3s;flex-shrink:0;font-size:11px;color:#9ca3af;}
+.acc-card.open .acc-arrow{transform:rotate(180deg);background:#eff6ff;color:#2563eb;}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(0.4,0,0.2,1),opacity .25s ease;opacity:0;}
+.acc-card.open .acc-body{opacity:1;}
+.acc-body-inner{padding:0 14px 14px;border-top:1px solid #f3f4f6;}
+.acc-fix-area{margin-top:10px;padding:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;animation:fadeUp .3s ease;}
+.acc-fix-btn{width:100%;margin-top:8px;background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:6px;padding:6px 10px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;box-shadow:0 2px 6px rgba(37,99,235,.3);}
+.acc-fix-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(37,99,235,.4);}
+.acc-fix-btn:active{transform:translateY(0);}
+.acc-fix-btn.copied{background:linear-gradient(135deg,#059669,#10b981);}
+.acc-fix-loading{display:flex;gap:5px;padding:10px 0;align-items:center;justify-content:center;}
+
+/* Issue rows accordion */
+.acc-issue{border-radius:8px;overflow:hidden;transition:box-shadow .25s;}
+.acc-issue:hover{box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.acc-issue-header{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;transition:background .2s;}
+.acc-issue-header:hover{filter:brightness(0.97);}
+.acc-issue .acc-arrow{margin-top:2px;}
+.acc-issue-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(0.4,0,0.2,1),opacity .25s ease;opacity:0;}
+.acc-issue.open .acc-issue-body{opacity:1;}
+.acc-issue.open .acc-arrow{transform:rotate(180deg);background:#eff6ff;color:#2563eb;}
+.acc-issue-body-inner{padding:6px 14px 12px;}
 </style>
 </head>
 <body>
@@ -1180,39 +1211,52 @@ async function callCheap(prompt){
 function detectIntent(text) {
   if (!text) return { type: 'chat', tool: null };
   
-  // === КРИТИЧЕСКАЯ ЗАЩИТА: длинные тексты (>100 символов) — ВСЕГДА чат, НИКОГДА инструменты ===
-  if (text.length > 100) {
-    return { type: 'chat', tool: null };
-  }
-  
   const t = text.toLowerCase().trim();
   
-  // Прямые команды на инструменты (пользователь ЯВНО просит)
-  const toolPatterns = [
-    { pattern: /^(проверь|проверка|покажи)\s*(позиц|рейтинг|место\s+в\s+гугл)/i, tool: 'positions', label: '📈 Проверка позиций' },
-    { pattern: /^(сделай|запусти|проведи)\s*(полн\w+\s+)?аудит/i, type: 'audit', label: '🔍 Аудит сайта' },
-    { pattern: /^(сгенерир|создай|напиши)\s*(мета|meta)[\s-]?тег/i, tool: 'meta', label: '🏷️ Мета-теги' },
-    { pattern: /^(сгенерир|создай|напиши)\s*alt/i, tool: 'alt', label: '🖼️ ALT-теги' },
-    { pattern: /^(найди|поищи|погугл|загугл|search|google)/i, tool: 'serp', label: '🌍 Google поиск' },
-    { pattern: /^(анализ|сравни)\s*конкурент/i, tool: 'competitors', label: '🥊 Конкуренты' },
-    { pattern: /^проверь\s*(индекс|проиндексир)/i, tool: 'indexing', label: '🔎 Индексация' },
-    { pattern: /^(найди|собери|подбери)\s*(семант|lsi|ключев)/i, tool: 'semantic', label: '🧠 Семантика' },
-    { pattern: /^(создай|напиши|сделай)\s*(тз|техзадан|техническое\s+задан)/i, tool: 'tz', label: '📋 ТЗ' },
-    { pattern: /^(сгенерир|создай|придумай)\s*(заголов|h1)/i, tool: 'h1gen', label: '✍️ H1' },
-    { pattern: /^(перефразир|перепиши|рерайт)/i, tool: 'paraphrase', label: '🔄 Рерайт' },
-    { pattern: /^(проверь|замерь|измерь)\s*(скорость|pagespeed|speed)/i, tool: 'pagespeed', label: '⚡ Скорость' },
-    { pattern: /^(создай|сгенерир)\s*(robots|робот)/i, tool: 'robots', label: '🤖 robots.txt' },
-    { pattern: /^(создай|сгенерир)\s*(sitemap|карт\w+\s+сайта)/i, tool: 'sitemap', label: '🗺️ Sitemap' },
-    { pattern: /^(проверь|узнай)\s*(whois|домен|регистр)/i, tool: 'whois', label: '🌐 Whois' },
-    { pattern: /^очеловеч/i, tool: 'humanize', label: '🧑 Очеловечить' },
-    { pattern: /^(проверь|оцени)\s*уникальн/i, tool: 'unique', label: '🔍 Уникальность' },
-    { pattern: /^(сгенерир|создай|нарисуй|сделай)\s*(картинк|изображен|баннер|иллюстрац|фото)/i, tool: 'imagegen', label: '🎨 Художник' },
-  ];
-  
-  for (const p of toolPatterns) {
-    if (p.pattern.test(t)) {
-      return { type: p.type || 'tool', tool: p.tool, label: p.label };
+  // === КОРОТКИЕ КОМАНДЫ (<100 символов) — проверяем ключевые слова ===
+  // Если текст короткий И содержит явные команды — открываем инструмент
+  if (text.length <= 100) {
+    // Прямые команды на инструменты (пользователь ЯВНО просит)
+    const toolPatterns = [
+      // ВАЖНО: короткие однословные команды идут первыми!
+      { pattern: /^(аудит|seo[\s-]?аудит|полн\w+\s+аудит)$/i, type: 'audit', label: '🔍 Аудит сайта' },
+      { pattern: /(^|\s)(seo|сео)(\s|$)/i, type: 'audit', label: '🔍 SEO-аудит' },
+      { pattern: /^(позиц|проверк\w+\s+позиц)$/i, tool: 'positions', label: '📈 Проверка позиций' },
+      { pattern: /^(проверь|проверка|покажи)\s*(позиц|рейтинг|место\s+в\s+гугл)/i, tool: 'positions', label: '📈 Проверка позиций' },
+      { pattern: /^(сделай|запусти|проведи)\s*(полн\w+\s+)?аудит/i, type: 'audit', label: '🔍 Аудит сайта' },
+      { pattern: /^(сгенерир|создай|напиши)\s*(мета|meta)[\s-]?тег/i, tool: 'meta', label: '🏷️ Мета-теги' },
+      { pattern: /^(сгенерир|создай|напиши)\s*alt/i, tool: 'alt', label: '🖼️ ALT-теги' },
+      { pattern: /^(найди|поищи|погугл|загугл|search|google)/i, tool: 'serp', label: '🌍 Google поиск' },
+      { pattern: /^(анализ|сравни)\s*конкурент/i, tool: 'competitors', label: '🥊 Конкуренты' },
+      { pattern: /^проверь\s*(индекс|проиндексир)/i, tool: 'indexing', label: '🔎 Индексация' },
+      { pattern: /^(найди|собери|подбери)\s*(семант|lsi|ключев)/i, tool: 'semantic', label: '🧠 Семантика' },
+      { pattern: /^(создай|напиши|сделай)\s*(тз|техзадан|техническое\s+задан)/i, tool: 'tz', label: '📋 ТЗ' },
+      { pattern: /^(сгенерир|создай|придумай)\s*(заголов|h1)/i, tool: 'h1gen', label: '✍️ H1' },
+      { pattern: /^(перефразир|перепиши|рерайт)/i, tool: 'paraphrase', label: '🔄 Рерайт' },
+      { pattern: /^(проверь|замерь|измерь)\s*(скорость|pagespeed|speed)/i, tool: 'pagespeed', label: '⚡ Скорость' },
+      { pattern: /^(создай|сгенерир)\s*(robots|робот)/i, tool: 'robots', label: '🤖 robots.txt' },
+      { pattern: /^(создай|сгенерир)\s*(sitemap|карт\w+\s+сайта)/i, tool: 'sitemap', label: '🗺️ Sitemap' },
+      { pattern: /^(проверь|узнай)\s*(whois|домен|регистр)/i, tool: 'whois', label: '🌐 Whois' },
+      { pattern: /^очеловеч/i, tool: 'humanize', label: '🧑 Очеловечить' },
+      { pattern: /^(проверь|оцени)\s*уникальн/i, tool: 'unique', label: '🔍 Уникальность' },
+      { pattern: /^(сгенерир|создай|нарисуй|сделай)\s*(картинк|изображен|баннер|иллюстрац|фото)/i, tool: 'imagegen', label: '🎨 Художник' },
+    ];
+    
+    for (const p of toolPatterns) {
+      if (p.pattern.test(t)) {
+        return { type: p.type || 'tool', tool: p.tool, label: p.label };
+      }
     }
+  }
+  
+  // === ДЛИННЫЕ ТЕКСТЫ (>100 символов) БЕЗ ключевых слов — ВСЕГДА чат ===
+  if (text.length > 100) {
+    // Даже для длинных текстов проверяем ЯВНЫЕ команды
+    if (/^(сделай|запусти|проведи)\s*(полн\w+\s+)?аудит/i.test(t)) {
+      return { type: 'audit', label: '🔍 Аудит сайта' };
+    }
+    // Всё остальное длинное — чат
+    return { type: 'chat', tool: null };
   }
   
   // Вопрос о возможностях — отвечаем БЕЗ авто-открытия
@@ -1220,7 +1264,7 @@ function detectIntent(text) {
     return { type: 'list_tools' };
   }
   
-  // Всё остальное — обычный чат (даже длинные тексты!)
+  // Всё остальное — обычный чат
   return { type: 'chat', tool: null };
 }
 
@@ -1321,9 +1365,275 @@ async function sendMsg(){
 
 
 // AUDIT HELPERS
-function auditFetch(action,url,kw){
-  return fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action,url,keyword:kw||''})}).then(r=>r.json());
+async function auditFetch(action,url,kw){
+  try{
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action,url,keyword:kw||''})});
+    const data=await res.json();
+
+    // Если Worker вернул ошибку для SEO — делаем клиентский анализ
+    if(data.error && action==='seo'){
+      console.warn('Worker SEO error, running client-side audit:', data.error);
+      return await clientSeoAudit(url, kw);
+    }
+    return data;
+  }catch(e){
+    if(action==='seo') return await clientSeoAudit(url, kw);
+    return {error: e.message};
+  }
+}
+
+// Клиентский SEO-аудит — парсит HTML страницы напрямую
+async function clientSeoAudit(url, keyword){
+  try{
+    // Пробуем загрузить страницу через прокси (allorigins)
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const resp = await fetch(proxyUrl, {signal: AbortSignal.timeout(12000)});
+    if(!resp.ok) throw new Error('Не удалось загрузить страницу');
+    const html = await resp.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const kw = keyword.toLowerCase().trim();
+
+    // Title
+    const title = doc.querySelector('title')?.textContent?.trim() || '';
+    const titleLen = title.length;
+    const titleScore = titleLen === 0 ? 0 : titleLen < 10 ? 30 : titleLen > 70 ? 60 : titleLen > 60 ? 80 : 100;
+    const titleHasKw = kw && title.toLowerCase().includes(kw);
+    const titleDetail = titleLen === 0 ? '❌ Отсутствует — критическая ошибка'
+      : `«${title.slice(0,55)}${title.length>55?'…':''}» (${titleLen} симв.)` + (titleLen > 70 ? ' ⚠️ Слишком длинный' : titleLen < 30 ? ' ⚠️ Короткий' : ' ✅');
+
+    // Description
+    const descEl = doc.querySelector('meta[name="description"]');
+    const desc = descEl?.getAttribute('content')?.trim() || '';
+    const descLen = desc.length;
+    const descScore = descLen === 0 ? 0 : descLen < 50 ? 40 : descLen > 160 ? 60 : descLen > 155 ? 80 : 100;
+    const descHasKw = kw && desc.toLowerCase().includes(kw);
+    const descDetail = descLen === 0 ? '❌ Отсутствует — поисковик сам выберет сниппет'
+      : `«${desc.slice(0,60)}${desc.length>60?'…':''}» (${descLen} симв.)` + (descLen > 160 ? ' ⚠️ Слишком длинный' : descLen < 70 ? ' ⚠️ Короткий' : ' ✅');
+
+    // H1
+    const h1s = Array.from(doc.querySelectorAll('h1'));
+    const h1Text = h1s[0]?.textContent?.trim() || '';
+    const h1Score = h1s.length === 0 ? 0 : h1s.length > 1 ? 60 : 100;
+    const h1HasKw = kw && h1Text.toLowerCase().includes(kw);
+    const h1Detail = h1s.length === 0 ? '❌ H1 отсутствует — важнейший тег для SEO'
+      : h1s.length > 1 ? `⚠️ Найдено ${h1s.length} H1 — должен быть 1`
+      : `«${h1Text.slice(0,50)}${h1Text.length>50?'…':''}» ✅`;
+
+    // H2
+    const h2s = Array.from(doc.querySelectorAll('h2')).map(el => el.textContent?.trim()).filter(Boolean);
+    const h2Score = h2s.length === 0 ? 30 : h2s.length < 2 ? 60 : 100;
+    const h2HasKw = kw && h2s.some(h => h.toLowerCase().includes(kw));
+
+    // Images/ALT
+    const imgs = Array.from(doc.querySelectorAll('img'));
+    const imgsWithAlt = imgs.filter(i => i.getAttribute('alt')?.trim());
+    const altScore = imgs.length === 0 ? 100 : Math.round((imgsWithAlt.length / imgs.length) * 100);
+    const altHasKw = kw && imgsWithAlt.some(i => i.getAttribute('alt').toLowerCase().includes(kw));
+    const altDetail = imgs.length === 0 ? 'Нет изображений на странице'
+      : `${imgsWithAlt.length}/${imgs.length} с ALT` + (altScore >= 90 ? ' ✅' : altScore >= 50 ? ' ⚠️' : ' ❌');
+
+    // Canonical
+    const canonical = doc.querySelector('link[rel="canonical"]')?.getAttribute('href') || '';
+    const canonScore = canonical ? 100 : 0;
+
+    // OG tags
+    const ogTitle = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') || '';
+    const ogDesc = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') || '';
+    const ogImg = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+    const ogCount = [ogTitle, ogDesc, ogImg].filter(Boolean).length;
+    const ogScore = Math.round((ogCount / 3) * 100);
+
+    // Lang
+    const lang = doc.documentElement.getAttribute('lang') || '';
+    const langScore = lang ? 100 : 30;
+
+    // ========== УМНЫЙ АНАЛИЗ КЛЮЧЕВОЙ ФРАЗЫ ==========
+    function analyzeKeywordMatch(keyword, text) {
+      if (!keyword || !text) return { score: 0, found: [], missing: [], pct: 0, total: 0, foundCount: 0 };
+      const kwLower = keyword.toLowerCase().trim();
+      const textLower = text.toLowerCase();
+      // Точное совпадение всей фразы
+      if (textLower.includes(kwLower)) {
+        const words = kwLower.split(/\s+/).filter(w => w.length > 0);
+        return { score: 100, found: words, missing: [], pct: 100, total: words.length, foundCount: words.length, exact: true };
+      }
+      // Пословный анализ
+      const stopWords = new Set(['и','в','на','с','по','для','из','к','о','от','за','у','а','но','или','не','ни','же','бы','ли','то','что','как','это','так','при','до','без','над','под','между','через','после','перед','во','со','the','a','an','in','on','at','to','for','of','and','or','is','are','with','by','from']);
+      const words = kwLower.split(/\s+/).filter(w => w.length > 0);
+      const significantWords = words.filter(w => !stopWords.has(w) && w.length > 1);
+      const checkWords = significantWords.length >= 2 ? significantWords : words;
+      const found = [];
+      const missing = [];
+      for (const word of checkWords) {
+        // Проверяем точное слово и основные словоформы
+        const wordRoot = word.replace(/(ов|ев|ий|ой|ый|ая|ое|ие|ых|их|ам|ям|ами|ями|ах|ях|ом|ем|ём|ей|ию|ью|ию|ов|ёв|ие|ия|ье|ья|у|ю|а|я|о|е|ё|и|ы)$/i, '');
+        const hasWord = textLower.includes(word) || (wordRoot.length >= 3 && textLower.split(/[\s.,;:!?()\-—«»"'\/]+/).some(tw => tw.startsWith(wordRoot)));
+        if (hasWord) found.push(word);
+        else missing.push(word);
+      }
+      const total = checkWords.length;
+      const foundCount = found.length;
+      const pct = total > 0 ? Math.round((foundCount / total) * 100) : 0;
+      // Умная оценка
+      let score;
+      if (pct === 100) score = 100;
+      else if (pct >= 75) score = 50 + Math.round((pct - 75) * 2); // 50-100
+      else if (pct >= 50) score = 30 + Math.round((pct - 50) * 0.8); // 30-50
+      else if (pct >= 25) score = 10 + Math.round((pct - 25) * 0.8); // 10-30
+      else score = 0;
+      return { score, found, missing, pct, total, foundCount, exact: false };
+    }
+
+    function kwMatchIcon(pct) {
+      if (pct === 100) return '🟢';
+      if (pct >= 50) return '🟡';
+      return '🔴';
+    }
+
+    function buildKwDetail(match, tagName, tagContent) {
+      if (!match || match.total === 0) return '';
+      const icon = kwMatchIcon(match.pct);
+      let lines = [];
+      if (match.exact) {
+        lines.push(`${icon} ✅ Фраза «${match.found.join(' ')}» полностью найдена`);
+      } else if (match.pct === 100) {
+        lines.push(`${icon} ✅ Все слова найдены (${match.foundCount}/${match.total})`);
+        if (match.found.length) lines.push(`✅ Найдено: «${match.found.join('», «')}»`);
+      } else if (match.foundCount > 0) {
+        lines.push(`${icon} Частичное совпадение: ${match.foundCount} из ${match.total} слов (${match.pct}%)`);
+        if (match.found.length) lines.push(`✅ Найдено: «${match.found.join('», «')}»`);
+        if (match.missing.length) lines.push(`❌ Отсутствует: «${match.missing.join('», «')}»`);
+        lines.push(`💡 Добавьте: «${match.missing.join('», «')}» в ${tagName}`);
+      } else {
+        lines.push(`${icon} ❌ Ни одно слово из фразы не найдено (0/${match.total})`);
+        lines.push(`💡 Добавьте ключевую фразу в ${tagName}`);
+      }
+      if (tagContent) {
+        const short = tagContent.length > 60 ? tagContent.slice(0, 57) + '…' : tagContent;
+        lines.push(`📄 Сейчас: «${short}»`);
+      }
+      return lines.join('\n');
+    }
+
+    function buildKwSuggestion(match, tagName, tagContent, kwFull) {
+      if (!match || match.pct === 100 || match.exact || !tagContent) return '';
+      if (match.missing.length === 0) return '';
+      const missingStr = match.missing.join(' ');
+      // Попробуем предложить конкретный вариант
+      const shortContent = tagContent.length > 50 ? tagContent.slice(0, 47) + '…' : tagContent;
+      const suggested = kwFull.charAt(0).toUpperCase() + kwFull.slice(1) + ' — ' + tagContent.charAt(0).toLowerCase() + tagContent.slice(1);
+      const sugShort = suggested.length > 65 ? suggested.slice(0, 62) + '…' : suggested;
+      return `✏️ Было: «${shortContent}»\n→ Станет: «${sugShort}»`;
+    }
+
+    // Анализируем каждый тег
+    const kwMatchTitle = kw ? analyzeKeywordMatch(kw, title) : null;
+    const kwMatchDesc = kw ? analyzeKeywordMatch(kw, desc) : null;
+    const kwMatchH1 = kw ? analyzeKeywordMatch(kw, h1Text) : null;
+    const kwMatchH2 = kw ? analyzeKeywordMatch(kw, h2s.join(' ')) : null;
+    const allAltText = imgsWithAlt.map(i => i.getAttribute('alt')).join(' ');
+    const kwMatchAlt = kw ? analyzeKeywordMatch(kw, allAltText) : null;
+
+    // Keyword check scores (теперь умные, не 0/100)
+    const kwScores = [];
+    if(kw){
+      kwScores.push(kwMatchTitle.score);
+      kwScores.push(kwMatchDesc.score);
+      kwScores.push(kwMatchH1.score);
+    }
+
+    // Total score
+    const allScores = [titleScore, descScore, h1Score, h2Score, altScore, canonScore, ogScore, langScore, ...kwScores];
+    const totalScore = Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length);
+
+    const checks = {
+      title: {score: titleScore, label: 'Title', detail: titleDetail},
+      desc: {score: descScore, label: 'Description', detail: descDetail},
+      h1: {score: h1Score, label: 'H1', detail: h1Detail},
+      h2: {score: h2Score, label: 'H2', detail: h2s.length === 0 ? '❌ Нет H2 — добавь подзаголовки' : `${h2s.length} подзаголовков` + (h2Score >= 80 ? ' ✅' : ' ⚠️')},
+      alts: {score: altScore, label: 'ALT теги', detail: altDetail},
+      canonical: {score: canonScore, label: 'Canonical', detail: canonical ? `✅ ${canonical.slice(0,50)}` : '❌ Отсутствует — риск дублей'},
+      og: {score: ogScore, label: 'Open Graph', detail: ogCount === 3 ? '✅ og:title, og:description, og:image' : `⚠️ ${ogCount}/3 тегов`},
+      lang: {score: langScore, label: 'Lang', detail: lang ? `✅ ${lang}` : '⚠️ Не указан атрибут lang'}
+    };
+
+    if(kw){
+      const kwTitleDetail = buildKwDetail(kwMatchTitle, 'Title', title);
+      const kwDescDetail = buildKwDetail(kwMatchDesc, 'Description', desc);
+      const kwH1Detail = buildKwDetail(kwMatchH1, 'H1', h1Text);
+      const kwH2Detail = buildKwDetail(kwMatchH2, 'H2', h2s.join('; '));
+      const kwAltDetail = buildKwDetail(kwMatchAlt, 'ALT', allAltText.slice(0, 80));
+
+      const kwTitleSuggest = buildKwSuggestion(kwMatchTitle, 'Title', title, kw);
+      const kwDescSuggest = buildKwSuggestion(kwMatchDesc, 'Description', desc, kw);
+      const kwH1Suggest = buildKwSuggestion(kwMatchH1, 'H1', h1Text, kw);
+
+      checks.kwInTitle = {score: kwMatchTitle.score, label: 'Ключ в Title', detail: kwTitleDetail, suggestion: kwTitleSuggest, match: kwMatchTitle};
+      checks.kwInDesc = {score: kwMatchDesc.score, label: 'Ключ в Description', detail: kwDescDetail, suggestion: kwDescSuggest, match: kwMatchDesc};
+      checks.kwInH1 = {score: kwMatchH1.score, label: 'Ключ в H1', detail: kwH1Detail, suggestion: kwH1Suggest, match: kwMatchH1};
+      checks.kwInH2 = {score: kwMatchH2.score, label: 'Ключ в H2', detail: kwH2Detail, match: kwMatchH2};
+      checks.kwInAlt = {score: kwMatchAlt.score, label: 'Ключ в ALT', detail: kwAltDetail, match: kwMatchAlt};
+    }
+
+    // Генерируем анализ
+    const issues = [];
+    if(titleScore < 80) issues.push(`**Title** (${titleLen} симв.) — ${titleScore === 0 ? 'отсутствует, необходимо добавить' : 'нужна корректировка длины (рекомендуется 30-60 символов)'}`);
+    if(descScore < 80) issues.push(`**Description** (${descLen} симв.) — ${descScore === 0 ? 'отсутствует, критически важно добавить' : 'нужна корректировка длины (рекомендуется 70-155 символов)'}`);
+    if(h1Score < 80) issues.push(`**H1** — ${h1Score === 0 ? 'отсутствует на странице' : 'найдено несколько H1, должен быть один'}`);
+    if(canonScore === 0) issues.push('**Canonical** — отсутствует, добавьте `<link rel="canonical">`');
+    if(ogScore < 100) issues.push(`**Open Graph** — заполнено ${ogCount}/3 тегов`);
+    if(kw && kwMatchTitle && kwMatchTitle.score < 100) {
+      if(kwMatchTitle.foundCount > 0) issues.push(`Ключевая фраза «${kw}» **частично** в Title: ${kwMatchTitle.foundCount}/${kwMatchTitle.total} слов (${kwMatchTitle.pct}%). Отсутствует: «${kwMatchTitle.missing.join('», «')}»`);
+      else issues.push(`Ключевая фраза «${kw}» **не найдена в Title** — ни одного слова`);
+    }
+    if(kw && kwMatchDesc && kwMatchDesc.score < 100) {
+      if(kwMatchDesc.foundCount > 0) issues.push(`Ключевая фраза «${kw}» **частично** в Description: ${kwMatchDesc.foundCount}/${kwMatchDesc.total} слов (${kwMatchDesc.pct}%). Отсутствует: «${kwMatchDesc.missing.join('», «')}»`);
+      else issues.push(`Ключевая фраза «${kw}» **не найдена в Description** — ни одного слова`);
+    }
+    if(kw && kwMatchH1 && kwMatchH1.score < 100) {
+      if(kwMatchH1.foundCount > 0) issues.push(`Ключевая фраза «${kw}» **частично** в H1: ${kwMatchH1.foundCount}/${kwMatchH1.total} слов (${kwMatchH1.pct}%). Отсутствует: «${kwMatchH1.missing.join('», «')}»`);
+      else issues.push(`Ключевая фраза «${kw}» **не найдена в H1** — ни одного слова`);
+    }
+
+    // Конкретные рекомендации
+    const recs = [];
+    recs.push('- Оптимизируйте Title: 30-60 символов, ключевое слово в начале');
+    recs.push('- Description: 70-155 символов, ключевое слово, призыв к действию');
+    recs.push('- Убедитесь, что на странице ровно один H1 с ключевым словом');
+    if(kw && kwMatchTitle && !kwMatchTitle.exact && kwMatchTitle.missing.length > 0 && title) {
+      recs.push(`- **Title исправление:** Было: «${title.slice(0,55)}» → Добавьте «${kwMatchTitle.missing.join(', ')}»`);
+    }
+    if(kw && kwMatchDesc && !kwMatchDesc.exact && kwMatchDesc.missing.length > 0 && desc) {
+      recs.push(`- **Description исправление:** Добавьте «${kwMatchDesc.missing.join(', ')}» в текст описания`);
+    }
+    if(kw && kwMatchH1 && !kwMatchH1.exact && kwMatchH1.missing.length > 0 && h1Text) {
+      recs.push(`- **H1 исправление:** Было: «${h1Text.slice(0,50)}» → Добавьте «${kwMatchH1.missing.join(', ')}»`);
+    }
+    recs.push('- Добавьте Open Graph теги для соцсетей');
+    recs.push('- Все изображения должны иметь информативный ALT-тег');
+
+    const analysis = issues.length
+      ? `## Основные проблемы\n\n${issues.map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\n## Рекомендации\n\n${recs.join('\n')}`
+      : '## Отличная работа!\n\nОсновные SEO-теги настроены корректно. Продолжайте следить за актуальностью контента.';
+
+    return {ok: true, totalScore, checks, analysis, h2s, lang: lang || 'не указан'};
+  }catch(e){
+    console.error('Client SEO audit failed:', e);
+    // Возвращаем заглушку с нулями вместо undefined
+    return {
+      ok: false,
+      totalScore: 0,
+      checks: {
+        title: {score: 0, label: 'Title', detail: '❌ Не удалось загрузить страницу: ' + e.message},
+        desc: {score: 0, label: 'Description', detail: '❌ Страница недоступна'},
+        h1: {score: 0, label: 'H1', detail: '❌ Страница недоступна'}
+      },
+      analysis: `Не удалось выполнить SEO-аудит: ${e.message}\n\nВозможные причины:\n- Сайт блокирует запросы (CORS)\n- Страница недоступна\n- Проблема с интернет-соединением\n\nПопробуйте ещё раз или проверьте URL.`,
+      h2s: []
+    };
+  }
 }
 const sc=s=>s==null?'#9ca3af':s>=90?'#16a34a':s>=70?'#d97706':'#dc2626';
 const scBg=s=>s==null?'#f3f4f6':s>=90?'#f0fdf4':s>=70?'#fffbeb':'#fef2f2';
@@ -1362,6 +1672,14 @@ function renderScoreRing(score,label,color){
   </div>`;
 }
 
+// Global fix data registry — stores fix params safely, no inline strings
+if(!window._fixReg){ window._fixReg={}; window._fixId=0; }
+function _regFix(ctx,url,kw,key){
+  var id='fix_'+(++window._fixId);
+  window._fixReg[id]={ctx:ctx,url:url,kw:kw,key:key};
+  return id;
+}
+
 function renderChecks(checks,fixUrl,keyword){
   if(!checks)return '';
   const entries=Object.entries(checks);
@@ -1369,61 +1687,178 @@ function renderChecks(checks,fixUrl,keyword){
   const mainEntries=entries.filter(([key])=>!subChecks.includes(key));
   const checksObj=Object.fromEntries(entries);
   const forceCrit=new Set();
-  if(checksObj.kwInDesc&&checksObj.kwInDesc.score===0) forceCrit.add('desc');
-  if(checksObj.kwInH1&&checksObj.kwInH1.score===0) forceCrit.add('h1');
+  if(checksObj.kwInDesc&&checksObj.kwInDesc.score<30) forceCrit.add('desc');
+  if(checksObj.kwInH1&&checksObj.kwInH1.score<30) forceCrit.add('h1');
   const crit=mainEntries.filter(([key,c])=>forceCrit.has(key)||(c.score!=null&&c.score<50));
   const warn=mainEntries.filter(([key,c])=>!forceCrit.has(key)&&c.score!=null&&c.score>=50&&c.score<80);
   const good=mainEntries.filter(([key,c])=>!forceCrit.has(key)&&c.score!=null&&c.score>=80);
+
+  // Форматирование деталей с переносами строк
+  const fmtDetail=(text)=>{
+    if(!text)return '';
+    return text.split('\n').map(line=>{
+      // Подсветка разных типов строк
+      if(line.startsWith('✅')) return `<div style="color:#059669;font-weight:600">${line}</div>`;
+      if(line.startsWith('❌')) return `<div style="color:#dc2626;font-weight:600">${line}</div>`;
+      if(line.startsWith('💡')) return `<div style="color:#7c3aed;font-weight:600;font-style:italic">${line}</div>`;
+      if(line.startsWith('📄')) return `<div style="color:#6b7280;font-style:italic">${line}</div>`;
+      if(line.startsWith('✏️') || line.startsWith('→')) return `<div style="color:#2563eb;font-weight:600">${line}</div>`;
+      if(line.startsWith('🟢') || line.startsWith('🟡') || line.startsWith('🔴')) return `<div style="font-weight:700">${line}</div>`;
+      return `<div>${line}</div>`;
+    }).join('');
+  };
 
   const metricCard=([key,c])=>{
     let extraWarning='';
     let borderColor='#e5e7eb';
     let displayScore=c.score;
     let displayColor=sc(c.score);
-    // H1: если ключ отсутствует — показать 70% с предупреждением
-    if(key==='h1' && checksObj.kwInH1 && checksObj.kwInH1.score===0 && c.score>=100){
-      borderColor='#f59e0b';
-      displayScore=95;
-      displayColor='#d97706';
-      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${checksObj.kwInH1.detail}</div>`;
+    let needsFixBtn = false;
+    let fixContext = '';
+
+    // Для ключевых проверок — используем match.pct для визуальных индикаторов
+    const isKwCheck = key.startsWith('kwIn');
+    const match = c.match;
+
+    // Title: если ключ частично отсутствует
+    if(key==='title' && checksObj.kwInTitle && checksObj.kwInTitle.score < 100){
+      borderColor = checksObj.kwInTitle.score > 50 ? '#f59e0b' : '#ef4444';
+      displayScore = Math.min(c.score, Math.max(50, checksObj.kwInTitle.score));
+      displayColor = checksObj.kwInTitle.score > 50 ? '#d97706' : '#dc2626';
+      extraWarning=`<div style="font-size:10px;margin-top:6px;padding:6px 8px;background:#fffbeb;border-radius:6px;border:1px solid #fde68a">${fmtDetail(checksObj.kwInTitle.detail)}</div>`;
+      if(checksObj.kwInTitle.suggestion) extraWarning+=`<div style="font-size:10px;margin-top:4px;padding:6px 8px;background:#eff6ff;border-radius:6px;border:1px solid #bfdbfe">${fmtDetail(checksObj.kwInTitle.suggestion)}</div>`;
+      needsFixBtn = true;
+      fixContext = 'Title — ' + (checksObj.kwInTitle.detail || c.detail);
     }
 
-    // Description: если ключевое слово отсутствует — снижаем балл до 50% и показываем предупреждение
-    if(key==='desc' && checksObj.kwInDesc && checksObj.kwInDesc.score===0 && c.score>=100){
-      borderColor='#f59e0b';
-      displayScore=95;
-      displayColor='#d97706';
-      const missing=checksObj.kwInDesc.detail||'Отсутствует в Description';
-      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${missing}</div>`;
+    // H1: если ключ частично отсутствует — показать предупреждение
+    if(key==='h1' && checksObj.kwInH1 && checksObj.kwInH1.score < 100){
+      borderColor = checksObj.kwInH1.score > 50 ? '#f59e0b' : '#ef4444';
+      displayScore = Math.min(c.score, Math.max(50, checksObj.kwInH1.score));
+      displayColor = checksObj.kwInH1.score > 50 ? '#d97706' : '#dc2626';
+      extraWarning=`<div style="font-size:10px;margin-top:6px;padding:6px 8px;background:#fffbeb;border-radius:6px;border:1px solid #fde68a">${fmtDetail(checksObj.kwInH1.detail)}</div>`;
+      if(checksObj.kwInH1.suggestion) extraWarning+=`<div style="font-size:10px;margin-top:4px;padding:6px 8px;background:#eff6ff;border-radius:6px;border:1px solid #bfdbfe">${fmtDetail(checksObj.kwInH1.suggestion)}</div>`;
+      needsFixBtn = true;
+      fixContext = 'H1 — ' + (checksObj.kwInH1.detail || c.detail);
     }
+
+    // Description: если ключевое слово частично отсутствует
+    if(key==='desc' && checksObj.kwInDesc && checksObj.kwInDesc.score < 100){
+      borderColor = checksObj.kwInDesc.score > 50 ? '#f59e0b' : '#ef4444';
+      displayScore = Math.min(c.score, Math.max(50, checksObj.kwInDesc.score));
+      displayColor = checksObj.kwInDesc.score > 50 ? '#d97706' : '#dc2626';
+      extraWarning=`<div style="font-size:10px;margin-top:6px;padding:6px 8px;background:#fffbeb;border-radius:6px;border:1px solid #fde68a">${fmtDetail(checksObj.kwInDesc.detail)}</div>`;
+      if(checksObj.kwInDesc.suggestion) extraWarning+=`<div style="font-size:10px;margin-top:4px;padding:6px 8px;background:#eff6ff;border-radius:6px;border:1px solid #bfdbfe">${fmtDetail(checksObj.kwInDesc.suggestion)}</div>`;
+      needsFixBtn = true;
+      fixContext = 'Description — ' + (checksObj.kwInDesc.detail || c.detail);
+    }
+
+    // H2: если ключевое слово отсутствует
+    if(key==='h2' && checksObj.kwInH2 && checksObj.kwInH2.score < 100){
+      borderColor = checksObj.kwInH2.score > 50 ? '#f59e0b' : '#ef4444';
+      displayScore = Math.min(c.score, Math.max(50, checksObj.kwInH2.score));
+      displayColor = checksObj.kwInH2.score > 50 ? '#d97706' : '#dc2626';
+      extraWarning=`<div style="font-size:10px;margin-top:6px;padding:6px 8px;background:#fffbeb;border-radius:6px;border:1px solid #fde68a">${fmtDetail(checksObj.kwInH2.detail)}</div>`;
+      needsFixBtn = true;
+      fixContext = 'H2 — ' + (checksObj.kwInH2.detail || c.detail);
+    }
+
     // ALT: если ключевое слово отсутствует в ALT
     if(key==='alts' && checksObj.kwInAlt && checksObj.kwInAlt.score<100){
       borderColor='#f59e0b';
       displayScore=Math.min(c.score,70);
       displayColor='#d97706';
-      extraWarning=`<div style="font-size:10px;color:#d97706;margin-top:4px;font-weight:600">⚠️ ${checksObj.kwInAlt.detail}</div>`;
+      extraWarning=`<div style="font-size:10px;margin-top:6px;padding:6px 8px;background:#fffbeb;border-radius:6px;border:1px solid #fde68a">${fmtDetail(checksObj.kwInAlt.detail)}</div>`;
+      needsFixBtn = true;
+      fixContext = 'ALT теги — ' + (checksObj.kwInAlt.detail || c.detail);
     }
+
+    // Для карточек ключевых слов — показываем расширенную информацию
+    let kwBadge = '';
+    if(isKwCheck && match) {
+      const pctColor = match.pct === 100 ? '#059669' : match.pct >= 50 ? '#d97706' : '#dc2626';
+      const pctBg = match.pct === 100 ? '#ecfdf5' : match.pct >= 50 ? '#fffbeb' : '#fef2f2';
+      const pctIcon = match.pct === 100 ? '🟢' : match.pct >= 50 ? '🟡' : '🔴';
+      kwBadge = `<div style="display:inline-flex;align-items:center;gap:4px;background:${pctBg};border:1px solid ${pctColor}22;border-radius:12px;padding:2px 8px;font-size:9.5px;font-weight:700;color:${pctColor};margin-bottom:4px">${pctIcon} ${match.foundCount}/${match.total} слов (${match.pct}%)</div>`;
+      borderColor = pctColor + '44';
+      if(match.pct < 100) {
+        needsFixBtn = true;
+        fixContext = c.label + ' — ' + c.detail;
+      }
+    }
+
+    // Для обычных проблемных метрик
+    if(!needsFixBtn && displayScore < 80 && !isKwCheck) {
+      needsFixBtn = true;
+      fixContext = c.label + ' — ' + c.detail;
+    }
+
+    // Форматируем detail для keyword checks
+    const detailHtml = isKwCheck ? fmtDetail(c.detail) : (c.detail || '');
+    const suggestionHtml = c.suggestion ? `<div style="font-size:10px;margin-top:4px;padding:6px 8px;background:#eff6ff;border-radius:6px;border:1px solid #bfdbfe">${fmtDetail(c.suggestion)}</div>` : '';
+
+    // Fix button — registered in global registry, placed in HEADER (always visible)
+    let fixButtonHeader = '';
+    if(needsFixBtn){
+      const fid = _regFix(fixContext, fixUrl, keyword||'', key);
+      fixButtonHeader = `<button class="acc-fix-btn fix-btn-reg" data-fix-id="${fid}" style="font-size:10px;padding:3px 8px;margin-right:4px;white-space:nowrap">✨ Исправить</button>`;
+    }
+
     return`
-    <div id="card-${key}" style="background:#fff;border:1px solid ${borderColor};border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
-      <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${c.label}</div>
-      <div style="font-size:22px;font-weight:800;color:${displayColor};margin-bottom:2px">${displayScore!=null?displayScore:'—'}<span style="font-size:11px;font-weight:500;color:#9ca3af">${displayScore!=null?'%':''}</span></div>
-      <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-bottom:6px;overflow:hidden">
-        <div style="height:100%;width:${displayScore??0}%;background:${displayColor};border-radius:2px;transition:width .6s"></div>
+    <div id="card-${key}" class="acc-card" style="border-color:${borderColor}" onclick="toggleAccCard(this,event)">
+      <div class="acc-header">
+        <div class="acc-header-info">
+          <div style="font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${c.label}</div>
+          ${kwBadge}
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <div style="font-size:22px;font-weight:800;color:${displayColor}">${displayScore!=null?displayScore:'—'}<span style="font-size:11px;font-weight:500;color:#9ca3af">${displayScore!=null?'%':''}</span></div>
+          </div>
+          <div style="height:4px;background:#e5e7eb;border-radius:2px;margin-top:4px;overflow:hidden">
+            <div style="height:100%;width:${displayScore??0}%;background:${displayColor};border-radius:2px;transition:width .6s"></div>
+          </div>
+        </div>
+        ${fixButtonHeader}
+        <div class="acc-arrow">▼</div>
       </div>
-      <div style="font-size:10.5px;color:#6b7280;line-height:1.4">${c.detail||''}</div>
-      ${extraWarning}
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <div style="font-size:10.5px;color:#6b7280;line-height:1.5;margin-top:8px">${detailHtml}</div>
+          ${suggestionHtml}
+          ${extraWarning}
+          <div class="acc-fix-result"></div>
+        </div>
+      </div>
     </div>`;
   };
 
-  const issueRow=(tag,color,bgColor)=>([key,c])=>`
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:${bgColor};border-radius:8px;border-left:3px solid ${color};overflow:hidden">
-      <span style="font-size:10px;font-weight:700;color:${color};white-space:nowrap;padding-top:1px">${tag}</span>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:2px">${c.label}</div>
-        <div style="font-size:11px;color:#6b7280">${c.detail||''}</div>
+  const issueRow=(tag,color,bgColor)=>([key,c])=>{
+    const isKw = key.startsWith('kwIn');
+    const detailRendered = isKw ? fmtDetail(c.detail) : (c.detail||'');
+    const suggBlock = c.suggestion ? `<div style="font-size:10px;margin-top:4px;padding:5px 8px;background:#eff6ff;border-radius:5px;border:1px solid #bfdbfe">${fmtDetail(c.suggestion)}</div>` : '';
+    const matchBadge = (isKw && c.match) ? `<span style="display:inline-flex;align-items:center;gap:3px;background:${c.match.pct>=50?'#fffbeb':'#fef2f2'};border:1px solid ${c.match.pct>=50?'#fde68a':'#fecaca'};border-radius:10px;padding:1px 7px;font-size:9px;font-weight:700;color:${c.match.pct>=50?'#d97706':'#dc2626'};margin-left:6px">${c.match.foundCount}/${c.match.total} слов</span>` : '';
+    
+    // Fix button in header via registry — no inline onclick with unsafe strings
+    const issueFid = _regFix(c.label + ' — ' + (c.detail||''), fixUrl, keyword||'', key);
+    
+    return `
+    <div class="acc-issue" style="background:${bgColor};border-left:3px solid ${color}" onclick="toggleAccIssue(this,event)">
+      <div class="acc-issue-header">
+        <span style="font-size:10px;font-weight:700;color:${color};white-space:nowrap;padding-top:1px">${tag}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:2px">${c.label}${matchBadge}</div>
+        </div>
+        <button class="acc-fix-btn fix-btn-reg" data-fix-id="${issueFid}" style="font-size:10px;padding:3px 8px;white-space:nowrap">✨ Исправить</button>
+        <div class="acc-arrow" style="font-size:10px">▼</div>
       </div>
-      ${renderFixBtn(key,c,fixUrl,keyword||'')}
+      <div class="acc-issue-body">
+        <div class="acc-issue-body-inner">
+          <div style="font-size:11px;color:#6b7280;line-height:1.5">${detailRendered}</div>
+          ${suggBlock}
+          <div class="acc-fix-result"></div>
+        </div>
+      </div>
     </div>`;
+  };
 
   return`
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:12px 0;width:100%;min-width:0;box-sizing:border-box">
@@ -1442,11 +1877,18 @@ function renderChecks(checks,fixUrl,keyword){
     ${good.length?`
     <div style="margin-top:10px">
       <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">🟢 Работает хорошо</div>
-      <div style="display:flex;flex-direction:column;gap:5px">${good.map(([,c])=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:7px 14px;background:#f0fdf4;border-radius:8px;border-left:3px solid #16a34a">
-          <span style="font-size:10px;font-weight:700;color:#16a34a">[ОК]</span>
-          <div style="font-size:12px;font-weight:600;color:#111">${c.label}</div>
-          <div style="font-size:11px;color:#6b7280;margin-left:4px">${c.detail||''}</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${good.map(([key,c])=>`
+        <div class="acc-issue" style="background:#f0fdf4;border-left:3px solid #16a34a" onclick="toggleAccIssue(this,event)">
+          <div class="acc-issue-header">
+            <span style="font-size:10px;font-weight:700;color:#16a34a">[ОК]</span>
+            <div style="flex:1;font-size:12px;font-weight:600;color:#111">${c.label}</div>
+            <div class="acc-arrow" style="font-size:10px">▼</div>
+          </div>
+          <div class="acc-issue-body">
+            <div class="acc-issue-body-inner">
+              <div style="font-size:11px;color:#6b7280;line-height:1.5">${c.detail||'Всё в порядке ✅'}</div>
+            </div>
+          </div>
         </div>`).join('')}
       </div>
     </div>`:''}
@@ -1647,12 +2089,12 @@ async function runFullAudit(){
       const modal=document.createElement('div');
       modal.id='fix-modal';
       modal.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center';
-      modal.innerHTML=`<div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div style="font-weight:700;font-size:15px">✨ Как исправить</div>
-          <button onclick="closeFix()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1">✕</button>
+      modal.innerHTML=`<div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:520px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative;max-height:85vh;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0">
+          <div id="fix-modal-title" style="font-weight:700;font-size:15px">✨ Исправление</div>
+          <button onclick="closeFix()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:0;width:28px;height:28px;border-radius:6px;transition:all .2s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">×</button>
         </div>
-        <div id="fix-content" class="bubble" style="font-size:13px;max-height:400px;overflow-y:auto"></div>
+        <div id="fix-content" class="bubble" style="font-size:13px;overflow-y:auto;flex:1;min-height:0"></div>
       </div>`;
       document.body.appendChild(modal);
     }
@@ -1691,7 +2133,7 @@ async function runSingleAudit(type){
       </div>`;
     }else{html=renderSection(icons[type],names[type],data.totalScore,data.checks,data.analysis);}
     const existingModal=document.getElementById('fix-modal');
-    if(!existingModal){const modal=document.createElement('div');modal.id='fix-modal';modal.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center';modal.innerHTML=`<div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-weight:700;font-size:15px">✨ Как исправить</div><button onclick="closeFix()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button></div><div id="fix-content" class="bubble" style="font-size:13px;max-height:400px;overflow-y:auto"></div></div>`;document.body.appendChild(modal);}
+    if(!existingModal){const modal=document.createElement('div');modal.id='fix-modal';modal.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center';modal.innerHTML=`<div style="background:var(--sidebar);border-radius:14px;padding:24px;max-width:520px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.25);max-height:85vh;display:flex;flex-direction:column"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0"><div id="fix-modal-title" style="font-weight:700;font-size:15px">✨ Исправление</div><button onclick="closeFix()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:0;width:28px;height:28px;border-radius:6px">×</button></div><div id="fix-content" class="bubble" style="font-size:13px;overflow-y:auto;flex:1;min-height:0"></div></div>`;document.body.appendChild(modal);}
     res.innerHTML=html;
   }catch(e){res.innerHTML=`<div class="audit-card">❌ ${e.message}</div>`;}
   btn.disabled=false;btn.innerHTML='<span>🚀</span> Полный аудит';
@@ -1745,59 +2187,125 @@ function h2FixButtons(detail, fixUrl, keyword) {
     var safe = iss.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     var safeUrl = fixUrl.replace(/'/g,"\\'");
     var safeKw = (keyword||'').replace(/'/g,"\\'");
-    html += '<button style="' + st + '" onclick="magicFix(\'' + safe + '\',\'' + safeUrl + '\',\'' + safeKw + '\')">✨ ' + (i+1) + '. ' + shorts[i] + '</button>';
+    html += '<button style="' + st + '" onclick="magicFix(\'' + safe + '\',\'' + safeUrl + '\',\'' + safeKw + '\',\'h2\')">✨ ' + (i+1) + '. ' + shorts[i] + '</button>';
   }
   html += '</div>';
   return html;
 }
 
 function renderFixBtn(key, c, fixUrl, keyword) {
-  if (key === 'h2' && c.detail) {
-    var h2b = h2FixButtons(c.detail, fixUrl, keyword||'');
-    if (h2b) return h2b;
-  }
+  // Legacy function — kept for compatibility, now uses inline accordion fix
   var lbl = c.label.replace(/'/g,"\\'");
   var url = fixUrl.replace(/'/g,"\\'");
   var kw = (keyword||'').replace(/'/g,"\\'");
-  return '<button onclick="magicFix(\'' + lbl + '\',\'' + url + '\',\'' + kw + '\')" style="flex-shrink:0;background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:3px 9px;font-size:10px;cursor:pointer;color:#374151;font-family:inherit;white-space:nowrap">✨ Исправить</button>';
+  var k = key.replace(/'/g,"\\'");
+  return '';  // Fix buttons are now inside accordion bodies
 }
 
-async function magicFix(issue, fixUrl, keyword){
+async function magicFix(issue, fixUrl, keyword, elementKey){
   const modal=document.getElementById('fix-modal');
   const content=document.getElementById('fix-content');
+  const title=document.getElementById('fix-modal-title');
   if(!modal||!content)return;
   modal.style.display='flex';
+  
+  // Устанавливаем заголовок в зависимости от элемента
+  const elementIcons = {
+    'title': '📄 Title',
+    'desc': '📝 Description',
+    'h1': '📌 H1',
+    'h2': '📋 H2',
+    'alts': '🖼️ ALT',
+    'kwInTitle': '🔑 Title',
+    'kwInDesc': '🔑 Description',
+    'kwInH1': '🔑 H1',
+    'kwInH2': '🔑 H2',
+    'kwInAlt': '🔑 ALT'
+  };
+  const elementName = elementIcons[elementKey] || '✨ Исправление';
+  if(title) title.textContent = elementName;
+  
   content.innerHTML='<div style="display:flex;gap:5px;padding:10px 0"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  
+  // Извлекаем отсутствующие слова из issue
+  let missingWords = [];
+  const missingMatch = issue.match(/Отсутствует:\s*«([^»]+)»/);
+  if (missingMatch) {
+    missingWords = missingMatch[1].split('», «');
+  }
+  
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'fix',issue,fixUrl,keyword:keyword||''})});
+      body:JSON.stringify({
+        action:'fix',
+        issue,
+        fixUrl,
+        keyword:keyword||'',
+        elementKey: elementKey||'',
+        missingWords: missingWords
+      })});
     const data=await res.json();
     // ✅ ФИХ: Worker возвращает readyCode+where, не data.fix
     if(data.readyCode){
       const platform=data.platform||'';
       const where=data.where||'';
       const note=data.note||'';
+      
+      // Извлекаем текущий текст из issue
+      let currentText = '';
+      const currentMatch = issue.match(/Сейчас:\s*«([^»]+)»/);
+      if (currentMatch) {
+        currentText = currentMatch[1];
+      }
+      
+      // Показываем что добавили
+      const addedWordsHtml = missingWords.length > 0 ? `
+        <div style="margin-bottom:10px;padding:8px 12px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px">
+          <div style="font-size:11px;font-weight:700;color:#059669;margin-bottom:4px">✅ Добавлено в текст:</div>
+          <div style="font-size:12px;color:#047857">${missingWords.map(w => `<span style="background:#d1fae5;padding:2px 6px;border-radius:4px;margin:2px;display:inline-block;font-weight:600">${w}</span>`).join(' ')}</div>
+        </div>` : '';
+      
+      // Сравнение было/стало
+      const comparisonHtml = currentText ? `
+        <div style="margin-bottom:12px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden">
+          <div style="background:#fef2f2;padding:8px 12px;border-bottom:1px solid #fecaca">
+            <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:3px">❌ БЫЛО:</div>
+            <div style="font-size:13px;color:#374151;line-height:1.6">${currentText}</div>
+          </div>
+          <div style="background:#f0fdf4;padding:8px 12px">
+            <div style="font-size:10px;font-weight:700;color:#059669;text-transform:uppercase;margin-bottom:3px">✅ СТАЛО:</div>
+            <div style="font-size:13px;color:#111;font-weight:600;line-height:1.6">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+          </div>
+        </div>` : '';
+      
       content.innerHTML=`
-        <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Платформа: <b>${platform}</b></div>
-        ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:12px;color:#16a34a">📍 ${where}</div>`:''}
+        ${platform?`<div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Платформа: <b>${platform}</b></div>`:''}
+        ${where?`<div style="margin-bottom:10px;padding:8px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;font-size:12px;color:#2563eb">📍 ${where}</div>`:''}
+        ${addedWordsHtml}
+        ${comparisonHtml}
         ${buildH2Table(issue, data.readyCode)}
-        <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">Готовый код:</div>
-        <div style="position:relative">
-          <pre data-copy="${data.readyCode.replace(/"/g,'&quot;').replace(/\n/g,'&#10;')}" style="background:#1e1e2e;color:#cdd6f4;padding:14px;border-radius:8px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
-          <button class="fix-copy-btn"
-            style="position:absolute;top:8px;right:8px;background:#313244;border:none;color:#cdd6f4;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">📋 Копировать</button>
-        </div>
-        ${note?`<div style="margin-top:8px;font-size:11px;color:var(--muted)">${note}</div>`:''}
+        ${!comparisonHtml ? `
+          <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:var(--muted)">✨ Готовый исправленный текст:</div>
+          <div style="position:relative;margin-bottom:10px">
+            <div data-copy="${data.readyCode.replace(/"/g,'&quot;').replace(/\n/g,'&#10;')}" style="background:#f8fafc;border:1px solid #e2e8f0;padding:12px 14px;border-radius:8px;font-size:13px;color:#111;line-height:1.6;font-weight:600;white-space:pre-wrap;word-break:break-word">${data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+          </div>` : ''}
+        <button class="fix-copy-btn"
+          style="width:100%;background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;color:#fff;padding:10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;box-shadow:0 2px 6px rgba(37,99,235,.3)"
+          onmouseover="this.style.transform='translateY(-1px)'"
+          onmouseout="this.style.transform='translateY(0)'">
+          📋 Копировать исправленный текст
+        </button>
+        ${note?`<div style="margin-top:10px;font-size:11px;color:var(--muted);padding:8px 12px;background:var(--surface2);border-radius:6px">${note}</div>`:''}
       `;
       // Attach copy handler
       const copyBtn=content.querySelector('.fix-copy-btn');
       if(copyBtn){
-        const pre=content.querySelector('pre[data-copy]');
+        const copyEl=content.querySelector('[data-copy]');
         copyBtn.onclick=()=>{
-          const txt=pre?.getAttribute('data-copy')||pre?.textContent||'';
+          const txt=copyEl?.getAttribute('data-copy')||data.readyCode||'';
           navigator.clipboard.writeText(txt).then(()=>{
-            copyBtn.textContent='✅ Скопировано';
-            setTimeout(()=>copyBtn.textContent='📋 Копировать',1500);
+            copyBtn.innerHTML='✅ Скопировано!';
+            setTimeout(()=>copyBtn.innerHTML='📋 Копировать исправленный текст',2000);
           });
         };
       }
@@ -1848,6 +2356,183 @@ async function magicFix(issue, fixUrl, keyword){
 function closeFix(){
   const modal=document.getElementById('fix-modal');
   if(modal)modal.style.display='none';
+}
+
+// ==== ACCORDION TOGGLE ====
+// Пересчитывает max-height для плавной анимации
+function accRecalc(bodyEl){
+  if(!bodyEl) return;
+  bodyEl.style.maxHeight = bodyEl.scrollHeight + 'px';
+  // Повторный пересчёт после завершения CSS transition
+  setTimeout(function(){ if(bodyEl.parentElement && bodyEl.parentElement.classList.contains('open')) bodyEl.style.maxHeight = bodyEl.scrollHeight + 'px'; }, 400);
+}
+
+function toggleAccCard(el, ev){
+  // ev может быть undefined при старых вызовах — подстраховка через window.event
+  var e = ev || window.event;
+  if(e){
+    var tgt = e.target;
+    // Не переключаем если кликнули по кнопке внутри body (Исправить, Копировать)
+    try{ if(tgt.closest && tgt.closest('.acc-fix-btn')) return; }catch(x){}
+    try{ if(tgt.closest && tgt.closest('.acc-fix-area')) return; }catch(x){}
+    try{ if(tgt.closest && tgt.closest('.acc-body-inner button')) return; }catch(x){}
+  }
+  var body = el.querySelector('.acc-body');
+  if(!body) return;
+  if(el.classList.contains('open')){
+    el.classList.remove('open');
+    body.style.maxHeight = '0px';
+  } else {
+    el.classList.add('open');
+    accRecalc(body);
+  }
+}
+
+function toggleAccIssue(el, ev){
+  var e = ev || window.event;
+  if(e){
+    var tgt = e.target;
+    try{ if(tgt.closest && tgt.closest('.acc-fix-btn')) return; }catch(x){}
+    try{ if(tgt.closest && tgt.closest('.acc-fix-area')) return; }catch(x){}
+    try{ if(tgt.closest && tgt.closest('.acc-issue-body-inner button')) return; }catch(x){}
+  }
+  var body = el.querySelector('.acc-issue-body');
+  if(!body) return;
+  if(el.classList.contains('open')){
+    el.classList.remove('open');
+    body.style.maxHeight = '0px';
+  } else {
+    el.classList.add('open');
+    accRecalc(body);
+  }
+}
+
+// Delegated click handler for registry-based fix buttons
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.fix-btn-reg');
+  if(!btn) return;
+  e.stopPropagation();
+  e.preventDefault();
+  var fid = btn.getAttribute('data-fix-id');
+  var d = window._fixReg && window._fixReg[fid];
+  if(!d){ console.error('Fix data not found for', fid); return; }
+  magicFixInline(btn, d.ctx, d.url, d.kw, d.key);
+});
+
+// Inline fix inside accordion (no modal)
+async function magicFixInline(btn, issue, fixUrl, keyword, elementKey){
+  // Остановить всплытие — чтобы не закрыть аккордеон
+  try{ if(window.event) window.event.stopPropagation(); }catch(x){}
+
+  var card = btn.closest('.acc-card') || btn.closest('.acc-issue');
+  if(!card) return;
+  var resultArea = card.querySelector('.acc-fix-result');
+  if(!resultArea) return;
+  
+  btn.disabled = true;
+  btn.textContent = '⏳ Генерирую...';
+  resultArea.innerHTML = '<div class="acc-fix-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  
+  // Auto-open accordion to show results
+  var accBody = card.querySelector('.acc-body') || card.querySelector('.acc-issue-body');
+  if(accBody && !card.classList.contains('open')){
+    card.classList.add('open');
+    accRecalc(accBody);
+  }
+  // Пересчитываем высоту аккордеона
+  if(accBody) setTimeout(function(){ accRecalc(accBody); }, 60);
+  
+  // Extract missing words from issue
+  var missingWords = [];
+  var missingMatch = issue.match(/Отсутствует:\s*«([^»]+)»/);
+  if(missingMatch) missingWords = missingMatch[1].split('», «');
+  
+  try{
+    var res = await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'fix',issue:issue,fixUrl:fixUrl,keyword:keyword||'',elementKey:elementKey||'',missingWords:missingWords})});
+    var data = await res.json();
+    
+    if(data.readyCode){
+      var platform = data.platform||'';
+      var where = data.where||'';
+      var note = data.note||'';
+      
+      var currentText = '';
+      var currentMatch = issue.match(/Сейчас:\s*«([^»]+)»/);
+      if(currentMatch) currentText = currentMatch[1];
+      
+      var addedWordsHtml = missingWords.length > 0 ? '<div style="margin-bottom:8px;padding:6px 10px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:6px"><div style="font-size:10px;font-weight:700;color:#059669;margin-bottom:3px">✅ Добавлено:</div><div style="font-size:11px;color:#047857">' + missingWords.map(function(w){ return '<span style="background:#d1fae5;padding:1px 5px;border-radius:3px;margin:1px;display:inline-block;font-weight:600">' + w + '</span>'; }).join(' ') + '</div></div>' : '';
+      
+      var safeReady = data.readyCode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      
+      var comparisonHtml = currentText ? '<div style="margin-bottom:8px;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden"><div style="background:#fef2f2;padding:6px 10px;border-bottom:1px solid #fecaca"><div style="font-size:9px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:2px">❌ БЫЛО:</div><div style="font-size:12px;color:#374151;line-height:1.5">' + currentText + '</div></div><div style="background:#f0fdf4;padding:6px 10px"><div style="font-size:9px;font-weight:700;color:#059669;text-transform:uppercase;margin-bottom:2px">✅ СТАЛО:</div><div style="font-size:12px;color:#111;font-weight:600;line-height:1.5">' + safeReady + '</div></div></div>' : '';
+      
+      var h2table = buildH2Table(issue, data.readyCode);
+      var readyBlock = !comparisonHtml ? '<div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#9ca3af">✨ Готовый текст:</div><div style="background:#f8fafc;border:1px solid #e2e8f0;padding:8px 10px;border-radius:6px;font-size:12px;color:#111;line-height:1.5;font-weight:600;white-space:pre-wrap;word-break:break-word">' + safeReady + '</div>' : '';
+      
+      var html = '<div class="acc-fix-area">';
+      if(platform) html += '<div style="margin-bottom:6px;font-size:11px;color:#9ca3af">Платформа: <b>' + platform + '</b></div>';
+      if(where) html += '<div style="margin-bottom:6px;padding:5px 8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;color:#2563eb">📍 ' + where + '</div>';
+      html += addedWordsHtml + comparisonHtml + h2table + readyBlock;
+      html += '<button class="acc-fix-btn copied-target" style="margin-top:8px">📋 Копировать исправление</button>';
+      if(note) html += '<div style="margin-top:6px;font-size:10px;color:#9ca3af;padding:5px 8px;background:#f9fafb;border-radius:4px">' + note + '</div>';
+      html += '</div>';
+      
+      resultArea.innerHTML = html;
+      
+      // Привязываем копирование через JS, а не через inline onclick (безопаснее)
+      var copyBtn = resultArea.querySelector('.copied-target');
+      if(copyBtn){
+        var codeToCopy = data.readyCode; // Сохраняем в замыкании
+        copyBtn.addEventListener('click', function(e2){
+          e2.stopPropagation();
+          copyFixText(this, codeToCopy);
+        });
+      }
+    } else {
+      // Fallback: render analysis text
+      var text = data.analysis || data.error || 'Нет рекомендаций';
+      resultArea.innerHTML = '<div class="acc-fix-area"><div style="font-size:12px;color:#374151;line-height:1.6">' + md(text) + '</div></div>';
+    }
+    
+    btn.textContent = '✅ Готово';
+    btn.disabled = false;
+  } catch(e){
+    resultArea.innerHTML = '<div class="acc-fix-area" style="border-color:#fecaca">❌ ' + e.message + '</div>';
+    btn.textContent = '✨ Исправить';
+    btn.disabled = false;
+  }
+  
+  // Пересчитываем высоту аккордеона после загрузки контента
+  if(accBody) setTimeout(function(){ accRecalc(accBody); }, 80);
+}
+
+function copyFixText(btn, text){
+  if(!text) return;
+  // Метод 1: Clipboard API (modern)
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      btn.textContent = '✅ Скопировано!';
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = '📋 Копировать исправление'; btn.classList.remove('copied'); }, 2500);
+    }).catch(function(){
+      copyFixTextFallback(btn, text);
+    });
+  } else {
+    copyFixTextFallback(btn, text);
+  }
+}
+function copyFixTextFallback(btn, text){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(x){}
+  document.body.removeChild(ta);
+  btn.textContent = '✅ Скопировано!';
+  btn.classList.add('copied');
+  setTimeout(function(){ btn.textContent = '📋 Копировать исправление'; btn.classList.remove('copied'); }, 2500);
 }
 
 // TOOLS
@@ -2271,18 +2956,99 @@ document.addEventListener('paste',e=>{
   for(const item of items) if(item.type.startsWith('image/')){const f=item.getAsFile();if(f)handleFiles([f]);}
 });
 
-// Mic
-let recognition=null,isRec=false;
+// Mic — улучшенная версия с задержкой и визуальным индикатором
+let recognition=null,isRec=false,micSendTimer=null,micRestartTimer=null;
+const MIC_SEND_DELAY=3500; // 3.5 секунды после окончания речи перед отправкой
+
 function toggleMic(){
   if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){alert('Нужен Chrome');return;}
-  if(isRec){recognition.stop();return;}
+  if(isRec){
+    // Ручная остановка — отправляем сразу
+    clearTimeout(micSendTimer);
+    clearTimeout(micRestartTimer);
+    recognition.stop();
+    isRec=false;
+    const btn=document.getElementById('mic-btn');
+    btn.classList.remove('rec');btn.innerHTML='🎤';btn.title='Голосовой ввод';
+    inp.placeholder='Напиши задачу или нажми 📎 для файла/скриншота...';
+    if(inp.value.trim()) sendMsg();
+    return;
+  }
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recognition=new SR();recognition.lang='ru-RU';recognition.continuous=false;recognition.interimResults=true;
+  recognition=new SR();
+  recognition.lang='ru-RU';
+  recognition.continuous=true;      // НЕ останавливается после первой паузы
+  recognition.interimResults=true;   // Показываем промежуточные результаты
+  recognition.maxAlternatives=1;
+
   const btn=document.getElementById('mic-btn');
-  recognition.onstart=()=>{isRec=true;btn.classList.add('rec');btn.textContent='🔴';inp.placeholder='Говори...';};
-  recognition.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;inp.value=t;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,150)+'px';};
-  recognition.onend=()=>{isRec=false;btn.classList.remove('rec');btn.textContent='🎤';inp.placeholder='Напиши задачу или нажми 📎 для файла/скриншота...';if(inp.value.trim())setTimeout(()=>sendMsg(),300);};
-  recognition.onerror=()=>{isRec=false;btn.classList.remove('rec');btn.textContent='🎤';};
+  let lastResultTime=Date.now();
+
+  recognition.onstart=()=>{
+    isRec=true;
+    btn.classList.add('rec');
+    btn.innerHTML='<span style="display:inline-block;animation:micPulse 1s ease-in-out infinite">🔴</span>';
+    btn.title='Слушаю... (нажми чтобы остановить)';
+    inp.placeholder='🎙️ Слушаю — говори, не торопись...';
+    inp.style.borderColor='var(--danger)';
+    inp.style.boxShadow='0 0 0 2px rgba(220,38,38,0.15)';
+  };
+
+  recognition.onresult=e=>{
+    clearTimeout(micSendTimer); // Сбрасываем таймер при каждом новом результате
+    lastResultTime=Date.now();
+    let final='',interim='';
+    for(let i=0;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    inp.value=(final+interim).trim();
+    inp.style.height='auto';
+    inp.style.height=Math.min(inp.scrollHeight,150)+'px';
+
+    // Планируем отправку через MIC_SEND_DELAY после последнего результата
+    if(inp.value.trim()){
+      micSendTimer=setTimeout(()=>{
+        if(isRec && inp.value.trim()){
+          recognition.stop();
+        }
+      }, MIC_SEND_DELAY);
+    }
+  };
+
+  recognition.onend=()=>{
+    clearTimeout(micRestartTimer);
+    // Если пользователь ещё не нажал стоп и текста нет — перезапускаем
+    if(isRec && !inp.value.trim()){
+      micRestartTimer=setTimeout(()=>{
+        try{recognition.start();}catch(e){}
+      },200);
+      return;
+    }
+    isRec=false;
+    btn.classList.remove('rec');btn.innerHTML='🎤';btn.title='Голосовой ввод';
+    inp.placeholder='Напиши задачу или нажми 📎 для файла/скриншота...';
+    inp.style.borderColor='';
+    inp.style.boxShadow='';
+    if(inp.value.trim()) sendMsg();
+  };
+
+  recognition.onerror=(ev)=>{
+    // "no-speech" — не ошибка, просто тишина, перезапускаем
+    if(ev.error==='no-speech' && isRec){
+      micRestartTimer=setTimeout(()=>{
+        try{recognition.start();}catch(e){}
+      },200);
+      return;
+    }
+    clearTimeout(micSendTimer);
+    clearTimeout(micRestartTimer);
+    isRec=false;
+    btn.classList.remove('rec');btn.innerHTML='🎤';btn.title='Голосовой ввод';
+    inp.placeholder='Напиши задачу или нажми 📎 для файла/скриншота...';
+    inp.style.borderColor='';
+    inp.style.boxShadow='';
+  };
   recognition.start();
 }
 
