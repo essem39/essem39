@@ -2812,13 +2812,15 @@ ${uTrimmed}
     const mdurl=document.getElementById('tf-mdurl')?.value||'';
     const mdkw=document.getElementById('tf-mdkw')?.value||'';
     const mdctx=document.getElementById('tf-mdctx')?.value||'';
+    const mdlang=document.getElementById('tf-mdlang')?.value||'ru';
     if(!mdurl&&!mdkw){alert('Введи URL или ключевое слово');btn.disabled=false;btn.innerHTML=origText;return;}
+    const langName = mdlang==='en' ? 'английском (English)' : 'русском';
     prompt=`Ты SEO-эксперт. Создай ТОЛЬКО Meta Description для страницы.
 URL/тема: ${mdurl||'не указан'}
 Ключевое слово: ${mdkw||'не указано'}
 Контекст: ${mdctx||'не указан'}
 
-ВАЖНО: Определи язык по ключевому слову и контексту. Если ключевое слово на английском — пиши Meta Description ТОЛЬКО на английском. Если на русском — на русском. Отвечай на том же языке, что и ключевое слово.
+ВАЖНО: Пиши Meta Description СТРОГО на ${langName} языке, независимо от языка ключевого слова.
 
 Требования:
 - Длина строго 150-160 символов
